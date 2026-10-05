@@ -138,7 +138,6 @@ function paintMenu(state=null,contactProgress=null){
 let motionFrame=0,motionDepth=0,motionFrom=null,motionFromPage=0,motionFromGallery=false;
 function snapshot(){const page=Number(document.body.dataset.page||0),gallery=window.portfolioGalleryOpen;return {x:panels.map(position),page,gallery,shift:desiredMenuShift(page,gallery)};}
 function contactProgress(fromPage,toPage,k,fromGallery,toGallery){
- if(fromGallery||toGallery)return 0;
  if(fromPage===3&&toPage!==3)return 1-k;
  if(fromPage!==3&&toPage===3)return k;
  return toPage===3?1:0;

@@ -682,3 +682,58 @@ body.project-mode .header-contact-mask #menu-dark .gallery-filters{
   .header-contact-mask #menu-dark .gallery-filters,
   .gallery-back-floating{transition:none!important}
 }
+
+
+/* ==========================================================
+   V17 FINAL TARGETED FIXES
+   No page/deck/sidebar animation rules are changed here.
+   ========================================================== */
+
+/* WORK MATTE HEADER — exactly one frosted layer.
+   The white menu text remains a transparent colour layer.
+   This removes the accidental double darkening while keeping the
+   matte surface clipped to the visible WORK region by the existing JS. */
+.header-contact-mask #menu-dark .menu-primary{
+  background:transparent!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+}
+.work-menu-backdrop{
+  background:rgba(24,24,24,.58)!important;
+  backdrop-filter:blur(20px) saturate(125%)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(125%)!important;
+  box-shadow:none!important;
+}
+
+/* GALLERY RIGHT EDGE
+   V16 visually shifted the whole gallery +2 rails, which pushed its right
+   edge beyond the viewport. The side rails already sit OVER the gallery,
+   so the grid itself must stay at x=0. Only the slight vertical lift remains.
+   This does not change card sizes, crop, grid packing, or scrollHeight. */
+.work .gallery-entry,
+.gallery-closing .work .gallery-entry{
+  width:100%!important;
+  max-width:100%!important;
+  transform:translate3d(0,-64px,0)!important;
+}
+.gallery-mode .work .gallery-entry{
+  width:100%!important;
+  max-width:100%!important;
+  transform:translate3d(0,0,0)!important;
+}
+.work .gallery-grid,
+.gallery-mode .work .gallery-grid,
+.gallery-closing .work .gallery-grid{
+  box-sizing:border-box!important;
+  max-width:100%!important;
+}
+
+/* Because the grid is no longer translated horizontally, center the preview
+   CTA in the actually visible area to the right of the two side rails. */
+body:not(.gallery-mode) .work .gallery-launch{
+  left:calc(50% + var(--rail))!important;
+}
+.gallery-mode .work .gallery-launch{
+  left:50%!important;
+}
