@@ -12,7 +12,26 @@ for(const header of [menu,darkMenu])header.querySelector('.gallery-close')?.remo
 const galleryBack=document.createElement('button');galleryBack.className='gallery-close gallery-back-floating';galleryBack.type='button';galleryBack.textContent='BACK';galleryBack.inert=true;galleryBack.setAttribute('aria-hidden','true');galleryBack.setAttribute('aria-label','Back to Work');document.body.append(galleryBack);
 const toTop=document.createElement('button');toTop.className='project-to-top';toTop.type='button';toTop.setAttribute('aria-label','Back to top of case');toTop.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>';document.body.append(toTop);
 toTop.onclick=()=>projectView?.scrollTo({top:0,behavior:reduced.matches?'auto':'smooth'});
-let originState=null,closingTimer=0,projectView=null,projectRequest=0,galleryReturning=false;
+let originState=null,closingTimer=0,projectView=null,projectRequest=0,galleryReturning=false,galleryAnimating=false;
+
+function afterGalleryMotion(callback){
+ const entry=document.querySelector('.work .gallery-entry');
+ if(reduced.matches||!entry){callback();return;}
+ let finished=false;
+ const finish=()=>{
+  if(finished)return;
+  finished=true;
+  entry.removeEventListener('transitionend',onEnd);
+  clearTimeout(fallback);
+  callback();
+ };
+ const onEnd=event=>{
+  if(event.target===entry&&event.propertyName==='transform')finish();
+ };
+ entry.addEventListener('transitionend',onEnd);
+ // transitionend is the source of truth; timeout is only a safety fallback.
+ const fallback=setTimeout(finish,1250);
+}
 window.portfolioGalleryOpen=false;
 const workSurface=surfaces[2];
 let workAnchor=null;
@@ -24,55 +43,121 @@ darkMenu.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('
 menu.addEventListener('click',event=>{const button=event.target.closest('[data-go]');if(button&&window.portfolioGalleryOpen){event.stopImmediatePropagation();navigate(Number(button.dataset.go));}},true);
 function navigate(index){if(window.portfolioGalleryOpen)closeGallery(index);else go(index);}
 function openGallery(event){
- event?.preventDefault();if(window.portfolioGalleryOpen||galleryReturning)return;
+ event?.preventDefault();
+ if(window.portfolioGalleryOpen||galleryReturning||galleryAnimating)return;
+
+ galleryAnimating=true;
  window.beginDeckTransition?.();
- workAnchor=null;clearTimeout(closingTimer);originState={index:active,scroll:workSurface.scrollTop,focus:document.activeElement};
- window.portfolioGalleryOpen=true;
- document.querySelectorAll('.gallery-close').forEach(b=>{b.inert=false;b.setAttribute('aria-hidden','false');});
- document.body.classList.remove('gallery-closing');document.body.classList.add('gallery-mode');
- window.endDeckTransition?.();window.syncMenu?.();document.dispatchEvent(new Event('gallery-mode-change'));workSurface.tabIndex=-1;workSurface.focus({preventScroll:true});
+ workAnchor=null;
+ clearTimeout(closingTimer);
+ originState={index:active,scroll:workSurface.scrollTop,focus:document.activeElement};
+
+ // First render the "before" frame explicitly. This prevents the browser from
+ // collapsing preview -> gallery into one layout/paint and producing a snap.
+ document.body.classList.remove('gallery-closing');
+ document.body.classList.add('gallery-transitioning','gallery-opening');
+
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  window.portfolioGalleryOpen=true;
+  document.querySelectorAll('.gallery-close').forEach(b=>{
+   b.inert=false;
+   b.setAttribute('aria-hidden','false');
+  });
+
+  document.body.classList.add('gallery-mode');
+  window.endDeckTransition?.();
+  window.syncMenu?.();
+  document.dispatchEvent(new Event('gallery-mode-change'));
+
+  workSurface.tabIndex=-1;
+  workSurface.focus({preventScroll:true});
+
+  afterGalleryMotion(()=>{
+   document.body.classList.remove('gallery-opening','gallery-transitioning');
+   galleryAnimating=false;
+  });
+ }));
 }
 function closeGallery(destination){
- if(galleryReturning||!window.portfolioGalleryOpen)return;
- galleryReturning=true;
+ if(galleryReturning||galleryAnimating||!window.portfolioGalleryOpen)return;
  if(projectView)closeProject();
 
- // Exact pixel scroll position is the source of truth.
- // V16 keeps gallery intrinsic geometry identical in preview/full states,
- // so there is no need to re-anchor a card after BACK.
+ // Navigating to another deck section keeps the established V18 behavior.
+ // The staged controller below is specifically for the BACK -> WORK transition.
+ if(destination!==undefined&&destination!==originState.index){
+  galleryReturning=true;
+  const savedWorkScroll=workSurface.scrollTop;
+  workAnchor=null;
+  workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
+
+  window.beginDeckTransition?.();
+  projectRequest++;
+  closeDetail();
+  window.portfolioGalleryOpen=false;
+  document.body.classList.add('gallery-closing');
+  document.body.classList.remove('gallery-mode');
+  document.querySelectorAll('.gallery-close').forEach(b=>{
+   b.inert=true;
+   b.setAttribute('aria-hidden','true');
+  });
+  workSurface.scrollTop=savedWorkScroll;
+  go(destination);
+  window.endDeckTransition?.();
+  window.syncMenu?.();
+  document.dispatchEvent(new Event('gallery-mode-change'));
+
+  closingTimer=setTimeout(()=>{
+   document.body.classList.remove('gallery-closing');
+   galleryReturning=false;
+   workSurface.scrollTop=savedWorkScroll;
+   workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
+   window.syncMenu?.();
+  },reduced.matches?0:1000);
+  return;
+ }
+
+ galleryReturning=true;
+ galleryAnimating=true;
  const savedWorkScroll=workSurface.scrollTop;
  workAnchor=null;
  workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
 
- window.beginDeckTransition?.();
  projectRequest++;
  closeDetail();
- window.portfolioGalleryOpen=false;
 
- document.body.classList.add('gallery-closing');
- document.body.classList.remove('gallery-mode');
- document.querySelectorAll('.gallery-close').forEach(b=>{
-  b.inert=true;
-  b.setAttribute('aria-hidden','true');
- });
+ // Keep the fully expanded gallery painted for one frame after the user clicks
+ // BACK, then start every reverse motion from that exact visible state.
+ document.body.classList.add('gallery-transitioning','gallery-closing');
 
- // Never intentionally change the gallery position during the reverse animation.
- workSurface.scrollTop=savedWorkScroll;
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  window.beginDeckTransition?.();
+  window.portfolioGalleryOpen=false;
 
- if(destination!==undefined&&destination!==originState.index)go(destination);
- else originState.focus?.focus({preventScroll:true});
+  document.querySelectorAll('.gallery-close').forEach(b=>{
+   b.inert=true;
+   b.setAttribute('aria-hidden','true');
+  });
 
- window.endDeckTransition?.();
- window.syncMenu?.();
- document.dispatchEvent(new Event('gallery-mode-change'));
-
- closingTimer=setTimeout(()=>{
-  document.body.classList.remove('gallery-closing');
-  galleryReturning=false;
+  document.body.classList.remove('gallery-mode');
   workSurface.scrollTop=savedWorkScroll;
-  workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
+
+  originState.focus?.focus({preventScroll:true});
+
+  window.endDeckTransition?.();
   window.syncMenu?.();
- },reduced.matches?0:1000);
+  document.dispatchEvent(new Event('gallery-mode-change'));
+
+  afterGalleryMotion(()=>{
+   // Do not apply any anchor correction: exact scrollTop survives the whole move.
+   workSurface.scrollTop=savedWorkScroll;
+   workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
+
+   document.body.classList.remove('gallery-closing','gallery-transitioning');
+   galleryReturning=false;
+   galleryAnimating=false;
+   window.syncMenu?.();
+  });
+ }));
 }
 document.querySelector('.gallery-launch').addEventListener('click',openGallery);
 document.querySelectorAll('.gallery-close').forEach(b=>b.addEventListener('click',()=>projectView?closeProject():closeGallery()));

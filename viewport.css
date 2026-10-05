@@ -737,3 +737,170 @@ body:not(.gallery-mode) .work .gallery-launch{
 .gallery-mode .work .gallery-launch{
   left:50%!important;
 }
+
+
+/* ==========================================================
+   V18 — WORK MATTE OWNERSHIP FIX
+   Targeted only: the frosted background belongs to WORK itself.
+   The fixed header keeps text/mask only.
+   ========================================================== */
+
+/* Remove every fixed/global frosted background layer.
+   The white WORK menu remains only a transparent text layer. */
+.work-menu-backdrop{
+  display:none!important;
+}
+.header-contact-mask #menu-dark,
+.header-contact-mask #menu-dark .menu-primary{
+  background:transparent!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+}
+
+/* Restore the original WORK-owned frosted strip.
+   Because this element lives inside .work, it travels with WORK,
+   sits underneath ABOUT/INTRO, and leaves with WORK toward CONTACTS. */
+.work .work-header-glass{
+  display:block!important;
+  visibility:visible!important;
+  position:absolute!important;
+  top:0!important;
+  left:-28px!important;
+  right:0!important;
+  height:var(--header)!important;
+  z-index:50!important;
+  pointer-events:none!important;
+
+  background:#181818a6!important;
+  backdrop-filter:blur(20px)!important;
+  -webkit-backdrop-filter:blur(20px)!important;
+  box-shadow:none!important;
+}
+
+/* Do NOT hide the WORK glass in full-gallery mode:
+   the same WORK-owned matte remains behind the same fixed menu text. */
+.gallery-mode .work .work-header-glass,
+.gallery-closing .work .work-header-glass,
+body.project-mode .work .work-header-glass{
+  display:block!important;
+  visibility:visible!important;
+}
+
+/* The filter tray keeps its own second-row matte; this rule does not
+   modify its established appearance. */
+
+
+/* ==========================================================
+   V19 — GALLERY MOTION ONLY
+   V18 menu/matte/layout are intentionally untouched.
+   ========================================================== */
+
+/* Pre-promote only while the transition is running. */
+.gallery-transitioning .work .gallery-entry,
+.gallery-transitioning .panel.intro,
+.gallery-transitioning .panel.about,
+.gallery-transitioning .work .spine,
+.gallery-transitioning .work .gallery-launch,
+.gallery-transitioning .work .gallery-entry:before,
+.gallery-transitioning .work .gallery-entry:after,
+.gallery-transitioning .gallery-back-floating,
+.gallery-transitioning .header-contact-mask #menu-dark .gallery-filters{
+  will-change:transform,opacity;
+}
+
+/* Side rails no longer pop in/out. They softly fade while keeping the
+   established V18 horizontal movement. */
+.panel.intro .spine,
+.panel.about .spine,
+.work .spine{
+  opacity:1;
+  transition:
+    transform var(--duration) var(--ease),
+    opacity .46s cubic-bezier(.22,.61,.36,1)!important;
+}
+.gallery-mode .panel.intro .spine,
+.gallery-mode .panel.about .spine,
+.gallery-mode .work .spine{
+  opacity:0;
+}
+
+/* The gallery's existing transform remains the only movement.
+   We only make its interpolation slightly softer; no dimensions/padding/grid
+   metrics are changed here. */
+.work .gallery-entry,
+.gallery-mode .work .gallery-entry,
+.gallery-closing .work .gallery-entry{
+  transition:transform .82s cubic-bezier(.22,.61,.36,1)!important;
+}
+
+/* Preview matte + CTA dissolve after the motion has already begun. */
+.work .gallery-entry:before,
+.work .gallery-entry:after{
+  transition:
+    --glass-melt .9s cubic-bezier(.22,.61,.36,1),
+    opacity .62s cubic-bezier(.22,.61,.36,1)!important;
+}
+.work .gallery-launch{
+  transition:
+    left var(--duration) var(--ease),
+    opacity .44s cubic-bezier(.22,.61,.36,1),
+    transform .7s cubic-bezier(.22,.61,.36,1),
+    visibility 0s .72s!important;
+}
+.gallery-opening.gallery-mode .work .gallery-launch{
+  transition-delay:0s, .04s, .04s, .72s!important;
+}
+.gallery-closing .work .gallery-launch{
+  transition-delay:0s, .12s, .12s, 0s!important;
+}
+
+/* Filters arrive a fraction after the gallery starts opening and leave first
+   on BACK, which removes the mechanical all-at-once feeling. */
+.header-contact-mask #menu-dark .gallery-filters{
+  transition:
+    transform .62s cubic-bezier(.22,.61,.36,1),
+    opacity .36s ease,
+    visibility 0s .62s!important;
+}
+.gallery-opening.gallery-mode .header-contact-mask #menu-dark .gallery-filters{
+  transition-delay:.10s,.10s,0s!important;
+}
+.gallery-closing .header-contact-mask #menu-dark .gallery-filters{
+  transition-delay:0s,0s,.62s!important;
+}
+
+/* BACK control follows the same soft choreography. */
+.gallery-back-floating{
+  transition:
+    transform .58s cubic-bezier(.22,.61,.36,1),
+    opacity .34s ease,
+    visibility 0s .58s,
+    background .25s!important;
+}
+.gallery-opening.gallery-mode .gallery-back-floating{
+  transition-delay:.12s,.12s,0s,0s!important;
+}
+.gallery-closing .gallery-back-floating{
+  transition-delay:0s,0s,.58s,0s!important;
+}
+
+/* During BACK the current scroll position stays compositor-stable. */
+.gallery-transitioning .work .surface{
+  overflow-anchor:none!important;
+  scroll-behavior:auto!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .panel.intro .spine,
+  .panel.about .spine,
+  .work .spine,
+  .work .gallery-entry,
+  .work .gallery-launch,
+  .work .gallery-entry:before,
+  .work .gallery-entry:after,
+  .gallery-back-floating,
+  .header-contact-mask #menu-dark .gallery-filters{
+    transition:none!important;
+  }
+}

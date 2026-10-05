@@ -1,0 +1,25 @@
+V19 — ONLY View all work / BACK motion
+
+Base: V18.
+
+Untouched:
+- WORK matte background, opacity and blur
+- top menu / menu masks / PANXRT behavior
+- page transitions
+- gallery grid geometry and right edge
+- card sizes, crop, hover and blur
+- filter visual design
+- cases
+- media loading
+
+Changed:
+- View all work starts from an explicitly painted preview frame, then gallery-mode
+  begins two requestAnimationFrame ticks later.
+- BACK keeps the expanded frame painted first, then starts the reverse move.
+- Side rails fade while they perform their existing horizontal motion.
+- matte/CTA, filter tray and BACK button use small timing offsets so they do not
+  snap simultaneously.
+- transitionend on the gallery transform finishes the animation controller;
+  timeout is safety fallback only.
+- exact WORK scrollTop is retained throughout BACK.
+- will-change is active only while the gallery transition is running.

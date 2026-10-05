@@ -1,0 +1,24 @@
+V18 — only the WORK matte ownership was changed.
+
+Problem in V17:
+- Two frosted layers were stacked: #menu-dark .menu-primary + .work-menu-backdrop.
+  That made the header darker than intended.
+- The backing layer lived in the global fixed header, so it could visibly overlap
+  ABOUT/INTRO instead of behaving as part of WORK.
+
+Fix:
+- Global .work-menu-backdrop is disabled.
+- #menu-dark is text-only / transparent.
+- Existing .work-header-glass inside the WORK panel is restored.
+- It uses the original matte recipe: #181818a6 + blur(20px).
+- It extends 28px under ABOUT's rounded edge, but because it belongs to WORK,
+  ABOUT/INTRO naturally cover it.
+- When WORK moves toward CONTACTS, the matte leaves with WORK automatically.
+
+Nothing else was changed:
+- page transitions
+- menu text masks / PANXRT movement
+- gallery open/back behavior
+- gallery geometry/right edge
+- filters
+- cards, blur, hover, crop, cases
