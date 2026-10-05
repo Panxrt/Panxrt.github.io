@@ -10,3 +10,22 @@
 .site-arriving .header-contact-mask .wordmark{visibility:hidden}
 @keyframes startup-reveal{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){.loader-word span{animation:none;opacity:1}.site-arriving .deck,.site-arriving .header-contact-mask{animation:none}}
+
+
+/* ==========================================================
+   V25 — STARTUP SMOOTHNESS ONLY
+   ========================================================== */
+
+/* The loader itself already fades from cream to transparent.
+   Do not run a second deck/header opacity animation at the same time. */
+.site-arriving .deck,
+.site-arriving .header-contact-mask{
+  animation:none!important;
+  opacity:1!important;
+}
+
+/* Keep heavier section reveal animations paused until PANXRT has completed
+   its move into the header. They resume immediately after the handoff. */
+.site-arriving .surface.reveal :is(h1,h2,.edition,.skills,.about-lead,.tool-panel,.contact-list){
+  animation-play-state:paused!important;
+}

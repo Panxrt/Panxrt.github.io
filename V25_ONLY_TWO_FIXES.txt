@@ -1,0 +1,25 @@
+V25 — ONLY TWO FIXES on top of V24
+
+1) Filter submenu frosted glass
+- Motion/layout/timing from V24 are untouched.
+- .filter-reveal itself now owns the frosted surface.
+- Exact recipe: rgba(24,24,24,.58) + blur(20px) + saturate(125%).
+- Removed V24's extra pseudo glass layer.
+- Filter buttons/content remain transparent over the glass.
+
+2) Startup jank
+- Removed the duplicate deck/header startup fade because the loader background
+  already performs the visual reveal.
+- Section reveal animations stay paused until the PANXRT handoff is complete.
+- Startup no longer forces the first videos to preload='auto' during the logo move;
+  they stay metadata-only until the normal gallery loader takes over.
+- Added two compositor frames between loader removal and release of section animations.
+
+NOT TOUCHED:
+- WORK matte/header
+- menu masks/PANXRT page behavior
+- gallery open/BACK motion
+- bottom blur/gradient fade
+- grid/card geometry
+- crop/hover/blur
+- cases

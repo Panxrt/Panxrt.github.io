@@ -27,10 +27,9 @@
        const ready=readyImage(media).then(()=>media.decode?.().catch(()=>{}));
        if(index<6)imagePromises.push(ready);
      }else{
-       // Do not block the loader on video bytes. Prime the first few videos in the
-       // background so WORK is ready by the time the visitor reaches it.
-       media.preload=index<4?'auto':'metadata';
-       try{media.load();}catch{}
+       // Keep startup lightweight: metadata is enough during the PANXRT handoff.
+       // gallery-tools upgrades nearby videos after the site is already visible.
+       media.preload='metadata';
      }
    });
    // Never let a slow image/network hold the intro hostage.
@@ -56,7 +55,11 @@
      );
      await motion.finished.catch(()=>{});
    }
-   loader.remove();root.classList.remove('site-arriving');
+   loader.remove();
+   // Give the compositor one clean frame with the final header geometry before
+   // the section reveal animations resume.
+   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+   root.classList.remove('site-arriving');
    for(const type of ['wheel','touchstart','touchmove','keydown'])window.removeEventListener(type,block,true);
    document.dispatchEvent(new Event('portfolio-startup-complete'));
  }
