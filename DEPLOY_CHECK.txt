@@ -1,0 +1,1 @@
+If you can open this file from the deployed URL, root static assets are being served.

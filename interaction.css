@@ -1,0 +1,92 @@
+/* Equal viewport geometry; only the already folded cards retain rounded edges. */
+.deck{overflow:hidden;transition:transform var(--duration) var(--ease);background:var(--ink)}
+.panel,.panel.intro{--bleed:0px;left:0;width:100%;height:100%;margin:0;box-sizing:border-box;border-radius:0;overflow:hidden;box-shadow:none}
+.panel.passed{transform:translate3d(calc(-100% + (var(--i) + 1)*var(--rail)),0,0);border-radius:0 20px 20px 0}
+.panel .surface{width:100%;padding-left:calc(var(--i)*var(--rail) + 42px);padding-right:42px;box-sizing:border-box;overflow-x:hidden}
+.panel.work .surface{padding:0!important}.work-mosaic{padding-left:calc(2*var(--rail));padding-right:0}
+.panel .spine{visibility:hidden}.panel.passed .spine{visibility:visible}
+/* Both variants share identical geometry. JS clips them at the actual moving edges. */
+.menu,body[data-page] .menu{display:flex;opacity:1;visibility:visible;pointer-events:auto;background:transparent!important;color:var(--ink);backdrop-filter:none!important;-webkit-backdrop-filter:none!important;transition:left var(--duration) var(--ease);z-index:100;right:var(--rail)}
+.menu:before{display:none!important}.menu nav{margin-left:auto}
+.menu.menu-dark,body[data-page] .menu.menu-dark{color:var(--paper);background:#181818a6!important;backdrop-filter:blur(20px)!important;-webkit-backdrop-filter:blur(20px)!important}
+.menu[aria-hidden='true']{pointer-events:none}.gallery-close[hidden]{display:none}
+.gallery-frame{position:fixed;inset:0;width:100%;height:100%;border:0;background:var(--ink);z-index:10;transform:translate3d(0,100%,0);transition:transform var(--duration) var(--ease);visibility:hidden}
+.gallery-mode .deck{transform:translate3d(-100%,0,0);pointer-events:none}
+.gallery-mode .gallery-frame{transform:translate3d(0,0,0);visibility:visible}
+.gallery-closing .gallery-frame{visibility:visible}
+.gallery-mode .menu{left:0!important}
+.intro-layout{grid-template-columns:minmax(0,1fr) max-content;gap:36px;align-items:end}
+.skills{display:flex;flex-direction:column;justify-content:space-between;height:clamp(145px,16vw,310px);margin:0;padding:0;align-self:end;font-size:clamp(15px,1.38vw,20px);line-height:1.25}
+.skills li{margin:0;white-space:nowrap}
+.brand-track{animation:marquee 25s linear infinite!important}.brand-ribbon:hover .brand-track,.brand-ribbon:focus .brand-track{animation-play-state:running}.brand-ribbon.paused .brand-track{animation-play-state:paused!important}
+.contact .surface{display:grid;grid-template-columns:minmax(220px,.75fr) minmax(0,1.25fr);align-items:center;gap:45px;overflow:hidden}
+.contact-list{position:relative;z-index:3}.contact-art{position:relative;display:grid;place-items:center;min-width:0;height:100%;isolation:isolate}
+.contact-art h2{position:relative;z-index:2;font-size:clamp(65px,10vw,165px);margin:0!important;white-space:nowrap}
+.cat-orbit{position:absolute;width:clamp(650px,70vw,1100px);aspect-ratio:1;border:54px solid var(--paper);border-radius:50%;animation:cat-orbit 42s linear infinite;z-index:1;pointer-events:none}
+.cat-sticker{position:absolute;left:50%;top:50%;width:112px;height:112px;transform:translate(-50%,-50%) rotate(var(--angle)) translateY(calc(clamp(650px,70vw,1100px)/-2 + 27px));display:block;border:6px solid white;border-radius:50%;overflow:hidden;box-shadow:0 3px 8px #18181833;background:white}
+.cat-sticker img{width:100%;height:100%;object-fit:cover;object-position:49% 42%;transform:scale(1.35)}
+@keyframes cat-orbit{to{transform:rotate(360deg)}}
+@media(max-width:1050px){.panel .surface{padding-left:calc(var(--i)*var(--rail) + 30px);padding-right:30px}.intro-layout{gap:22px}.intro h1{font-size:8.6vw}.skills{font-size:15px}.contact .surface{gap:15px}.contact-art h2{font-size:9vw}}
+@media(max-width:700px){.panel.passed{border-radius:0 13px 13px 0}.panel .surface{padding-left:calc(var(--i)*var(--rail) + 20px);padding-right:20px}.intro-layout{display:flex;align-items:flex-start}.intro h1{font-size:17vw}.skills{height:160px;font-size:16px;align-self:flex-start}.menu nav{gap:13px}.gallery-close{font-size:10px}.contact .surface{grid-template-columns:1fr;grid-template-rows:auto 1fr;padding-top:70px;gap:20px}.contact-art{min-height:220px}.contact-art h2{font-size:18vw}.cat-orbit{width:540px;border-width:35px}.cat-sticker{width:90px;height:90px;transform:translate(-50%,-50%) rotate(var(--angle)) translateY(-252px)}}
+@media(prefers-reduced-motion:reduce){.deck,.gallery-frame,.menu{transition:none!important}.cat-orbit,.brand-track{animation:none!important}}
+/* Rails belong to the cards, including while outside the viewport. */
+.panel,.panel.intro{width:calc(100% + var(--rail));border-radius:0 20px 20px 0;box-shadow:none;border:0}
+.panel.passed{transform:translate3d(calc(-100% + (var(--i) + 1)*var(--rail)),0,0)}
+.panel .surface{width:calc(100% - var(--rail))}
+.panel .spine,.panel.passed .spine{visibility:visible;border:0;box-shadow:none;border-radius:0}
+.panel.contact{border-radius:0}
+.menu,body[data-page] .menu{right:0}
+.intro-layout{align-items:center}.skills{align-self:center;margin:0}
+/* The same work grid exists before, during and after gallery mode. */
+.work .surface{overflow:hidden!important;position:relative}
+.work .gallery-entry{height:auto;min-height:100%;overflow:visible;position:relative}
+.work .gallery-grid{padding-left:calc(2*var(--rail));padding-right:0;transition:padding var(--duration) var(--ease);min-height:100vh}
+.work .gallery-entry:after{content:'';position:absolute;inset:0 0 auto;height:100vh;background:linear-gradient(to bottom,transparent 0%,transparent 28%,#18181866 48%,#181818 94%);pointer-events:none;z-index:11;transition:opacity .65s ease}
+.work .gallery-launch{top:56vh;z-index:12;transition:opacity .45s,transform .65s}
+.work .gallery-card{pointer-events:none}
+.gallery-mode .deck{transform:none;pointer-events:auto}
+.gallery-mode .panel.intro,.gallery-mode .panel.about{transform:translate3d(-100%,0,0)}
+.gallery-mode .work .spine{transform:translateX(100%)}
+.work .spine{transition:transform var(--duration) var(--ease)}
+.gallery-mode .work .surface{overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:none}
+.gallery-mode .work .gallery-grid{padding-left:0}
+.gallery-mode .work .gallery-entry:after{opacity:0}
+.gallery-mode .work .gallery-launch{opacity:0;transform:translate(-50%,30px);pointer-events:none;visibility:hidden;transition:opacity .45s,transform .65s,visibility 0s .65s}
+.gallery-mode .work .gallery-card{pointer-events:auto}
+.gallery-mode .menu{left:calc(var(--active)*var(--rail))!important}
+.work .project-detail{z-index:40}
+@media(max-width:700px){.panel,.panel.intro{border-radius:0 13px 13px 0}.panel.contact{border-radius:0}.skills{align-self:flex-start}.intro-layout{align-items:flex-start}}
+/* Gallery header expands into the space released by the folded rails. */
+.gallery-mode .menu{left:0!important}
+.menu .gallery-close{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:10px 20px;border:1px solid #FAF4E680;border-radius:24px;background:var(--paper);color:var(--ink);font-size:13px;font-weight:700;letter-spacing:.03em;white-space:nowrap;transition:background .2s,box-shadow .2s}
+.menu .gallery-close:hover{background:#fff;box-shadow:0 0 0 4px #FAF4E61a}
+.menu .gallery-close:focus-visible{outline-color:var(--paper)}
+.gallery-mode .work .gallery-grid{padding-left:8px;padding-right:8px}
+.project-view{position:fixed;inset:0;z-index:60;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;background:var(--ink);color:var(--paper);animation:project-enter .4s ease both}
+.project-view .case-main{padding-top:calc(var(--header) + 65px)}
+@keyframes project-enter{from{opacity:0;translate:0 12px}to{opacity:1;translate:0 0}}
+@media(max-width:700px){.gallery-mode .work .gallery-grid{padding-left:6px;padding-right:6px}.menu .gallery-close{font-size:10px;padding:8px 10px;left:44%}.gallery-mode .menu nav{gap:8px;font-size:10px}.project-view .case-main{padding-top:110px}}
+@media(max-width:420px){.menu .gallery-close{font-size:9px;padding:7px 8px;left:42%}.gallery-mode .menu nav{gap:6px;font-size:9px}}
+@media(prefers-reduced-motion:reduce){.project-view{animation:none}}
+/* Keep the header stationary while the final card masks its painted area. */
+body[data-page='3'] .menu{left:calc(2*var(--rail))}
+.work{--fg:#FAF4E6;color:#FAF4E6}
+.menu .gallery-close{background:transparent;color:var(--paper);border-color:var(--paper);box-shadow:none}
+.menu .gallery-close:hover{background:#FAF4E60d;box-shadow:none}
+.gallery-mode .menu nav{opacity:.9;transition:opacity .3s}
+.work .project-detail{background:#FAF4E6d9;color:var(--ink);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid #FAF4E66b;box-shadow:0 14px 45px #0003}
+.work .project-detail p{color:var(--ink)}
+.work .gallery-card{border-color:#FAF4E610}
+/* Divider occupies the middle of the gap between the two tool groups. */
+.about .tool-panel:before{left:calc(50% - .5px);top:0;bottom:0}
+.ai-tools{border-left:0!important}
+@media(max-width:700px){.about .tool-panel:before{display:none}.ai-tools{border-top:1px solid #18181833!important}}
+.brand-group{gap:70px;padding-right:70px}
+.brand-logo{position:relative;display:flex;align-items:center;justify-content:center;width:180px;height:56px;flex:0 0 auto}
+.brand-logo img{display:block;max-width:100%;max-height:48px;object-fit:contain}
+.brand-vozovoz{width:200px;overflow:hidden;mix-blend-mode:multiply}
+.brand-vozovoz img{position:absolute;width:360px;height:253px;max-width:none;max-height:none;left:50%;top:50%;transform:translate(-50%,-50%)}
+.brand-tele2{width:130px;mix-blend-mode:multiply}
+.brand-ribbon{flex-shrink:0}
+.about .tool-grid{padding-right:12px}.about .ai-tools{padding-left:12px}
+@media(max-width:700px){.brand-logo{width:150px}.brand-vozovoz{width:190px}.brand-tele2{width:110px}.about .ai-tools{padding-left:0}.brand-group{gap:45px;padding-right:45px}}

@@ -1,0 +1,28 @@
+/* Decorative layers stay below content and never intercept interactions. */
+.deck .panel::before{content:'';position:absolute;inset:-32px;z-index:0;pointer-events:none;background:url('/grain.svg') repeat;opacity:.09;mix-blend-mode:normal;animation:background-grain 1.1s steps(1,end) infinite}
+.deck .panel>.surface{position:relative;z-index:1}
+@keyframes background-grain{0%,100%{transform:translate(0,0)}20%{transform:translate(-13px,7px)}40%{transform:translate(9px,-11px)}60%{transform:translate(-6px,-17px)}80%{transform:translate(15px,12px)}}
+.gallery-mode .gallery-card .card-button::before,.gallery-mode .gallery-card .card-button::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s ease;z-index:2}
+.gallery-mode .gallery-card .card-button::before{background:linear-gradient(135deg,#fff3,#fff03 45%,#b3a3d928);backdrop-filter:blur(9px) saturate(140%) brightness(1.08);-webkit-backdrop-filter:blur(9px) saturate(140%) brightness(1.08);mask-image:linear-gradient(to right,#000,transparent 24px,transparent calc(100% - 24px),#000),linear-gradient(to bottom,#000,transparent 24px,transparent calc(100% - 24px),#000);-webkit-mask-image:linear-gradient(to right,#000,transparent 24px,transparent calc(100% - 24px),#000),linear-gradient(to bottom,#000,transparent 24px,transparent calc(100% - 24px),#000)}
+.gallery-mode .gallery-card .card-button::after{border:1px solid #fff6;box-shadow:inset 1px 1px 2px #fff9,inset -1px -1px 3px #fff3,inset 0 0 17px #fff1;background:radial-gradient(ellipse at var(--glass-x,30%) var(--glass-y,10%),#ffffff1c,transparent 62%)}
+@media(hover:hover) and (pointer:fine){.gallery-mode .gallery-card:hover .card-button::before,.gallery-mode .gallery-card:hover .card-button::after{opacity:1}}
+.gallery-mode .gallery-card:focus-within .card-button::before,.gallery-mode .gallery-card:focus-within .card-button::after{opacity:1}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.gallery-mode .gallery-card .card-button::before{background:linear-gradient(135deg,#fff4,#fff05)}}
+@media(prefers-reduced-motion:reduce){.deck .panel::before{animation:none}.gallery-mode .gallery-card .card-button::before,.gallery-mode .gallery-card .card-button::after{transition:none}}
+/* Clear refractive edges, soft chromatic reflections and a moving specular light. */
+.gallery-mode .gallery-card .card-button::before{background:linear-gradient(135deg,#fff5,#ffffff04 42%,#ae98df26);backdrop-filter:blur(1.8px) saturate(175%) brightness(1.12);-webkit-backdrop-filter:blur(1.8px) saturate(175%) brightness(1.12);mask-image:linear-gradient(to right,#000 0,transparent 38px,transparent calc(100% - 38px),#000),linear-gradient(to bottom,#000,transparent 38px,transparent calc(100% - 38px),#000);-webkit-mask-image:linear-gradient(to right,#000,transparent 38px,transparent calc(100% - 38px),#000),linear-gradient(to bottom,#000,transparent 38px,transparent calc(100% - 38px),#000)}
+@supports(backdrop-filter:url('#liquid-refraction')){.gallery-mode .gallery-card .card-button::before{backdrop-filter:url('#liquid-refraction') blur(1px) saturate(165%);-webkit-backdrop-filter:url('#liquid-refraction') blur(1px) saturate(165%)}}
+.gallery-mode .gallery-card .card-button::after{border-color:#fff8;box-shadow:inset 2px 2px 2px #ffffffe0,inset -2px -2px 5px #e8d8ff80,inset 5px 0 10px #d4f0ff30,inset 0 0 18px #fff2;background:radial-gradient(ellipse at var(--glass-x,30%) var(--glass-y,10%),#ffffff38,transparent 55%),linear-gradient(130deg,#ffffff1c,transparent 30%,transparent 70%,#ba9ee21c)}
+.gallery-launch{isolation:isolate;border-radius:38px}
+.gallery-launch::before,.gallery-launch::after{content:'';position:absolute;inset:8px;border-radius:30px;pointer-events:none;opacity:0;transition:opacity .4s;z-index:-1}
+.gallery-launch::before{background:linear-gradient(135deg,#fff2,#ffffff04 55%,#bba1d81a);backdrop-filter:blur(12px) saturate(180%);-webkit-backdrop-filter:blur(12px) saturate(180%)}
+.gallery-launch::after{border:1px solid #fff7;box-shadow:inset 1px 2px 2px #fffc,inset -1px -2px 4px #d4c5ff6,0 12px 30px #0002;background:radial-gradient(ellipse at var(--glass-x,30%) var(--glass-y,10%),#ffffff30,transparent 65%)}
+@media(hover:hover) and (pointer:fine){.gallery-launch:hover::before,.gallery-launch:hover::after{opacity:1}}
+.gallery-launch:focus-visible::before,.gallery-launch:focus-visible::after{opacity:1}
+@media(prefers-reduced-motion:reduce){.gallery-launch::before,.gallery-launch::after{transition:none}}
+
+/* Avoid expensive animated filters on every hidden video and panel. */
+.deck .panel::before{animation-play-state:paused}body[data-page='0'] .intro::before,body[data-page='1'] .about::before,body[data-page='3'] .contact::before{animation-play-state:running}
+.gallery-mode .gallery-card .card-button::before{backdrop-filter:none;-webkit-backdrop-filter:none}
+@media(hover:hover) and (pointer:fine){.gallery-mode .gallery-card:hover .card-button::before{backdrop-filter:blur(2px) saturate(150%);-webkit-backdrop-filter:blur(2px) saturate(150%)}}
+@media(hover:none){.gallery-mode .gallery-card .card-button::before,.gallery-mode .gallery-card .card-button::after{display:none}}

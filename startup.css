@@ -1,0 +1,12 @@
+#site-loader{display:none;position:fixed;inset:0;z-index:10000;background:#FAF4E6;color:#181818;align-items:center;justify-content:center;pointer-events:auto}
+.site-booting #site-loader{display:flex}
+.loader-word{display:flex;font-family:'Antique Olive',Arial,Helvetica,sans-serif;font-weight:900;font-size:clamp(48px,10vw,132px);letter-spacing:-.075em;line-height:1;transform-origin:0 0}
+.loader-word span{opacity:0;animation:loader-letter .45s cubic-bezier(.2,.65,.3,1) forwards;animation-delay:calc(var(--letter,0)*70ms)}
+.loader-word span:nth-child(2){--letter:1}.loader-word span:nth-child(3){--letter:2}.loader-word span:nth-child(4){--letter:3}.loader-word span:nth-child(5){--letter:4}.loader-word span:nth-child(6){--letter:5}
+@keyframes loader-letter{from{opacity:0;transform:translateY(16px);filter:blur(5px)}to{opacity:1;transform:none;filter:blur(0)}}
+.site-booting .deck,.site-booting .header-contact-mask{opacity:0;pointer-events:none}
+.site-booting .surface.reveal :is(h1,h2,.edition,.skills,.about-lead,.tool-panel,.contact-list){animation-play-state:paused}
+.site-arriving .deck,.site-arriving .header-contact-mask{animation:startup-reveal .7s ease both}
+.site-arriving .header-contact-mask .wordmark{visibility:hidden}
+@keyframes startup-reveal{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.loader-word span{animation:none;opacity:1}.site-arriving .deck,.site-arriving .header-contact-mask{animation:none}}
