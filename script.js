@@ -19,8 +19,12 @@ function go(index){
   // WORK is a scrollable gallery. Keep its exact scroll position when the deck
   // moves to ABOUT/CONTACTS so the gallery does not jump to the top behind the transition.
   if(i===active && i!==2)surfaces[i].scrollTop=0;
-  surfaces[i].classList.remove('reveal');
-  if(i===active)requestAnimationFrame(()=>surfaces[i].classList.add('reveal'));
+  // Reveal each section only on its first visit. Re-entering a section should
+  // never blank/rebuild its text while the visitor is navigating the deck.
+  if(i===active&&!surfaces[i].dataset.revealed){
+   surfaces[i].dataset.revealed='1';
+   requestAnimationFrame(()=>surfaces[i].classList.add('reveal'));
+  }
   const spine=panel.querySelector('.spine');
   if(spine){spine.tabIndex=i<active?0:-1;spine.disabled=i>=active;}
  });

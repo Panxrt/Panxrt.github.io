@@ -430,3 +430,73 @@ body.gallery-mode .stable-wordmark{left:var(--menu-inset)}
 @media(prefers-reduced-motion:reduce){
   .stable-wordmark{transition:none!important}
 }
+
+
+/* V11 — authoritative header geometry. Both theme copies occupy the exact same
+   fixed viewport rectangle. Only their clip rectangles change. This removes
+   accumulated left/width transitions that caused right cropping and menu drift. */
+.header-contact-mask{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:calc(var(--header) + 50px)!important;
+  overflow:visible!important;
+  clip-path:none!important;
+  -webkit-clip-path:none!important;
+  transition:none!important;
+  pointer-events:none;
+}
+.header-contact-mask .menu-clip{
+  position:absolute!important;
+  inset:0!important;
+  width:100vw!important;
+  height:calc(var(--header) + 50px)!important;
+  overflow:visible!important;
+  pointer-events:none;
+}
+.header-contact-mask #menu,
+.header-contact-mask #menu-dark{
+  position:absolute!important;
+  left:0!important;
+  right:auto!important;
+  top:0!important;
+  width:100vw!important;
+  min-width:100vw!important;
+  max-width:none!important;
+  height:var(--header)!important;
+  padding:0!important;
+  overflow:visible!important;
+  transition:height .55s cubic-bezier(.2,.7,.3,1)!important;
+}
+.header-contact-mask .menu-primary{
+  width:100vw!important;
+  max-width:none!important;
+  padding-left:var(--menu-inset)!important;
+  padding-right:var(--menu-inset)!important;
+  box-sizing:border-box;
+}
+/* Use the original two perfectly aligned wordmarks again. Their common clip
+   boundary creates the progressive dark/light recolor without a third logo. */
+.header-contact-mask .wordmark{visibility:visible!important;pointer-events:auto!important}
+.stable-wordmark{display:none!important}
+/* Never alter the WORK preview geometry while the panel is sliding away. */
+.gallery-closing .work .gallery-entry{transition:none!important}
+
+/* Move only the identity group with the deck. Transform is compositor-friendly,
+   while the menu/nav itself stays fixed and cannot be clipped by its own width. */
+.header-contact-mask .menu-primary .identity{
+  transform:translate3d(var(--menu-motion-offset,var(--menu-offset)),0,0)!important;
+  will-change:transform;
+}
+body.gallery-leaving-deck .work .gallery-entry:before,
+body.gallery-leaving-deck .work .gallery-entry:after{
+  opacity:1!important;
+  transition:none!important;
+}
+body.gallery-leaving-deck .work .gallery-launch{
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:none!important;
+  transform:translate(-50%,-50%)!important;
+  transition:none!important;
+}

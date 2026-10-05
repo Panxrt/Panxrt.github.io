@@ -1,0 +1,27 @@
+V11 — stability-first fixes
+
+Fixed:
+- Top menu no longer shifts its own container left/right. Both light and dark copies
+  stay full-width and perfectly aligned; only their visible clip changes.
+- Right side of the WORK menu is no longer cropped.
+- PANXRT uses the original two aligned menu copies again, so it recolors progressively
+  at the WORK boundary without a separate jumping logo.
+- PANXRT horizontal movement is now a GPU transform tied to the same deck tween.
+- Removed body mutation-driven menu repainting that could redraw the header mid-transition.
+- When leaving the open gallery for ABOUT/CONTACTS, WORK keeps the exact scroll position.
+- --work-scroll tracks the gallery continuously, so the matte overlay and View all work
+  return at the current position rather than jumping to the top/bottom.
+- On that leave-deck transition, the preview matte and View all work are frozen in place
+  for the duration of the slide.
+- Section text reveal runs only on the first visit to each section, not every time you
+  return to it.
+- V10 smart media preloading remains enabled.
+
+Not changed:
+- Mosaic/grid sizes
+- Image/video crop and focal points
+- Hover behavior
+- Card blur/frosted look
+- Section timing/easing
+- Typography/colors
+- Case layout
