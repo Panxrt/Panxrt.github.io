@@ -9,11 +9,10 @@ function renderPortfolio(data){
  document.dispatchEvent(new Event('portfolio-content'));window.translatePage?.(false);
 }
 let contentRevision=-1,refreshing=false;
-async function refreshContent(){if(refreshing||window.portfolioMediaOpen)return;refreshing=true;try{const response=await fetch('/content.json',{cache:'no-store'});if(!response.ok)throw new Error('Content unavailable');const data=await response.json();if(contentRevision<data.revision){contentRevision=data.revision;renderPortfolio(data);}}catch(e){console.warn('Portfolio content could not refresh',e);}finally{refreshing=false;}}
+async function refreshContent(){if(refreshing||window.portfolioMediaOpen)return;refreshing=true;try{const response=await fetch('./content.json',{cache:'no-store'});if(!response.ok)throw new Error('Content unavailable');const data=await response.json();if(contentRevision<data.revision){contentRevision=data.revision;renderPortfolio(data);}}catch(e){console.warn('Portfolio content could not refresh',e);}finally{refreshing=false;}}
 try{const channel=new BroadcastChannel('panxrt-content');channel.onmessage=refreshContent;}catch{}
-refreshContent();window.addEventListener('focus',refreshContent);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshContent();});
+refreshContent();
 window.buildProjectContent=function(work){return window.CaseRenderer.render(work,window.portfolioLanguage?.()||'en');};
 
-setInterval(()=>{if(!document.hidden)refreshContent();},15000);
 
 document.addEventListener('mosaic-media-ready',()=>{const grid=document.getElementById('gallery-grid');if(grid?._fineWorks)MosaicLayout.apply(grid,grid._fineWorks);});

@@ -1,0 +1,17 @@
+PANXRT conservative performance pass
+
+Changed without altering the intended animation design:
+- Kept WORK hover blur/reaction intact; only prior brightness change remains (.86 -> .96).
+- Removed 15-second content polling + focus/visibility refetches; static GitHub site now loads content once per page load.
+- Removed analytics.js from index because /api/analytics/event does not exist on static GitHub Pages and caused useless background requests/timer work.
+- Removed old Cloudflare challenge-injection script from index; it is irrelevant on GitHub Pages.
+- Cached the deck easing curve once per transition instead of reading/parsing CSS every animation frame.
+- Avoided work-scroll geometry sync on every transition frame when no work anchor is active.
+- Preserved the glass pointer effect but reduced layout reads by caching card bounds until scroll/resize/card change.
+- Changed local root-relative asset paths to relative paths for GitHub Pages portability.
+
+Not changed:
+- Existing animation timings/easing values.
+- Blur behavior.
+- Card hover reaction.
+- Gallery/video behavior.
