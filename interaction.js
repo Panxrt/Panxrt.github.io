@@ -2,7 +2,7 @@
 const darkMenu=menu.cloneNode(true);darkMenu.id='menu-dark';darkMenu.classList.add('menu-dark');menu.after(darkMenu);
 const deck=document.querySelector('.deck');
 const menuMask=document.createElement('div');menuMask.className='header-contact-mask';menu.before(menuMask);menuMask.append(menu,darkMenu);
-const workMenuBackdrop=document.createElement('div');workMenuBackdrop.className='work-menu-backdrop';menuMask.prepend(workMenuBackdrop);
+const workMenuBackdrop=document.createElement('div');workMenuBackdrop.className='work-menu-backdrop';deck.append(workMenuBackdrop);
 for(const header of [menu,darkMenu]){
  const clip=document.createElement('div');clip.className='menu-clip';header.before(clip);clip.append(header);
  const primary=document.createElement('div');primary.className='menu-primary';while(header.firstChild)primary.append(header.firstChild);header.append(primary);
@@ -187,19 +187,16 @@ function paintMenu(state=null,contactProgress=null){
  const x=state?.x||panels.map(position);
  const page=state?.page??Number(document.body.dataset.page||0);
  const gallery=state?.gallery??window.portfolioGalleryOpen;
+ const galleryProgress=Math.max(0,Math.min(1,state?.galleryProgress??(gallery?1:0)));
  const shift=state?.shift??desiredMenuShift(page,gallery);
  menuMask.style.setProperty('--menu-shift',shift+'px');
- if(gallery){
-  menuMask.style.width=viewport+'px';
-  clipHeader(menu,0,0,viewport);clipHeader(darkMenu,0,viewport,viewport);
-  workMenuBackdrop.style.clipPath='inset(0 0 0 0)';
-  workMenuBackdrop.style.webkitClipPath='inset(0 0 0 0)';
-  return;
- }
  const introEdge=baseRight[0]+x[0];
  const aboutEdge=baseRight[1]+x[1];
  const workEdge=baseRight[2]+x[2];
- const lightEnd=Math.max(0,Math.min(viewport,Math.max(introEdge,aboutEdge)));
+ // In gallery mode the same fixed header is revealed continuously from the
+ // moving panel geometry. No instant "full dark header" branch.
+ const foldedLightEnd=Math.max(0,Math.min(viewport,Math.max(introEdge,aboutEdge)));
+ const lightEnd=foldedLightEnd*(1-galleryProgress);
  let cp=contactProgress;
  if(cp==null)cp=page===3?1:0;
  cp=Math.max(0,Math.min(1,cp));
@@ -209,10 +206,13 @@ function paintMenu(state=null,contactProgress=null){
  const visibleRight=Math.max(0,Math.min(headerRight,workEdge));
  clipHeader(menu,0,Math.min(lightEnd,headerRight),viewport);
  clipHeader(darkMenu,lightEnd,visibleRight,viewport);
- // The frosted Work surface extends slightly under ABOUT's rounded edge so
- // there can never be a transparent rectangular gap at the seam.
- const overlap=Math.min(28,workSpineWidth*.6||28);
- const bgLeft=Math.max(0,lightEnd-overlap),bgRight=Math.max(bgLeft,visibleRight);
+ // Matte belongs to WORK: its RIGHT edge follows WORK itself, never the
+ // CONTACTS text mask. Because this layer sits in the deck below ABOUT, the
+ // small overlap is genuinely underneath ABOUT rather than on top of it.
+ const overlap=Math.min(24,workSpineWidth*.5||24)*(1-galleryProgress);
+ const bgLeft=Math.max(0,lightEnd-overlap);
+ const matteRight=Math.max(0,Math.min(viewport,workEdge));
+ const bgRight=Math.max(bgLeft,matteRight);
  const rightInset=Math.max(0,viewport-bgRight);
  workMenuBackdrop.style.clipPath=`inset(0 ${rightInset}px 0 ${bgLeft}px)`;
  workMenuBackdrop.style.webkitClipPath=`inset(0 ${rightInset}px 0 ${bgLeft}px)`;
@@ -221,7 +221,7 @@ function paintMenu(state=null,contactProgress=null){
 // Panel movement keeps the original visual geometry, but the header is sampled
 // from the SAME tween rather than running its own left/width transition.
 let motionFrame=0,motionDepth=0,motionFrom=null,motionFromPage=0,motionFromGallery=false;
-function snapshot(){const page=Number(document.body.dataset.page||0),gallery=window.portfolioGalleryOpen;return {x:panels.map(position),page,gallery,shift:desiredMenuShift(page,gallery)};}
+function snapshot(){const page=Number(document.body.dataset.page||0),gallery=window.portfolioGalleryOpen;return {x:panels.map(position),page,gallery,galleryProgress:gallery?1:0,shift:desiredMenuShift(page,gallery)};}
 function contactProgress(fromPage,toPage,k,fromGallery,toGallery){
  if(fromPage===3&&toPage!==3)return 1-k;
  if(fromPage!==3&&toPage===3)return k;
@@ -241,7 +241,7 @@ window.endDeckTransition=function(){
  setMotion(from,contactProgress(from.page,to.page,0,from.gallery,to.gallery));
  function tick(now){
   const t=Math.min(1,(now-started)/duration),k=deckEase(t);
-  const state={x:from.x.map((x,i)=>x+(to.x[i]-x)*k),page:to.page,gallery:to.gallery,shift:from.shift+(to.shift-from.shift)*k};
+  const state={x:from.x.map((x,i)=>x+(to.x[i]-x)*k),page:to.page,gallery:to.gallery,galleryProgress:from.galleryProgress+(to.galleryProgress-from.galleryProgress)*k,shift:from.shift+(to.shift-from.shift)*k};
   setMotion(state,contactProgress(from.page,to.page,k,from.gallery,to.gallery));
   if(t<1)motionFrame=requestAnimationFrame(tick);else{motionFrame=0;panels.forEach(p=>p.style.removeProperty('transform'));syncWorkAnchor();paintMenu(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));}
  }

@@ -904,3 +904,103 @@ body.project-mode .work .work-header-glass{
     transition:none!important;
   }
 }
+
+/* ==========================================================
+   V20 — WORK MATTE + GALLERY UI SMOOTHING (targeted)
+   ========================================================== */
+
+/* The frosted WORK strip is one deck-level layer, visually tied to WORK's
+   physical boundaries by interaction.js. It sits BELOW ABOUT/INTRO and ABOVE
+   the WORK artwork. This is the only main-row matte layer. */
+.work .work-header-glass{display:none!important}
+.work-menu-backdrop{
+  display:block!important;
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  width:100vw!important;
+  height:var(--header)!important;
+  z-index:2!important;
+  pointer-events:none!important;
+  background:rgba(24,24,24,.58)!important;
+  backdrop-filter:blur(20px) saturate(125%)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(125%)!important;
+  box-shadow:none!important;
+  will-change:clip-path;
+}
+
+/* The two fixed header copies are TEXT/MASK layers only. */
+.header-contact-mask #menu-dark,
+.header-contact-mask #menu-dark .menu-primary{
+  background:transparent!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+}
+
+/* Filter tray uses the exact same frosted recipe as the WORK header. */
+.header-contact-mask #menu-dark .gallery-filters{
+  background:rgba(24,24,24,.58)!important;
+  backdrop-filter:blur(20px) saturate(125%)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(125%)!important;
+  box-shadow:none!important;
+  transform:translate3d(0,-104%,0)!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  transition:
+    transform .86s cubic-bezier(.22,.61,.36,1),
+    opacity .46s ease,
+    visibility 0s .86s!important;
+}
+.gallery-opening.gallery-mode .header-contact-mask #menu-dark .gallery-filters,
+.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .gallery-filters{
+  transform:translate3d(0,0,0)!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  transition:
+    transform .86s cubic-bezier(.22,.61,.36,1) .12s,
+    opacity .46s ease .12s,
+    visibility 0s!important;
+}
+.gallery-closing .header-contact-mask #menu-dark .gallery-filters{
+  transform:translate3d(0,-104%,0)!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transition:
+    transform .78s cubic-bezier(.22,.61,.36,1),
+    opacity .38s ease,
+    visibility 0s .78s!important;
+}
+
+/* Side labels must physically glide with the panels, never pop/fade. */
+.panel.intro .spine,
+.panel.about .spine,
+.work .spine,
+.gallery-mode .panel.intro .spine,
+.gallery-mode .panel.about .spine,
+.gallery-mode .work .spine,
+.gallery-closing .panel.intro .spine,
+.gallery-closing .panel.about .spine,
+.gallery-closing .work .spine{
+  opacity:1!important;
+}
+.work .spine{
+  transition:transform var(--duration) var(--ease)!important;
+}
+
+/* Keep the gallery itself on compositor transforms while the side panels move. */
+.gallery-transitioning .panel.intro,
+.gallery-transitioning .panel.about,
+.gallery-transitioning .panel.work,
+.gallery-transitioning .work .gallery-entry{
+  will-change:transform;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .header-contact-mask #menu-dark .gallery-filters,
+  .work .spine{transition:none!important}
+}
