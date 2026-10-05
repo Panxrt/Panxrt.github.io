@@ -16,7 +16,7 @@ let originState=null,closingTimer=0,projectView=null,projectRequest=0,galleryRet
 window.portfolioGalleryOpen=false;
 const workSurface=surfaces[2];
 let workAnchor=null;
-function syncWorkAnchor(){if(workAnchor?.node.isConnected){const delta=workAnchor.node.getBoundingClientRect().top-workSurface.getBoundingClientRect().top-workAnchor.offset;if(Math.abs(delta)>.25)workSurface.scrollTop+=delta;}workSurface.style.setProperty('--work-scroll',workSurface.scrollTop+'px');}
+function syncWorkAnchor(){workSurface.style.setProperty('--work-scroll',workSurface.scrollTop+'px');}
 let workScrollFrame=0;
 workSurface.addEventListener('scroll',()=>{if(workScrollFrame)return;workScrollFrame=requestAnimationFrame(()=>{workScrollFrame=0;workSurface.style.setProperty('--work-scroll',workSurface.scrollTop+'px');});},{passive:true});
 
@@ -36,11 +36,11 @@ function closeGallery(destination){
  if(galleryReturning||!window.portfolioGalleryOpen)return;
  galleryReturning=true;
  if(projectView)closeProject();
- // Preserve the original, good-looking gallery return choreography: anchor the
- // first visible card so the padding/rails can come back without a content jump.
- const visible=[...grid.children].filter(c=>!c.hidden),edge=workSurface.getBoundingClientRect().top+parseFloat(getComputedStyle(menu).height);
- const anchor=visible.find(c=>c.getBoundingClientRect().bottom>edge);
- workAnchor=anchor?{node:anchor,offset:anchor.getBoundingClientRect().top-workSurface.getBoundingClientRect().top}:null;
+ // Preserve the exact scroll coordinate. The visual return is handled only by
+ // CSS transitions, so there is no last-frame scroll correction/jump.
+ workAnchor=null;
+ const savedWorkScroll=workSurface.scrollTop;
+ workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
  window.beginDeckTransition?.();
  projectRequest++;closeDetail();window.portfolioGalleryOpen=false;
  syncWorkAnchor();
@@ -49,7 +49,13 @@ function closeGallery(destination){
  if(destination!==undefined&&destination!==originState.index)go(destination);
  else originState.focus?.focus({preventScroll:true});
  window.endDeckTransition?.();window.syncMenu?.();document.dispatchEvent(new Event('gallery-mode-change'));
- closingTimer=setTimeout(()=>{document.body.classList.remove('gallery-closing');galleryReturning=false;window.syncMenu?.();},reduced.matches?0:1350);
+ closingTimer=setTimeout(()=>{
+  document.body.classList.remove('gallery-closing');
+  galleryReturning=false;
+  workSurface.scrollTop=savedWorkScroll;
+  workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
+  window.syncMenu?.();
+ },reduced.matches?0:1100);
 }
 document.querySelector('.gallery-launch').addEventListener('click',openGallery);
 document.querySelectorAll('.gallery-close').forEach(b=>b.addEventListener('click',()=>projectView?closeProject():closeGallery()));
@@ -81,13 +87,6 @@ function paintMenu(state=null,contactProgress=null){
  const gallery=state?.gallery??window.portfolioGalleryOpen;
  const shift=state?.shift??desiredMenuShift(page,gallery);
  menuMask.style.setProperty('--menu-shift',shift+'px');
- if(gallery){
-  menuMask.style.width=viewport+'px';
-  clipHeader(menu,0,0,viewport);clipHeader(darkMenu,0,viewport,viewport);
-  workMenuBackdrop.style.clipPath='inset(0 0 0 0)';
-  workMenuBackdrop.style.webkitClipPath='inset(0 0 0 0)';
-  return;
- }
  const introEdge=baseRight[0]+x[0];
  const aboutEdge=baseRight[1]+x[1];
  const workEdge=baseRight[2]+x[2];
@@ -103,8 +102,9 @@ function paintMenu(state=null,contactProgress=null){
  clipHeader(darkMenu,lightEnd,visibleRight,viewport);
  // The frosted Work surface extends slightly under ABOUT's rounded edge so
  // there can never be a transparent rectangular gap at the seam.
- const overlap=Math.min(28,workSpineWidth*.6||28);
- const bgLeft=Math.max(0,lightEnd-overlap),bgRight=Math.max(bgLeft,visibleRight);
+ const hasDarkRegion=visibleRight>lightEnd+.5;
+ const overlap=hasDarkRegion?Math.min(28,workSpineWidth*.6||28):0;
+ const bgLeft=Math.max(0,lightEnd-overlap),bgRight=hasDarkRegion?Math.max(bgLeft,visibleRight):bgLeft;
  const rightInset=Math.max(0,viewport-bgRight);
  workMenuBackdrop.style.clipPath=`inset(0 ${rightInset}px 0 ${bgLeft}px)`;
  workMenuBackdrop.style.webkitClipPath=`inset(0 ${rightInset}px 0 ${bgLeft}px)`;
@@ -114,8 +114,7 @@ function paintMenu(state=null,contactProgress=null){
 // from the SAME tween rather than running its own left/width transition.
 let motionFrame=0,motionDepth=0,motionFrom=null,motionFromPage=0,motionFromGallery=false;
 function snapshot(){const page=Number(document.body.dataset.page||0),gallery=window.portfolioGalleryOpen;return {x:panels.map(position),page,gallery,shift:desiredMenuShift(page,gallery)};}
-function contactProgress(fromPage,toPage,k,fromGallery,toGallery){
- if(fromGallery||toGallery)return 0;
+function contactProgress(fromPage,toPage,k){
  if(fromPage===3&&toPage!==3)return 1-k;
  if(fromPage!==3&&toPage===3)return k;
  return toPage===3?1:0;
@@ -129,14 +128,14 @@ window.endDeckTransition=function(){
  panels.forEach(p=>p.style.removeProperty('transform'));
  const to=snapshot();
  const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim(),duration=(reduced.matches||window.portfolioRestoring)?0:parseFloat(raw)*(raw.endsWith('ms')?1:1000);
- if(!duration){setMotion(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));panels.forEach(p=>p.style.removeProperty('transform'));return;}
+ if(!duration){setMotion(to,contactProgress(from.page,to.page,1));panels.forEach(p=>p.style.removeProperty('transform'));return;}
  const started=performance.now(),deckEase=makeDeckEase();
- setMotion(from,contactProgress(from.page,to.page,0,from.gallery,to.gallery));
+ setMotion(from,contactProgress(from.page,to.page,0));
  function tick(now){
   const t=Math.min(1,(now-started)/duration),k=deckEase(t);
   const state={x:from.x.map((x,i)=>x+(to.x[i]-x)*k),page:to.page,gallery:to.gallery,shift:from.shift+(to.shift-from.shift)*k};
-  setMotion(state,contactProgress(from.page,to.page,k,from.gallery,to.gallery));
-  if(t<1)motionFrame=requestAnimationFrame(tick);else{motionFrame=0;panels.forEach(p=>p.style.removeProperty('transform'));syncWorkAnchor();paintMenu(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));}
+  setMotion(state,contactProgress(from.page,to.page,k));
+  if(t<1)motionFrame=requestAnimationFrame(tick);else{motionFrame=0;panels.forEach(p=>p.style.removeProperty('transform'));syncWorkAnchor();paintMenu(to,contactProgress(from.page,to.page,1));}
  }
  motionFrame=requestAnimationFrame(tick);
 };
