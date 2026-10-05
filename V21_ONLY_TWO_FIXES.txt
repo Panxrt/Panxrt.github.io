@@ -1,0 +1,21 @@
+V21 — ONLY the two requested fixes on top of V20
+
+1. Filter submenu
+- Same visual design/matte as V20.
+- No longer paints over the INTRO/ABOUT side rails.
+- Its left clip follows the real moving side-panel edge every animation frame.
+- On BACK it slides upward under the main header while simultaneously disappearing behind the returning side rails.
+- Removed the opacity fade so the motion reads as one continuous physical slide rather than a pop/fade.
+
+2. PANXRT logo during View all work / BACK
+- Removed the immediate final-state menu repaint that was happening just after the tween started.
+- PANXRT now stays under the same frame-by-frame menu-shift tween for the entire transition.
+- Final sync occurs only after the gallery motion completes.
+
+NOT TOUCHED:
+- WORK matte recipe/position
+- top-menu masks / WORK -> CONTACTS behavior
+- page transitions
+- gallery/grid geometry
+- card size/crop/hover/blur
+- cases/media loading

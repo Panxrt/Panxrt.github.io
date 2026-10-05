@@ -66,7 +66,6 @@ function openGallery(event){
 
   document.body.classList.add('gallery-mode');
   window.endDeckTransition?.();
-  window.syncMenu?.();
   document.dispatchEvent(new Event('gallery-mode-change'));
 
   workSurface.tabIndex=-1;
@@ -75,6 +74,7 @@ function openGallery(event){
   afterGalleryMotion(()=>{
    document.body.classList.remove('gallery-opening','gallery-transitioning');
    galleryAnimating=false;
+   window.syncMenu?.();
   });
  }));
 }
@@ -144,7 +144,6 @@ function closeGallery(destination){
   originState.focus?.focus({preventScroll:true});
 
   window.endDeckTransition?.();
-  window.syncMenu?.();
   document.dispatchEvent(new Event('gallery-mode-change'));
 
   afterGalleryMotion(()=>{
@@ -196,6 +195,10 @@ function paintMenu(state=null,contactProgress=null){
  // In gallery mode the same fixed header is revealed continuously from the
  // moving panel geometry. No instant "full dark header" branch.
  const foldedLightEnd=Math.max(0,Math.min(viewport,Math.max(introEdge,aboutEdge)));
+ // Independent clip for the filter tray: it must live BEHIND the returning
+ // INTRO/ABOUT rails, not paint over them. This edge is taken directly from
+ // the physical panel geometry, so it moves smoothly with the rails.
+ menuMask.style.setProperty('--filter-left',foldedLightEnd+'px');
  const lightEnd=foldedLightEnd*(1-galleryProgress);
  let cp=contactProgress;
  if(cp==null)cp=page===3?1:0;

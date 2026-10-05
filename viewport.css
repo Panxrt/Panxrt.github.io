@@ -1004,3 +1004,55 @@ body.project-mode .work .work-header-glass{
   .header-contact-mask #menu-dark .gallery-filters,
   .work .spine{transition:none!important}
 }
+
+
+/* ==========================================================
+   V21 — ONLY FILTER SUBMENU + PANXRT GALLERY HANDOFF
+   Everything else inherits V20 unchanged.
+   ========================================================== */
+
+/* The filter row is physically clipped by the current INTRO/ABOUT edge.
+   During BACK that edge moves right with the side rails, so the submenu
+   disappears BEHIND them instead of floating over them. */
+.header-contact-mask #menu-dark .gallery-filters{
+  clip-path:inset(0 0 0 var(--filter-left,0px))!important;
+  -webkit-clip-path:inset(0 0 0 var(--filter-left,0px))!important;
+  opacity:1!important;
+  transform:translate3d(0,-104%,0)!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transition:
+    transform .78s cubic-bezier(.22,.61,.36,1),
+    visibility 0s .78s!important;
+}
+
+.gallery-opening.gallery-mode .header-contact-mask #menu-dark .gallery-filters,
+.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .gallery-filters{
+  transform:translate3d(0,0,0)!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  transition:
+    transform .82s cubic-bezier(.22,.61,.36,1) .08s,
+    visibility 0s!important;
+}
+
+.gallery-closing .header-contact-mask #menu-dark .gallery-filters{
+  transform:translate3d(0,-104%,0)!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:none!important;
+  transition:
+    transform .76s cubic-bezier(.22,.61,.36,1),
+    visibility 0s .76s!important;
+}
+
+/* During gallery motion, JS owns the PANXRT position frame-by-frame.
+   No second CSS transform animation is allowed to fight it. */
+.gallery-transitioning .header-contact-mask .menu-primary .identity{
+  transition:none!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .header-contact-mask #menu-dark .gallery-filters{transition:none!important}
+}
