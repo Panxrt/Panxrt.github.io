@@ -1301,3 +1301,54 @@ body.project-mode .work .work-header-glass{
   backdrop-filter:none!important;
   -webkit-backdrop-filter:none!important;
 }
+
+
+/* ==========================================================
+   V26 — ONLY FILTER SUBMENU SIZE + LEFT ALIGNMENT
+   Everything else inherits V25 unchanged.
+   ========================================================== */
+
+/* Restore the compact original filter-row height. */
+.header-contact-mask{
+  height:calc(var(--header) + 50px)!important;
+}
+.header-contact-mask .menu-clip{
+  height:calc(var(--header) + 50px)!important;
+}
+.header-contact-mask #menu-dark .filter-reveal{
+  height:50px!important;
+}
+
+/* Start filters on the exact same left inset as PANXRT. */
+.header-contact-mask #menu-dark .gallery-filters{
+  height:50px!important;
+  min-height:50px!important;
+  padding:0 var(--menu-inset)!important;
+  gap:6px!important;
+}
+
+/* Restore the original compact filter controls. */
+#menu-dark .gallery-filters button,
+#menu-dark .gallery-filters button[aria-pressed=true],
+#menu-dark .gallery-filters button:last-child{
+  height:30px!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:6px 13px!important;
+  border-radius:15px!important;
+  font-size:11px!important;
+  line-height:16px!important;
+  letter-spacing:.035em!important;
+}
+
+/* The gallery content offset follows the compact 50px tray. */
+.gallery-mode .work .gallery-entry{
+  padding-top:calc(var(--header) + 50px)!important;
+}
+
+@media(max-width:700px){
+  .header-contact-mask #menu-dark .gallery-filters{
+    padding-left:var(--menu-inset)!important;
+    padding-right:var(--menu-inset)!important;
+  }
+}
