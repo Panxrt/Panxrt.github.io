@@ -1056,3 +1056,68 @@ body.project-mode .work .work-header-glass{
 @media(prefers-reduced-motion:reduce){
   .header-contact-mask #menu-dark .gallery-filters{transition:none!important}
 }
+
+
+/* ==========================================================
+   V22 — ONLY TWO FINAL FIXES
+   1) no WORK matte protrusion over the folded side rail
+   2) smoother filter submenu close/open
+   Everything else inherits V21 unchanged.
+   ========================================================== */
+
+/* Clip the NON-BLURRED wrapper, not the frosted filter strip itself.
+   This keeps the submenu behind INTRO/ABOUT while avoiding the expensive
+   clip-path + backdrop-filter repaint on every animation frame. */
+.header-contact-mask #menu-dark .filter-reveal{
+  clip-path:inset(0 0 0 var(--filter-left,0px))!important;
+  -webkit-clip-path:inset(0 0 0 var(--filter-left,0px))!important;
+  will-change:clip-path;
+  contain:paint;
+}
+
+.header-contact-mask #menu-dark .gallery-filters{
+  clip-path:none!important;
+  -webkit-clip-path:none!important;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  transform:translate3d(0,-104%,0)!important;
+  opacity:1!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transition:
+    transform .88s cubic-bezier(.22,.61,.36,1),
+    visibility 0s .88s!important;
+}
+
+.gallery-opening.gallery-mode .header-contact-mask #menu-dark .gallery-filters,
+.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .gallery-filters{
+  transform:translate3d(0,0,0)!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  transition:
+    transform .88s cubic-bezier(.22,.61,.36,1) .06s,
+    visibility 0s!important;
+}
+
+/* BACK: one continuous upward slide. No opacity snap, no early hide. */
+.gallery-closing .header-contact-mask #menu-dark .gallery-filters{
+  transform:translate3d(0,-104%,0)!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:none!important;
+  transition:
+    transform .84s cubic-bezier(.22,.61,.36,1),
+    visibility 0s .84s!important;
+}
+
+.gallery-transitioning .header-contact-mask #menu-dark .gallery-filters{
+  will-change:transform;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .header-contact-mask #menu-dark .filter-reveal,
+  .header-contact-mask #menu-dark .gallery-filters{
+    transition:none!important;
+  }
+}

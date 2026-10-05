@@ -1,0 +1,16 @@
+V22 — ONLY TWO FINAL FIXES
+
+1) Folded WORK matte edge
+- Reduced the intentional matte overlap under ABOUT/side rail from 24px to 1px.
+- This preserves anti-alias seam coverage but removes the visible dark protrusion.
+- No menu position, page transition, PANXRT behavior, blur recipe, or gallery geometry changed.
+
+2) Filter submenu smoothness
+- The animated left clipping now happens on .filter-reveal (non-blurred wrapper),
+  not directly on the backdrop-filter submenu.
+- This avoids expensive clip-path + blur repainting that caused the closing jerk.
+- The submenu now uses one continuous GPU translate3d slide on open/close.
+- No opacity fade/snap during BACK.
+- Visual design, matte, buttons and filter layout unchanged.
+
+Everything else is inherited from V21 untouched.

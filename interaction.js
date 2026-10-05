@@ -212,7 +212,7 @@ function paintMenu(state=null,contactProgress=null){
  // Matte belongs to WORK: its RIGHT edge follows WORK itself, never the
  // CONTACTS text mask. Because this layer sits in the deck below ABOUT, the
  // small overlap is genuinely underneath ABOUT rather than on top of it.
- const overlap=Math.min(24,workSpineWidth*.5||24)*(1-galleryProgress);
+ const overlap=1*(1-galleryProgress);
  const bgLeft=Math.max(0,lightEnd-overlap);
  const matteRight=Math.max(0,Math.min(viewport,workEdge));
  const bgRight=Math.max(bgLeft,matteRight);
