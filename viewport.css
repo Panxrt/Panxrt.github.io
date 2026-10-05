@@ -362,40 +362,25 @@ body.project-mode .header-contact-mask .filter-reveal{pointer-events:none}
 .viewer-case-sheet .case-block.viewer-case-destination{border-radius:0}
 
 
-/* V5 — compositor-first deck motion.
-   Keep the same timing/easing and visual design, but let the browser animate
-   transforms natively instead of moving every panel from JavaScript each frame. */
-.deck .panel{
-  transition:transform var(--duration) var(--ease)!important;
-  will-change:transform;
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
-  transform-style:preserve-3d;
-}
-.deck .panel>.surface{
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
-}
-.menu-clip{
-  transition:clip var(--duration) var(--ease);
-  will-change:clip;
-}
-/* Avoid repainting decorative motion while a full-screen panel is moving.
-   The effects resume immediately after the transition. */
-body.deck-moving .deck .panel::before{animation-play-state:paused!important}
+/* V6 performance pass — preserves the V4 geometry/menu behavior.
+   During the 850ms deck move only, pause paint-heavy decoration and backdrop blur.
+   Resting appearance is unchanged. */
 body.deck-moving .brand-track{animation-play-state:paused!important}
-/* Promote reveal elements without changing their animation. */
-.surface.reveal h1,
-.surface.reveal h2,
-.surface.reveal .edition,
-.surface.reveal .skills,
-.surface.reveal .about-lead,
-.surface.reveal .tool-panel,
-.surface.reveal .contact-list{
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
-  will-change:transform,opacity;
+body.deck-moving .deck .panel::before{animation-play-state:paused!important}
+body.deck-moving .header-contact-mask #menu,
+body.deck-moving .header-contact-mask #menu-dark,
+body.deck-moving .header-contact-mask #menu-dark .menu-primary,
+body.deck-moving .header-contact-mask #menu-dark .gallery-filters,
+body.deck-moving .work-header-glass{
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
 }
-@media(prefers-reduced-motion:reduce){
-  .deck .panel,.menu-clip{transition:none!important}
+body.deck-moving .surface.reveal h1,
+body.deck-moving .surface.reveal h2,
+body.deck-moving .surface.reveal .edition,
+body.deck-moving .surface.reveal .skills,
+body.deck-moving .surface.reveal .about-lead,
+body.deck-moving .surface.reveal .tool-panel,
+body.deck-moving .surface.reveal .contact-list{
+  animation-play-state:paused!important;
 }
