@@ -37,6 +37,9 @@ function closeGallery(destination){
  galleryReturning=true;
  if(projectView)closeProject();
 
+ // Exact pixel scroll position is the source of truth.
+ // V16 keeps gallery intrinsic geometry identical in preview/full states,
+ // so there is no need to re-anchor a card after BACK.
  const savedWorkScroll=workSurface.scrollTop;
  workAnchor=null;
  workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
@@ -48,11 +51,12 @@ function closeGallery(destination){
 
  document.body.classList.add('gallery-closing');
  document.body.classList.remove('gallery-mode');
- document.querySelectorAll('.gallery-close').forEach(b=>{b.inert=true;b.setAttribute('aria-hidden','true');});
+ document.querySelectorAll('.gallery-close').forEach(b=>{
+  b.inert=true;
+  b.setAttribute('aria-hidden','true');
+ });
 
- // Keep the exact same scroll coordinate. Because V15 keeps the gallery's
- // intrinsic geometry identical in both modes, the browser no longer needs
- // to clamp or re-anchor the scroll position.
+ // Never intentionally change the gallery position during the reverse animation.
  workSurface.scrollTop=savedWorkScroll;
 
  if(destination!==undefined&&destination!==originState.index)go(destination);
@@ -62,15 +66,13 @@ function closeGallery(destination){
  window.syncMenu?.();
  document.dispatchEvent(new Event('gallery-mode-change'));
 
- const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();
- const duration=(reduced.matches?0:(parseFloat(raw)||0)*(raw.endsWith('ms')?1:1000));
  closingTimer=setTimeout(()=>{
   document.body.classList.remove('gallery-closing');
   galleryReturning=false;
   workSurface.scrollTop=savedWorkScroll;
   workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
   window.syncMenu?.();
- },Math.max(duration+100,reduced.matches?0:950));
+ },reduced.matches?0:1000);
 }
 document.querySelector('.gallery-launch').addEventListener('click',openGallery);
 document.querySelectorAll('.gallery-close').forEach(b=>b.addEventListener('click',()=>projectView?closeProject():closeGallery()));
@@ -95,116 +97,69 @@ function clipHeader(header,leftEdge,rightEdge,viewport=document.documentElement.
  target.style.clip=`rect(0px, ${right}px, 9999px, ${left}px)`;
  const hidden=right-left<.5;header.style.visibility=hidden?'hidden':'visible';header.inert=hidden;header.setAttribute('aria-hidden',String(hidden));
 }
-function paintMenu(state=null,contactProgressValue=null,galleryProgressValue=null){
+function paintMenu(state=null,contactProgress=null){
  const viewport=document.documentElement.clientWidth;
  const x=state?.x||panels.map(position);
  const page=state?.page??Number(document.body.dataset.page||0);
  const gallery=state?.gallery??window.portfolioGalleryOpen;
  const shift=state?.shift??desiredMenuShift(page,gallery);
  menuMask.style.setProperty('--menu-shift',shift+'px');
-
+ if(gallery){
+  menuMask.style.width=viewport+'px';
+  clipHeader(menu,0,0,viewport);clipHeader(darkMenu,0,viewport,viewport);
+  workMenuBackdrop.style.clipPath='inset(0 0 0 0)';
+  workMenuBackdrop.style.webkitClipPath='inset(0 0 0 0)';
+  return;
+ }
  const introEdge=baseRight[0]+x[0];
  const aboutEdge=baseRight[1]+x[1];
  const workEdge=baseRight[2]+x[2];
-
- let gp=galleryProgressValue;
- if(gp==null)gp=gallery?1:0;
- gp=Math.max(0,Math.min(1,gp));
-
- let cp=contactProgressValue;
+ const lightEnd=Math.max(0,Math.min(viewport,Math.max(introEdge,aboutEdge)));
+ let cp=contactProgress;
  if(cp==null)cp=page===3?1:0;
  cp=Math.max(0,Math.min(1,cp));
-
- // One global header. Opening Gallery does not switch it to a new state in
- // one frame: the WORK-coloured region expands continuously with the same tween.
- const naturalLightEnd=Math.max(0,Math.min(viewport,Math.max(introEdge,aboutEdge)));
- const lightEnd=naturalLightEnd*(1-gp);
- const naturalWorkRight=Math.max(lightEnd,Math.min(viewport,workEdge));
- const workRight=naturalWorkRight+(viewport-naturalWorkRight)*gp;
-
- // CONTACTS covers the header progressively from right to left.
+ // CONTACTS progressively masks the whole fixed header right -> left.
  const headerRight=viewport*(1-cp);
  menuMask.style.width=headerRight+'px';
- const visibleRight=Math.max(0,Math.min(headerRight,workRight));
-
+ const visibleRight=Math.max(0,Math.min(headerRight,workEdge));
  clipHeader(menu,0,Math.min(lightEnd,headerRight),viewport);
  clipHeader(darkMenu,lightEnd,visibleRight,viewport);
-
- // This is the matte WORK surface. It is compositor-clipped to the exact same
- // physical WORK region as the panel, so visually it travels with WORK into CONTACTS.
- // Keep the original V13 glass recipe; only its cut changes.
- const hasDarkRegion=visibleRight>lightEnd+.5;
- const overlap=hasDarkRegion?Math.min(26,workSpineWidth*.55||26):0;
- const bgLeft=Math.max(0,lightEnd-overlap);
- const bgRight=hasDarkRegion?Math.max(bgLeft,visibleRight):bgLeft;
+ // The frosted Work surface extends slightly under ABOUT's rounded edge so
+ // there can never be a transparent rectangular gap at the seam.
+ const overlap=Math.min(28,workSpineWidth*.6||28);
+ const bgLeft=Math.max(0,lightEnd-overlap),bgRight=Math.max(bgLeft,visibleRight);
  const rightInset=Math.max(0,viewport-bgRight);
  workMenuBackdrop.style.clipPath=`inset(0 ${rightInset}px 0 ${bgLeft}px)`;
  workMenuBackdrop.style.webkitClipPath=`inset(0 ${rightInset}px 0 ${bgLeft}px)`;
 }
+
+// Panel movement keeps the original visual geometry, but the header is sampled
+// from the SAME tween rather than running its own left/width transition.
 let motionFrame=0,motionDepth=0,motionFrom=null,motionFromPage=0,motionFromGallery=false;
-function galleryProgress(fromGallery,toGallery,k){
- if(fromGallery&&!toGallery)return 1-k;
- if(!fromGallery&&toGallery)return k;
- return toGallery?1:0;
-}
-function contactProgress(fromPage,toPage,k){
+function snapshot(){const page=Number(document.body.dataset.page||0),gallery=window.portfolioGalleryOpen;return {x:panels.map(position),page,gallery,shift:desiredMenuShift(page,gallery)};}
+function contactProgress(fromPage,toPage,k,fromGallery,toGallery){
+ if(fromGallery||toGallery)return 0;
  if(fromPage===3&&toPage!==3)return 1-k;
  if(fromPage!==3&&toPage===3)return k;
  return toPage===3?1:0;
 }
-function setMotion(state,cp,gp){
- panels.forEach((panel,i)=>panel.style.transform=`translate3d(${state.x[i]}px,0,0)`);
- paintMenu(state,cp,gp);
-}
+function setMotion(state,cp){panels.forEach((panel,i)=>panel.style.transform=`translate3d(${state.x[i]}px,0,0)`);paintMenu(state,cp);}
 function makeDeckEase(){const values=getComputedStyle(document.documentElement).getPropertyValue('--ease').match(/[.\d]+/g)?.map(Number)||[.22,.61,.36,1];const [x1,y1,x2,y2]=values;const curve=(v,a,b)=>3*(1-v)*(1-v)*v*a+3*(1-v)*v*v*b+v*v*v;return function deckEase(t){let low=0,high=1;for(let i=0;i<16;i++){const middle=(low+high)/2;if(curve(middle,x1,x2)<t)low=middle;else high=middle;}return curve((low+high)/2,y1,y2);};}
-window.beginDeckTransition=function(){
- if(motionDepth++>0)return;
- cancelAnimationFrame(motionFrame);
- motionFrom=snapshot();
- motionFromPage=motionFrom.page;
- motionFromGallery=motionFrom.gallery;
-};
+window.beginDeckTransition=function(){if(motionDepth++>0)return;cancelAnimationFrame(motionFrame);motionFrom=snapshot();motionFromPage=motionFrom.page;motionFromGallery=motionFrom.gallery;};
 window.endDeckTransition=function(){
- if(--motionDepth>0)return;
- motionDepth=0;
- if(!motionFrom)return;
- const from=motionFrom;
- motionFrom=null;
-
+ if(--motionDepth>0)return;motionDepth=0;if(!motionFrom)return;
+ const from=motionFrom;motionFrom=null;
  panels.forEach(p=>p.style.removeProperty('transform'));
  const to=snapshot();
-
- const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();
- const duration=(reduced.matches||window.portfolioRestoring)?0:parseFloat(raw)*(raw.endsWith('ms')?1:1000);
- const endCP=contactProgress(from.page,to.page,1);
- const endGP=galleryProgress(from.gallery,to.gallery,1);
-
- if(!duration){
-  setMotion(to,endCP,endGP);
-  panels.forEach(p=>p.style.removeProperty('transform'));
-  syncWorkAnchor();
-  return;
- }
-
+ const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim(),duration=(reduced.matches||window.portfolioRestoring)?0:parseFloat(raw)*(raw.endsWith('ms')?1:1000);
+ if(!duration){setMotion(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));panels.forEach(p=>p.style.removeProperty('transform'));return;}
  const started=performance.now(),deckEase=makeDeckEase();
- setMotion(from,contactProgress(from.page,to.page,0),galleryProgress(from.gallery,to.gallery,0));
-
+ setMotion(from,contactProgress(from.page,to.page,0,from.gallery,to.gallery));
  function tick(now){
   const t=Math.min(1,(now-started)/duration),k=deckEase(t);
-  const state={
-   x:from.x.map((x,i)=>x+(to.x[i]-x)*k),
-   page:to.page,
-   gallery:to.gallery,
-   shift:from.shift+(to.shift-from.shift)*k
-  };
-  setMotion(state,contactProgress(from.page,to.page,k),galleryProgress(from.gallery,to.gallery,k));
-  if(t<1)motionFrame=requestAnimationFrame(tick);
-  else{
-   motionFrame=0;
-   panels.forEach(p=>p.style.removeProperty('transform'));
-   syncWorkAnchor();
-   paintMenu(to,endCP,endGP);
-  }
+  const state={x:from.x.map((x,i)=>x+(to.x[i]-x)*k),page:to.page,gallery:to.gallery,shift:from.shift+(to.shift-from.shift)*k};
+  setMotion(state,contactProgress(from.page,to.page,k,from.gallery,to.gallery));
+  if(t<1)motionFrame=requestAnimationFrame(tick);else{motionFrame=0;panels.forEach(p=>p.style.removeProperty('transform'));syncWorkAnchor();paintMenu(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));}
  }
  motionFrame=requestAnimationFrame(tick);
 };

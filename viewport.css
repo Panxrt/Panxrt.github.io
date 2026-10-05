@@ -441,63 +441,15 @@ body[data-page='3'] .header-contact-mask .menu{opacity:1!important;visibility:vi
 
 
 /* ==========================================================
-   V15 — stable gallery geometry + original WORK glass
+   V16 — V13 PAGE/HEADER LOGIC PRESERVED
+   Only gallery geometry and the filter tray are changed below.
    ========================================================== */
 
-/* ONE global header: both text layers are pixel-identical and transparent.
-   The original WORK glass is rendered by .work-menu-backdrop only. */
-.header-contact-mask #menu,
-.header-contact-mask #menu-dark,
-.header-contact-mask #menu .menu-primary,
-.header-contact-mask #menu-dark .menu-primary{
-  background:transparent!important;
-  backdrop-filter:none!important;
-  -webkit-backdrop-filter:none!important;
-  box-shadow:none!important;
-}
-
-/* Restore the matte recipe that looked right before V14. Its visible bounds are
-   driven by the same WORK/contact tween in interaction.js. */
-.work-menu-backdrop{
-  display:block!important;
-  position:absolute!important;
-  left:0!important;
-  top:0!important;
-  width:100vw!important;
-  height:var(--header)!important;
-  z-index:0!important;
-  pointer-events:none!important;
-  background:#181818a6!important;
-  backdrop-filter:blur(20px) saturate(125%)!important;
-  -webkit-backdrop-filter:blur(20px) saturate(125%)!important;
-  box-shadow:none!important;
-}
-.header-contact-mask .menu-clip{z-index:1!important}
-.work-header-glass{display:none!important}
-
-/* Header geometry is fixed. Only PANXRT follows the accumulated folded rails;
-   RU / ABOUT / WORK / CONTACTS stay at one coordinate set. */
-.header-contact-mask .menu,
-.header-contact-mask #menu,
-.header-contact-mask #menu-dark{
-  left:0!important;
-  width:100vw!important;
-  right:auto!important;
-}
-.header-contact-mask .menu-primary{
-  width:100vw!important;
-  padding-left:var(--menu-inset)!important;
-  padding-right:var(--menu-inset)!important;
-}
-.header-contact-mask .menu-primary .identity{
-  transform:translate3d(var(--menu-shift,0px),0,0)!important;
-  will-change:transform;
-}
-.header-contact-mask .menu-primary .language-switch{margin-left:auto!important}
-.header-contact-mask .menu-primary nav{margin-left:0!important}
-
-/* FILTERS — the supplied reference: one full-width frosted row below the
-   unchanged main header. Active filter = pill; inactive filters = plain text. */
+/* ----------------------------------------------------------
+   FILTER TRAY
+   Full-width matte second row, as in the supplied reference.
+   The MAIN header itself is untouched.
+   ---------------------------------------------------------- */
 .header-contact-mask{
   height:calc(var(--header) + 64px)!important;
 }
@@ -516,24 +468,26 @@ body[data-page='3'] .header-contact-mask .menu{opacity:1!important;visibility:vi
 .header-contact-mask #menu-dark .gallery-filters{
   position:absolute!important;
   left:0!important;
+  right:auto!important;
   top:0!important;
   width:100vw!important;
   height:64px!important;
   min-height:64px!important;
+  box-sizing:border-box!important;
   display:flex!important;
   align-items:center!important;
   justify-content:flex-start!important;
-  gap:28px!important;
+  gap:30px!important;
   padding:0 max(var(--menu-inset),52px)!important;
   margin:0!important;
-  box-sizing:border-box!important;
   white-space:nowrap!important;
   overflow:hidden!important;
   color:var(--paper)!important;
-  background:#181818a6!important;
-  backdrop-filter:blur(20px) saturate(125%)!important;
-  -webkit-backdrop-filter:blur(20px) saturate(125%)!important;
-  box-shadow:none!important;
+  background:linear-gradient(135deg,#FAF4E60f,#7D6BA80d),rgba(40,39,43,.74)!important;
+  backdrop-filter:blur(44px) saturate(135%)!important;
+  -webkit-backdrop-filter:blur(44px) saturate(135%)!important;
+  box-shadow:inset 0 -1px 0 #FAF4E626!important;
+
   transform:translate3d(0,-100%,0)!important;
   opacity:0!important;
   visibility:hidden!important;
@@ -555,27 +509,27 @@ body[data-page='3'] .header-contact-mask .menu{opacity:1!important;visibility:vi
 }
 #menu-dark .gallery-filters .filter-label{display:none!important}
 #menu-dark .gallery-filters button,
-#menu-dark .gallery-filters button[aria-pressed=true],
-#menu-dark .gallery-filters button:last-child{
+#menu-dark .gallery-filters button:last-child,
+#menu-dark .gallery-filters button[aria-pressed=true]{
   flex:0 0 auto!important;
   width:auto!important;
   min-width:0!important;
-  height:38px!important;
+  height:40px!important;
   margin:0!important;
   padding:0!important;
   border:1px solid transparent!important;
-  border-radius:20px!important;
+  border-radius:22px!important;
   background:transparent!important;
   box-shadow:none!important;
   color:var(--paper)!important;
-  font:700 12px/1 'Antique Olive',Arial,sans-serif!important;
-  letter-spacing:.02em!important;
+  font:700 13px/1 'Antique Olive',Arial,sans-serif!important;
+  letter-spacing:.015em!important;
   opacity:.62!important;
   transition:opacity .22s ease,border-color .22s ease,background .22s ease,padding .22s ease!important;
 }
 #menu-dark .gallery-filters button[aria-pressed=true]{
-  padding:0 17px!important;
-  border-color:#FAF4E670!important;
+  padding:0 18px!important;
+  border-color:#FAF4E66f!important;
   background:#FAF4E607!important;
   opacity:1!important;
 }
@@ -585,16 +539,17 @@ body[data-page='3'] .header-contact-mask .menu{opacity:1!important;visibility:vi
   border-color:transparent!important;
 }
 #menu-dark .gallery-filters button[aria-pressed=true]:hover{
-  border-color:#FAF4E690!important;
-  background:#FAF4E60b!important;
+  border-color:#FAF4E68f!important;
+  background:#FAF4E60c!important;
 }
 
 /* ----------------------------------------------------------
-   CRITICAL: PREVIEW and FULL GALLERY have identical intrinsic
-   geometry and therefore identical scrollHeight.
-   There is NO padding/grid-width change on VIEW ALL WORK / BACK.
-   The old visual narrowing/lifting is now only a compositor transform.
+   GALLERY: identical intrinsic geometry in preview/full mode.
+   This prevents scrollHeight changes and the BACK jump.
+   The old "narrow/lift" impression is compositor-only.
    ---------------------------------------------------------- */
+
+/* Same actual box model in both modes. */
 .work .gallery-entry,
 .gallery-mode .work .gallery-entry,
 .gallery-closing .work .gallery-entry{
@@ -603,35 +558,38 @@ body[data-page='3'] .header-contact-mask .menu{opacity:1!important;visibility:vi
   padding-left:0!important;
   padding-right:0!important;
   padding-bottom:0!important;
+  will-change:transform;
+}
+
+/* Preview is only visually offset. Full gallery returns to its natural position.
+   Transform does NOT change scrollHeight or trigger mosaic repacking. */
+.work .gallery-entry{
   transform:translate3d(calc(2 * var(--rail)), -64px, 0);
   transition:transform var(--duration) var(--ease)!important;
-  will-change:transform;
 }
 .gallery-mode .work .gallery-entry{
   transform:translate3d(0,0,0)!important;
 }
 
-/* One immutable grid width/padding in both states. This prevents MosaicLayout's
-   ResizeObserver from repacking the cards during the transition. */
+/* Absolutely identical grid metrics in preview/full/closing. */
 .work .gallery-grid,
 .gallery-mode .work .gallery-grid,
 .gallery-closing .work .gallery-grid{
   padding-left:8px!important;
   padding-right:8px!important;
   padding-top:0!important;
+  padding-bottom:8px!important;
   transition:none!important;
   overflow-anchor:none!important;
 }
-
-/* Work's scrollable content keeps exactly the same height in both states. */
 .work .surface,
 .gallery-mode .work .surface,
 .gallery-closing .work .surface{
   overflow-anchor:none!important;
 }
 
-/* In preview the entry is visually lifted by 64px, so compensate the fixed
-   viewport overlays. Their screen position stays identical to the old preview. */
+/* Compensate overlay screen positions for preview's visual -64px transform.
+   These remain overlays and never participate in grid layout. */
 body:not(.gallery-mode) .work .gallery-entry:before,
 body:not(.gallery-mode) .work .gallery-entry:after{
   top:calc(var(--work-scroll,0px) + 64px)!important;
@@ -640,18 +598,12 @@ body:not(.gallery-mode) .work .gallery-launch{
   top:calc(var(--work-scroll,0px) + 56dvh + 64px)!important;
   left:calc(50% - var(--rail))!important;
 }
-.gallery-mode .work .gallery-launch{
-  left:50%!important;
-}
+.gallery-mode .work .gallery-launch{left:50%!important}
 
-/* Matte/CTA are visual layers only. They never influence document geometry. */
+/* Keep original matte/CTA look; only make the state change soft. */
 .work .gallery-entry:before,
 .work .gallery-entry:after{
   transition:--glass-melt 1s cubic-bezier(.22,.61,.36,1),opacity .85s ease!important;
-}
-.gallery-mode .work .gallery-entry:before,
-.gallery-mode .work .gallery-entry:after{
-  opacity:0!important;
 }
 .work .gallery-launch{
   transition:
@@ -675,19 +627,11 @@ body:not(.gallery-mode) .work .gallery-launch{
     visibility 0s!important;
 }
 
-/* Side UI remains transform-only. No card geometry changes when it returns. */
-.gallery-mode .panel.intro,
-.gallery-mode .panel.about{
-  transform:translate3d(-100%,0,0);
-}
-.gallery-mode .work .spine{
-  transform:translate3d(100%,0,0);
-}
-.work .spine{
-  transition:transform var(--duration) var(--ease)!important;
-}
+/* IMPORTANT:
+   Do NOT redefine .panel/.panel.passed transforms here.
+   V13's original deck/sidebar transitions remain the sole authority,
+   so INTRO/ABOUT/WORK spines glide exactly as before. */
 
-/* BACK slides rather than popping. */
 .gallery-back-floating{
   opacity:0;
   transition:
@@ -705,7 +649,6 @@ body:not(.gallery-mode) .work .gallery-launch{
     background .25s!important;
 }
 
-/* During project view the tray simply retracts; no layout participation. */
 body.project-mode .header-contact-mask #menu-dark .gallery-filters{
   transform:translate3d(0,-100%,0)!important;
   opacity:0!important;
@@ -719,6 +662,7 @@ body.project-mode .header-contact-mask #menu-dark .gallery-filters{
   .gallery-closing .work .gallery-grid{
     padding-left:6px!important;
     padding-right:6px!important;
+    padding-bottom:6px!important;
   }
   .header-contact-mask #menu-dark .gallery-filters{
     gap:18px!important;
@@ -728,14 +672,13 @@ body.project-mode .header-contact-mask #menu-dark .gallery-filters{
   }
   #menu-dark .gallery-filters button,
   #menu-dark .gallery-filters button[aria-pressed=true]{
-    height:34px!important;
+    height:36px!important;
     font-size:11px!important;
   }
-  #menu-dark .gallery-filters button[aria-pressed=true]{padding:0 13px!important}
+  #menu-dark .gallery-filters button[aria-pressed=true]{padding:0 14px!important}
 }
 @media(prefers-reduced-motion:reduce){
   .work .gallery-entry,
-  .work .spine,
   .header-contact-mask #menu-dark .gallery-filters,
   .gallery-back-floating{transition:none!important}
 }
