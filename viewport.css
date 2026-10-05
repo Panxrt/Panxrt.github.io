@@ -1121,3 +1121,69 @@ body.project-mode .work .work-header-glass{
     transition:none!important;
   }
 }
+
+
+/* ==========================================================
+   V23 — ONLY THREE TARGETED FIXES
+   1) WORK matte belongs physically to WORK and continues UNDER INTRO/ABOUT
+   2) no matte protrusion into the WORK side rail
+   3) restore frosted-glass look of filter submenu
+   Everything else inherits V22 unchanged.
+   ========================================================== */
+
+/* Disable the global/fixed matte backing completely.
+   This was the layer that could visibly protrude beside/over the folded rails. */
+.work-menu-backdrop{
+  display:none!important;
+}
+
+/* The fixed dark header is TEXT ONLY. */
+.header-contact-mask #menu-dark,
+.header-contact-mask #menu-dark .menu-primary{
+  background:transparent!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+}
+
+/* The matte strip now lives INSIDE the WORK panel.
+   INTRO (z4) and ABOUT (z3) sit above WORK (z2), so this strip naturally
+   continues underneath them without ever painting on top of them.
+   right:var(--rail) stops it before the WORK side button/spine. */
+.work .work-header-glass{
+  display:block!important;
+  visibility:visible!important;
+  position:absolute!important;
+  left:0!important;
+  right:var(--rail)!important;
+  top:0!important;
+  height:var(--header)!important;
+  z-index:50!important;
+  pointer-events:none!important;
+  background:rgba(24,24,24,.58)!important;
+  backdrop-filter:blur(20px) saturate(125%)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(125%)!important;
+  box-shadow:none!important;
+}
+
+/* Keep the same WORK-owned matte in every WORK state. */
+.gallery-mode .work .work-header-glass,
+.gallery-closing .work .work-header-glass,
+body.project-mode .work .work-header-glass{
+  display:block!important;
+  visibility:visible!important;
+}
+
+/* Restore the frosted-glass appearance of the FILTER submenu.
+   Keep V22's smoother clipping wrapper, but remove paint containment because
+   it can prevent backdrop sampling and make the tray look flat/opaque. */
+.header-contact-mask #menu-dark .filter-reveal{
+  contain:none!important;
+}
+
+.header-contact-mask #menu-dark .gallery-filters{
+  background:rgba(24,24,24,.58)!important;
+  backdrop-filter:blur(20px) saturate(125%)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(125%)!important;
+  box-shadow:none!important;
+}
