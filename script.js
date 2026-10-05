@@ -27,7 +27,9 @@ function go(index){
  history.replaceState(null,'','#'+names[active].toLowerCase());
  window.endDeckTransition?.();
  document.getElementById('announcement').textContent=names[active]+', section '+(active+1)+' of 4';
- lockedUntil=Date.now()+(reduced.matches?180:1300);wheelTotal=0;
+ const durationRaw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();
+ const durationMs=parseFloat(durationRaw)*(durationRaw.endsWith('ms')?1:1000)||0;
+ lockedUntil=Date.now()+(reduced.matches?180:durationMs+80);wheelTotal=0;
  if(old!==active){
   const focused=document.activeElement;
   if(surfaces[old].contains(focused)||(active===3&&menu.contains(focused))){

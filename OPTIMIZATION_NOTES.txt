@@ -15,3 +15,9 @@ Not changed:
 - Blur behavior.
 - Card hover reaction.
 - Gallery/video behavior.
+
+V4 smooth deck:
+- Removed forced layout reads from the menu mask on every animation frame; the mask now uses the already-known tween positions.
+- Work anchor correction now runs after the transition instead of on every frame.
+- Navigation lock now follows the real CSS transition duration (+80 ms) instead of a fixed 1300 ms, so wheel/touch navigation feels less stuck.
+- Visual easing, duration, blur, hover response and card effects are unchanged.
