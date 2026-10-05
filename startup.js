@@ -44,7 +44,7 @@
    // but it still has a hard cap and never waits for the whole portfolio.
    await wait(Math.max(0,(reduced?0:1250)-(performance.now()-started)));
    if(window.portfolioRestore)await window.portfolioRestore;
-   const target=document.querySelector('.intro-section-menu .wordmark'),from=word.getBoundingClientRect(),to=target?.getBoundingClientRect();
+   const target=document.querySelector('#menu .wordmark'),from=word.getBoundingClientRect(),to=target?.getBoundingClientRect();
    root.classList.add('site-arriving');root.classList.remove('site-booting');
    loader.style.display='flex';loader.style.pointerEvents='none';loader.style.background='transparent';
    if(!reduced)loader.animate([{backgroundColor:'#FAF4E6'},{backgroundColor:'transparent'}],{duration:800,easing:'cubic-bezier(.22,.61,.36,1)'});

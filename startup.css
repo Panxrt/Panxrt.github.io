@@ -4,9 +4,9 @@
 .loader-word span{opacity:0;animation:loader-letter .62s cubic-bezier(.22,.61,.36,1) forwards;animation-delay:calc(var(--letter,0)*75ms);will-change:transform,opacity,filter}
 .loader-word span:nth-child(2){--letter:1}.loader-word span:nth-child(3){--letter:2}.loader-word span:nth-child(4){--letter:3}.loader-word span:nth-child(5){--letter:4}.loader-word span:nth-child(6){--letter:5}
 @keyframes loader-letter{0%{opacity:0;transform:translateY(14px);filter:blur(5px)}70%{opacity:1;filter:blur(.4px)}100%{opacity:1;transform:none;filter:blur(0)}}
-.site-booting .deck{opacity:0;pointer-events:none}
+.site-booting .deck,.site-booting .header-contact-mask{opacity:0;pointer-events:none}
 .site-booting .surface.reveal :is(h1,h2,.edition,.skills,.about-lead,.tool-panel,.contact-list){animation-play-state:paused}
-.site-arriving .deck{animation:startup-reveal .7s ease both}
-.site-arriving .section-menu .wordmark{visibility:hidden!important}
+.site-arriving .deck,.site-arriving .header-contact-mask{animation:startup-reveal .7s ease both}
+.site-arriving .header-contact-mask .wordmark{visibility:hidden}
 @keyframes startup-reveal{from{opacity:0}to{opacity:1}}
-@media(prefers-reduced-motion:reduce){.loader-word span{animation:none;opacity:1}.site-arriving .deck{animation:none}}
+@media(prefers-reduced-motion:reduce){.loader-word span{animation:none;opacity:1}.site-arriving .deck,.site-arriving .header-contact-mask{animation:none}}

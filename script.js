@@ -16,11 +16,11 @@ function go(index){
  panels.forEach((panel,i)=>{
   panel.classList.toggle('passed',i<active);
   surfaces[i].inert=i!==active;
-  // WORK is a scrollable gallery. Keep its exact scroll position when the deck
-  // moves to ABOUT/CONTACTS so the gallery does not jump to the top behind the transition.
+  // WORK may be scrolled inside the expanded gallery. Preserve its exact position
+  // while navigating away and back; resetting it is what caused the visible jump.
   if(i===active && i!==2)surfaces[i].scrollTop=0;
-  // Reveal each section only on its first visit. Re-entering a section should
-  // never blank/rebuild its text while the visitor is navigating the deck.
+  // Reveal text only on the first visit. Returning to a section must not blank it
+  // and replay the entrance while the deck is already moving.
   if(i===active&&!surfaces[i].dataset.revealed){
    surfaces[i].dataset.revealed='1';
    requestAnimationFrame(()=>surfaces[i].classList.add('reveal'));
