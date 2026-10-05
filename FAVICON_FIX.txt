@@ -1,0 +1,4 @@
+Favicon fix:
+- SVG favicon now uses a cache-busting query (?v=5).
+- Added favicon.png fallback for browsers that cache/handle SVG favicons poorly.
+- All favicon paths are relative for GitHub Pages/custom-domain compatibility.

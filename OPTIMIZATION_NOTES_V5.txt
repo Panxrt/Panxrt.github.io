@@ -1,0 +1,19 @@
+MAX SMOOTH V5
+
+Main change:
+- Removed the JavaScript requestAnimationFrame loop that manually moved every full-screen panel every frame.
+- Restored native CSS/GPU transform transitions using the existing duration and easing.
+- Menu clipping now receives one destination update and is interpolated by CSS instead of being recalculated on every frame.
+- Pauses only decorative grain/marquee motion while a full-screen section transition is in progress, then resumes it automatically.
+- Added compositor hints (will-change/backface-visibility) to moving panels and existing reveal elements.
+
+Not changed:
+- Existing section duration/easing.
+- Card hover behavior.
+- Card blur/reaction to pointer.
+- Gallery layout.
+- The softened inactive-card brightness from the previous patch.
+- Content/data.
+
+Reason:
+The previous transition path explicitly disabled CSS panel transitions and animated all panel transforms in JS each requestAnimationFrame. That is much easier to drop frames on a complex page with masks/backdrop effects.

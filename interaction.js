@@ -45,53 +45,95 @@ function closeGallery(destination){
 document.querySelector('.gallery-launch').addEventListener('click',openGallery);
 document.querySelectorAll('.gallery-close').forEach(b=>b.addEventListener('click',()=>projectView?closeProject():closeGallery()));
 window.addEventListener('keydown',event=>{if(event.key==='Escape'&&window.portfolioGalleryOpen){if(projectView){event.stopImmediatePropagation();closeProject();}else if(!selected)closeGallery();}},true);
-// Measure the painted boundaries, not the target section index. Both text and blur
-// are clipped together, so a new theme cannot bleed ahead of its physical panel.
+// Compositor-first deck motion.
+// The old version animated every panel in JavaScript on every requestAnimationFrame.
+// That made the browser repaint/recalculate several layers each frame and produced
+// the visible ~20 FPS judder. Panels now move with native CSS transform transitions;
+// JavaScript only updates the menu masks once per navigation.
 function clipHeader(header,leftEdge,rightEdge,viewport=document.documentElement.clientWidth){
  const target=header.parentElement?.classList.contains('menu-clip')?header.parentElement:header;
- // menu-clip spans the viewport, so avoid getBoundingClientRect() here.
- // Reading layout after moving every panel forced a synchronous reflow on
- // every animation frame and was the main source of deck-transition jank.
  const left=Math.max(0,Math.min(viewport,leftEdge));
  const right=Math.max(left,Math.min(viewport,rightEdge));
  target.style.clip=`rect(0px, ${right}px, 9999px, ${left}px)`;
- const hidden=right-left<1;header.style.visibility=hidden?'hidden':'visible';header.inert=hidden;header.setAttribute('aria-hidden',String(hidden));
+ const hidden=right-left<1;
+ header.style.visibility=hidden?'hidden':'visible';
+ header.inert=hidden;
+ header.setAttribute('aria-hidden',String(hidden));
 }
-function paintMenu(state=null){
+function deckRail(){
+ const value=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--rail'));
+ return Number.isFinite(value)?value:0;
+}
+function paintMenu(){
  const viewport=document.documentElement.clientWidth;
- if(window.portfolioGalleryOpen){clipHeader(menu,0,0,viewport);clipHeader(darkMenu,0,viewport,viewport);}
- else{
-  let introEdge,aboutEdge,workEdge;
-  if(state){
-   // During the tween each panel's painted right edge is viewport + its
-   // translateX. This lets us keep the exact same visual mask without
-   // forcing layout reads on every requestAnimationFrame tick.
-   introEdge=viewport+state.x[0];
-   aboutEdge=viewport+state.x[1];
-   workEdge=viewport+state.x[2]-parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--rail'));
-  }else{
-   introEdge=panels[0].getBoundingClientRect().right;
-   aboutEdge=panels[1].getBoundingClientRect().right;
-   workEdge=panels[2].getBoundingClientRect().right-panels[2].querySelector('.spine').getBoundingClientRect().width;
-  }
-  const lightEnd=Math.max(introEdge,aboutEdge),visibleEnd=Math.max(lightEnd,workEdge);
-  clipHeader(menu,0,lightEnd,viewport);clipHeader(darkMenu,lightEnd,visibleEnd,viewport);
+ if(window.portfolioGalleryOpen){
+  clipHeader(menu,0,0,viewport);
+  clipHeader(darkMenu,0,viewport,viewport);
+  return;
+ }
+ const page=Number(document.body.dataset.page||0);
+ const rail=deckRail();
+ if(page<=1){
+  clipHeader(menu,0,viewport,viewport);
+  clipHeader(darkMenu,viewport,viewport,viewport);
+ }else if(page===2){
+  const lightEnd=Math.min(viewport,2*rail);
+  const darkEnd=Math.max(lightEnd,viewport-rail);
+  clipHeader(menu,0,lightEnd,viewport);
+  clipHeader(darkMenu,lightEnd,darkEnd,viewport);
+ }else{
+  const end=Math.min(viewport,2*rail);
+  clipHeader(menu,0,end,viewport);
+  clipHeader(darkMenu,end,end,viewport);
  }
 }
-// Panel transforms, header geometry and mask are committed in the same frame.
-// This avoids Safari compositing the section ahead of a JS-sampled clip-path.
-let motionFrame=0,motionDepth=0,motionFrom=null;
-const headers=[menu,darkMenu];
-const position=panel=>new DOMMatrixReadOnly(getComputedStyle(panel).transform).m41;
-function snapshot(){return {x:panels.map(position),left:parseFloat(getComputedStyle(menu).left)||0};}
-function setMotion(state){panels.forEach((panel,i)=>panel.style.transform=`translate3d(${state.x[i]}px,0,0)`);for(const header of headers){header.style.setProperty('left',state.left+'px','important');header.style.width=`calc(100vw - ${state.left}px)`;}paintMenu(state);}
-function makeDeckEase(){const values=getComputedStyle(document.documentElement).getPropertyValue('--ease').match(/[.\d]+/g)?.map(Number)||[.22,.61,.36,1];const [x1,y1,x2,y2]=values;const curve=(v,a,b)=>3*(1-v)*(1-v)*v*a+3*(1-v)*v*v*b+v*v*v;return function deckEase(t){let low=0,high=1;for(let i=0;i<16;i++){const middle=(low+high)/2;if(curve(middle,x1,x2)<t)low=middle;else high=middle;}return curve((low+high)/2,y1,y2);};}
-window.beginDeckTransition=function(){if(motionDepth++>0)return;cancelAnimationFrame(motionFrame);motionFrom=snapshot();};
-window.endDeckTransition=function(){if(--motionDepth>0)return;motionDepth=0;if(!motionFrom)return;const from=motionFrom;motionFrom=null;panels.forEach(p=>p.style.removeProperty('transform'));headers.forEach(h=>{h.style.removeProperty('left');h.style.removeProperty('width');});const to=snapshot();const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim(),duration=(reduced.matches||window.portfolioRestoring)?0:parseFloat(raw)*(raw.endsWith('ms')?1:1000);if(!duration){setMotion(to);return;}const started=performance.now(),deckEase=makeDeckEase();setMotion(from);function tick(now){const t=Math.min(1,(now-started)/duration),k=deckEase(t);setMotion({x:from.x.map((x,i)=>x+(to.x[i]-x)*k),left:from.left+(to.left-from.left)*k});if(t<1)motionFrame=requestAnimationFrame(tick);else{motionFrame=0;setMotion(to);syncWorkAnchor();paintMenu();}}motionFrame=requestAnimationFrame(tick);};
+function deckDuration(){
+ const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();
+ const value=parseFloat(raw)||0;
+ return reduced.matches||window.portfolioRestoring?0:value*(raw.endsWith('ms')?1:1000);
+}
+let motionDepth=0,motionTimer=0;
+function finishDeckMotion(){
+ clearTimeout(motionTimer);
+ motionTimer=0;
+ document.body.classList.remove('deck-moving');
+ syncWorkAnchor();
+ paintMenu();
+}
+window.beginDeckTransition=function(){
+ if(motionDepth++>0)return;
+ clearTimeout(motionTimer);
+ document.body.classList.add('deck-moving');
+};
+window.endDeckTransition=function(){
+ if(--motionDepth>0)return;
+ motionDepth=0;
+ // The destination classes/data-page have already been committed by go().
+ // Updating only the target mask here lets CSS interpolate it in sync with
+ // the GPU-composited panel transforms.
+ paintMenu();
+ const duration=deckDuration();
+ if(!duration){finishDeckMotion();return;}
+ motionTimer=setTimeout(finishDeckMotion,duration+50);
+};
 window.syncMenu=paintMenu;
-new MutationObserver(paintMenu).observe(document.body,{attributes:true,attributeFilter:['class','data-page']});
-function resizeDeck(){cancelAnimationFrame(motionFrame);motionFrame=0;panels.forEach(p=>p.style.removeProperty('transform'));headers.forEach(h=>{h.style.removeProperty('left');h.style.removeProperty('width');});paintMenu();}
-window.addEventListener('resize',resizeDeck);window.addEventListener('pageshow',paintMenu);document.addEventListener('visibilitychange',paintMenu);window.visualViewport?.addEventListener('resize',paintMenu);paintMenu();
+let menuPaintFrame=0;
+function scheduleMenuPaint(){
+ if(menuPaintFrame)return;
+ menuPaintFrame=requestAnimationFrame(()=>{menuPaintFrame=0;paintMenu();});
+}
+new MutationObserver(scheduleMenuPaint).observe(document.body,{attributes:true,attributeFilter:['class','data-page']});
+function resizeDeck(){
+ clearTimeout(motionTimer);
+ motionDepth=0;
+ document.body.classList.remove('deck-moving');
+ paintMenu();
+}
+window.addEventListener('resize',resizeDeck,{passive:true});
+window.addEventListener('pageshow',paintMenu);
+document.addEventListener('visibilitychange',paintMenu);
+window.visualViewport?.addEventListener('resize',scheduleMenuPaint,{passive:true});
+paintMenu();
 
 const returnScroll=sessionStorage.getItem('panxrt-gallery-return');
 if(returnScroll!==null){sessionStorage.removeItem('panxrt-gallery-return');go(2);openGallery();workSurface.scrollTop=Number(returnScroll)||0;}

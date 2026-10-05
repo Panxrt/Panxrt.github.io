@@ -360,3 +360,42 @@ body.project-mode .header-contact-mask .filter-reveal{pointer-events:none}
 .viewer-case-destination{position:relative;overflow:hidden;min-width:0;max-width:100%;margin:0}
 .viewer-case-destination .viewer-media-frame{border-radius:0}
 .viewer-case-sheet .case-block.viewer-case-destination{border-radius:0}
+
+
+/* V5 — compositor-first deck motion.
+   Keep the same timing/easing and visual design, but let the browser animate
+   transforms natively instead of moving every panel from JavaScript each frame. */
+.deck .panel{
+  transition:transform var(--duration) var(--ease)!important;
+  will-change:transform;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  transform-style:preserve-3d;
+}
+.deck .panel>.surface{
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+.menu-clip{
+  transition:clip var(--duration) var(--ease);
+  will-change:clip;
+}
+/* Avoid repainting decorative motion while a full-screen panel is moving.
+   The effects resume immediately after the transition. */
+body.deck-moving .deck .panel::before{animation-play-state:paused!important}
+body.deck-moving .brand-track{animation-play-state:paused!important}
+/* Promote reveal elements without changing their animation. */
+.surface.reveal h1,
+.surface.reveal h2,
+.surface.reveal .edition,
+.surface.reveal .skills,
+.surface.reveal .about-lead,
+.surface.reveal .tool-panel,
+.surface.reveal .contact-list{
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  will-change:transform,opacity;
+}
+@media(prefers-reduced-motion:reduce){
+  .deck .panel,.menu-clip{transition:none!important}
+}
