@@ -1,0 +1,16 @@
+V24 — ONLY TWO VISUAL FIXES on top of V23
+
+1) Filter submenu frosted glass
+- Added a stationary frosted backing on .filter-reveal.
+- Blur recipe: rgba(24,24,24,.50) + blur(28px) + saturate(135%).
+- The moving filter row is mostly transparent and keeps the existing motion/layout.
+- No menu/page/gallery geometry changed.
+
+2) Bottom gallery preview blur/gradient
+- Existing gradient and blur design is unchanged.
+- Only the opacity transition was replaced with a long compositor-friendly fade.
+- Open: fades out smoothly.
+- BACK: fades in smoothly with a short delay.
+- No grid/card/crop/scroll/menu changes.
+
+Everything else is inherited from V23 untouched.

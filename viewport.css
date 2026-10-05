@@ -1187,3 +1187,88 @@ body.project-mode .work .work-header-glass{
   -webkit-backdrop-filter:blur(20px) saturate(125%)!important;
   box-shadow:none!important;
 }
+
+
+/* ==========================================================
+   V24 — ONLY TWO VISUAL FIXES
+   1) real frosted-glass filter submenu
+   2) soft fade of bottom blur/gradient on gallery open/BACK
+   Everything else inherits V23 unchanged.
+   ========================================================== */
+
+/* --- 1. FILTER SUBMENU: stable frosted backing on the non-moving wrapper --- */
+/* The moving filter buttons stay on their existing transform animation.
+   The glass itself is rendered by the stationary wrapper, which gives
+   backdrop-filter a stable surface to sample and prevents the flat look. */
+.header-contact-mask #menu-dark .filter-reveal{
+  isolation:isolate;
+  overflow:hidden!important;
+}
+
+.header-contact-mask #menu-dark .filter-reveal::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:rgba(24,24,24,.50);
+  backdrop-filter:blur(28px) saturate(135%);
+  -webkit-backdrop-filter:blur(28px) saturate(135%);
+  box-shadow:inset 0 -1px 0 rgba(250,244,230,.10);
+  opacity:0;
+  transition:opacity .62s cubic-bezier(.22,.61,.36,1);
+}
+
+.gallery-opening.gallery-mode .header-contact-mask #menu-dark .filter-reveal::before,
+.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .filter-reveal::before{
+  opacity:1;
+}
+
+.gallery-closing .header-contact-mask #menu-dark .filter-reveal::before{
+  opacity:0;
+  transition:opacity .72s cubic-bezier(.22,.61,.36,1);
+}
+
+/* The moving submenu itself is now mostly transparent so the stationary
+   glass backing is what creates the blur. Visual button layout is unchanged. */
+.header-contact-mask #menu-dark .gallery-filters{
+  z-index:1!important;
+  background:rgba(24,24,24,.10)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+
+/* --- 2. BOTTOM PREVIEW BLUR/GRADIENT: opacity-only crossfade --- */
+/* Keep the existing blur/gradient exactly as designed; only change HOW it
+   appears/disappears, so there is no sudden dark/blur frame on BACK/open. */
+.work .gallery-entry:before,
+.work .gallery-entry:after{
+  opacity:1;
+  transition:opacity 1.00s cubic-bezier(.22,.61,.36,1)!important;
+  will-change:opacity;
+  transform:translateZ(0);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+
+.gallery-opening.gallery-mode .work .gallery-entry:before,
+.gallery-opening.gallery-mode .work .gallery-entry:after,
+.gallery-mode:not(.gallery-closing) .work .gallery-entry:before,
+.gallery-mode:not(.gallery-closing) .work .gallery-entry:after{
+  opacity:0!important;
+  transition:opacity .82s cubic-bezier(.22,.61,.36,1)!important;
+}
+
+.gallery-closing .work .gallery-entry:before,
+.gallery-closing .work .gallery-entry:after{
+  opacity:1!important;
+  transition:opacity 1.05s cubic-bezier(.22,.61,.36,1) .10s!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .header-contact-mask #menu-dark .filter-reveal::before,
+  .work .gallery-entry:before,
+  .work .gallery-entry:after{
+    transition:none!important;
+  }
+}
