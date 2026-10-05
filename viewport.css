@@ -500,3 +500,164 @@ body.gallery-leaving-deck .work .gallery-launch{
   transform:translate(-50%,-50%)!important;
   transition:none!important;
 }
+
+
+/* ==========================================================
+   V12 — panel-owned headers.
+   The top menu is now physically part of INTRO / ABOUT / WORK.
+   ABOUT naturally covers/reveals WORK; CONTACTS has no header.
+   ========================================================== */
+
+/* Old viewport-mask system is intentionally retired. */
+.header-contact-mask,.menu-clip,.stable-wordmark{display:none!important}
+
+/* A section header lives inside its panel and therefore shares the exact same
+   transform, rounded-edge coverage and reveal timing as that panel. */
+.panel>.section-menu{
+  position:absolute!important;
+  top:0!important;
+  left:0!important;
+  right:auto!important;
+  width:100vw!important;
+  min-width:100vw!important;
+  max-width:100vw!important;
+  height:var(--header)!important;
+  margin:0!important;
+  padding:0!important;
+  display:block!important;
+  overflow:visible!important;
+  z-index:70!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  transition:none!important;
+  background:transparent!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.panel>.section-menu .menu-primary{
+  position:relative!important;
+  width:100%!important;
+  height:var(--header)!important;
+  min-height:var(--header)!important;
+  max-height:var(--header)!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:18px!important;
+  box-sizing:border-box!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  padding-right:var(--menu-inset)!important;
+  transition:padding-left var(--duration) var(--ease)!important;
+}
+.intro>.section-menu .menu-primary{padding-left:var(--menu-inset)!important}
+.about>.section-menu .menu-primary{padding-left:calc(var(--rail) + var(--menu-inset))!important}
+.work>.section-menu .menu-primary{padding-left:calc(2*var(--rail) + var(--menu-inset))!important}
+
+/* The matte WORK header is a full rectangle under the folded ABOUT edge.
+   This removes the exposed rounded-corner gap highlighted in the screenshots. */
+.work>#menu-dark .menu-primary{
+  color:var(--paper)!important;
+  background:linear-gradient(135deg,#FAF4E60f,#7D6BA80a),rgba(40,39,43,.68)!important;
+  backdrop-filter:blur(36px) saturate(135%)!important;
+  -webkit-backdrop-filter:blur(36px) saturate(135%)!important;
+  box-shadow:none!important;
+}
+.intro>#menu,.about>#menu-about{color:var(--ink)!important}
+
+/* The header content is aligned for each folded state, but the matte surface
+   itself always extends underneath the previous panel(s). */
+.section-menu .menu-primary nav{margin-left:0!important}
+.section-menu .menu-primary .language-switch{margin-left:auto!important}
+
+/* Gallery expansion releases the two folded rails. Move only the CONTENT inset;
+   the WORK header itself never jumps or gets reconstructed. */
+.gallery-mode .work>#menu-dark .menu-primary{padding-left:var(--menu-inset)!important}
+
+/* Filter row belongs to the WORK menu and slides softly below it. */
+.work>#menu-dark .filter-reveal{
+  position:absolute!important;
+  top:var(--header)!important;
+  left:0!important;
+  width:100vw!important;
+  height:50px!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+  z-index:71!important;
+}
+.work>#menu-dark .gallery-filters{
+  position:absolute!important;
+  top:0!important;
+  left:0!important;
+  right:0!important;
+  display:flex!important;
+  align-items:center!important;
+  height:50px!important;
+  min-height:50px!important;
+  padding:8px var(--menu-inset) 12px!important;
+  gap:6px!important;
+  margin:0!important;
+  color:var(--paper)!important;
+  background:linear-gradient(135deg,#FAF4E60f,#7D6BA80d),rgba(40,39,43,.74)!important;
+  backdrop-filter:blur(44px) saturate(135%)!important;
+  -webkit-backdrop-filter:blur(44px) saturate(135%)!important;
+  transform:translateY(-100%)!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  transition:transform .55s cubic-bezier(.22,.61,.36,1),opacity .4s ease,visibility 0s .55s!important;
+  pointer-events:none!important;
+}
+.gallery-mode .work>#menu-dark .gallery-filters{
+  transform:translateY(0)!important;
+  visibility:visible!important;
+  opacity:1!important;
+  transition:transform .55s cubic-bezier(.22,.61,.36,1),opacity .4s ease,visibility 0s!important;
+  pointer-events:auto!important;
+}
+.project-mode .work>#menu-dark .gallery-filters{
+  transform:translateY(-100%)!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+/* No header exists in CONTACTS. WORK's header simply travels left with WORK and
+   is covered by the already-folded INTRO/ABOUT panels, exactly like the page. */
+.contact>.section-menu{display:none!important}
+
+/* BACK -> WORK: keep all geometry animated. V8/V11 disabled this transition,
+   which was the cause of the visible one-frame card jump. */
+.gallery-closing .work .gallery-entry{transition:padding-left var(--duration) var(--ease),padding-top .55s cubic-bezier(.2,.7,.3,1)!important}
+.gallery-closing .work .gallery-grid{transition:padding var(--duration) var(--ease)!important}
+
+/* Preserve the exact scroll coordinate and let the preview veil/button fade back
+   naturally instead of forcing an instantaneous state. */
+.work .surface,.work .gallery-grid{overflow-anchor:none}
+body.gallery-closing .work .gallery-entry:before,
+body.gallery-closing .work .gallery-entry:after{transition:--glass-melt 1s cubic-bezier(.22,.61,.36,1),opacity .8s ease!important}
+body.gallery-closing .work .gallery-launch{
+  visibility:visible!important;
+  transition:left var(--duration) var(--ease),opacity .5s ease,transform .65s cubic-bezier(.22,.61,.36,1)!important;
+}
+
+/* Opening/closing gallery controls: no abrupt visibility swap. */
+.gallery-back-floating{
+  transition:transform .6s cubic-bezier(.22,.61,.36,1),opacity .35s ease,visibility 0s .6s,background .25s!important;
+  opacity:0;
+}
+.gallery-mode .gallery-back-floating{
+  opacity:1;
+  transition:transform .6s cubic-bezier(.22,.61,.36,1),opacity .35s ease,visibility 0s,background .25s!important;
+}
+
+/* During loader handoff there must be exactly one PANXRT: the loader word.
+   Section wordmarks become visible only after the handoff finishes. */
+.site-arriving .section-menu .wordmark{visibility:hidden!important}
+
+/* The legacy body/page header rules must not alter panel-owned headers. */
+body[data-page='1'] .section-menu,
+body[data-page='2'] .section-menu,
+body[data-page='3'] .section-menu{
+  opacity:1!important;
+  visibility:visible!important;
+}

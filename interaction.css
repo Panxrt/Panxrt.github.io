@@ -14,7 +14,7 @@
 .gallery-mode .deck{transform:translate3d(-100%,0,0);pointer-events:none}
 .gallery-mode .gallery-frame{transform:translate3d(0,0,0);visibility:visible}
 .gallery-closing .gallery-frame{visibility:visible}
-.gallery-mode .menu{left:0!important}
+
 .intro-layout{grid-template-columns:minmax(0,1fr) max-content;gap:36px;align-items:end}
 .skills{display:flex;flex-direction:column;justify-content:space-between;height:clamp(145px,16vw,310px);margin:0;padding:0;align-self:end;font-size:clamp(15px,1.38vw,20px);line-height:1.25}
 .skills li{margin:0;white-space:nowrap}
@@ -53,11 +53,11 @@
 .gallery-mode .work .gallery-entry:after{opacity:0}
 .gallery-mode .work .gallery-launch{opacity:0;transform:translate(-50%,30px);pointer-events:none;visibility:hidden;transition:opacity .45s,transform .65s,visibility 0s .65s}
 .gallery-mode .work .gallery-card{pointer-events:auto}
-.gallery-mode .menu{left:calc(var(--active)*var(--rail))!important}
+
 .work .project-detail{z-index:40}
 @media(max-width:700px){.panel,.panel.intro{border-radius:0 13px 13px 0}.panel.contact{border-radius:0}.skills{align-self:flex-start}.intro-layout{align-items:flex-start}}
 /* Gallery header expands into the space released by the folded rails. */
-.gallery-mode .menu{left:0!important}
+
 .menu .gallery-close{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:10px 20px;border:1px solid #FAF4E680;border-radius:24px;background:var(--paper);color:var(--ink);font-size:13px;font-weight:700;letter-spacing:.03em;white-space:nowrap;transition:background .2s,box-shadow .2s}
 .menu .gallery-close:hover{background:#fff;box-shadow:0 0 0 4px #FAF4E61a}
 .menu .gallery-close:focus-visible{outline-color:var(--paper)}
@@ -69,7 +69,7 @@
 @media(max-width:420px){.menu .gallery-close{font-size:9px;padding:7px 8px;left:42%}.gallery-mode .menu nav{gap:6px;font-size:9px}}
 @media(prefers-reduced-motion:reduce){.project-view{transition:none}}
 /* Keep the header stationary while the final card masks its painted area. */
-body[data-page='3'] .menu{left:calc(2*var(--rail))}
+
 .work{--fg:#FAF4E6;color:#FAF4E6}
 .menu .gallery-close{background:transparent;color:var(--paper);border-color:var(--paper);box-shadow:none}
 .menu .gallery-close:hover{background:#FAF4E60d;box-shadow:none}

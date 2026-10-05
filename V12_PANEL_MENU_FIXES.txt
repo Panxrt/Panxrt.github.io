@@ -1,0 +1,37 @@
+V12 — panel-owned header architecture
+
+Why:
+The previous fixed/masked header accumulated several conflicting CSS/JS systems.
+That caused clipping, sudden full-screen appearance, a gap under ABOUT's rounded
+edge, duplicate loader logo and header jank.
+
+New behavior:
+- INTRO owns its light menu.
+- ABOUT owns its light menu.
+- WORK owns its frosted dark menu.
+- CONTACTS owns no menu.
+- Menus therefore move/reveal with the same physical panels as the page itself.
+- ABOUT naturally covers/reveals WORK's matte header.
+- WORK's matte background continues underneath ABOUT, so there is no exposed gap.
+- On WORK -> CONTACTS, the WORK menu leaves with WORK; CONTACTS stays menu-free.
+- No independent mask/header transform is used.
+
+Loader:
+- During the PANXRT loader -> header handoff, all section wordmarks stay hidden.
+- The loader word lands on the INTRO wordmark position; only then do section wordmarks appear.
+
+Gallery:
+- BACK preserves the exact scrollTop.
+- Removed the post-transition anchor correction that caused the final vertical jerk.
+- Preview/grid padding is allowed to animate again instead of snapping.
+- Frosted veil, View all work and BACK control use soft transitions.
+
+Preserved:
+- V10 smart media preload.
+- card sizes/grid/crops
+- blur/frosted look
+- hover behavior
+- section duration/easing
+- typography/colors
+- case layout
+- first-visit-only text reveal

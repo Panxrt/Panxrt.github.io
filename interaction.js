@@ -1,10 +1,30 @@
 'use strict';
-const darkMenu=menu.cloneNode(true);darkMenu.id='menu-dark';darkMenu.classList.add('menu-dark');menu.after(darkMenu);
-const deck=document.querySelector('.deck');
-const menuMask=document.createElement('div');menuMask.className='header-contact-mask';menu.before(menuMask);menuMask.append(menu,darkMenu);
-for(const header of [menu,darkMenu]){const clip=document.createElement('div');clip.className='menu-clip';header.before(clip);clip.append(header);const primary=document.createElement('div');primary.className='menu-primary';while(header.firstChild)primary.append(header.firstChild);header.append(primary);}
+// Each section owns its own header. This makes the header move/reveal with
+// the physical slide itself instead of relying on a separate viewport mask.
+const introMenu=menu;
+introMenu.classList.add('section-menu','intro-section-menu');
+
+const aboutMenu=menu.cloneNode(true);
+aboutMenu.id='menu-about';
+aboutMenu.classList.add('section-menu','about-section-menu');
+
+const darkMenu=menu.cloneNode(true);
+darkMenu.id='menu-dark';
+darkMenu.classList.add('menu-dark','section-menu','work-section-menu');
+
+for(const header of [introMenu,aboutMenu,darkMenu]){
+ const primary=document.createElement('div');
+ primary.className='menu-primary';
+ while(header.firstChild)primary.append(header.firstChild);
+ header.append(primary);
+}
+
+panels[0].append(introMenu);
+panels[1].append(aboutMenu);
+panels[2].append(darkMenu);
+
 // A single return control sits outside the section/header clipping layers.
-for(const header of [menu,darkMenu])header.querySelector('.gallery-close')?.remove();
+for(const header of [introMenu,aboutMenu,darkMenu])header.querySelector('.gallery-close')?.remove();
 const galleryBack=document.createElement('button');galleryBack.className='gallery-close gallery-back-floating';galleryBack.type='button';galleryBack.textContent='BACK';galleryBack.inert=true;galleryBack.setAttribute('aria-hidden','true');galleryBack.setAttribute('aria-label','Back to Work');document.body.append(galleryBack);
 const toTop=document.createElement('button');toTop.className='project-to-top';toTop.type='button';toTop.setAttribute('aria-label','Back to top of case');toTop.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>';document.body.append(toTop);
 toTop.onclick=()=>projectView?.scrollTo({top:0,behavior:reduced.matches?'auto':'smooth'});
@@ -14,10 +34,17 @@ const workSurface=surfaces[2];
 let workAnchor=null;
 let workScrollFrame=0;
 workSurface.addEventListener('scroll',()=>{if(workScrollFrame)return;workScrollFrame=requestAnimationFrame(()=>{workScrollFrame=0;workSurface.style.setProperty('--work-scroll',workSurface.scrollTop+'px');});},{passive:true});
-function syncWorkAnchor(){if(workAnchor?.node.isConnected){const delta=workAnchor.node.getBoundingClientRect().top-workSurface.getBoundingClientRect().top-workAnchor.offset;if(Math.abs(delta)>.25)workSurface.scrollTop+=delta;}workSurface.style.setProperty('--work-scroll',workSurface.scrollTop+'px');}
+function syncWorkAnchor(){workSurface.style.setProperty('--work-scroll',workSurface.scrollTop+'px');}
 
-darkMenu.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('click',()=>navigate(Number(button.dataset.go))));
-menu.addEventListener('click',event=>{const button=event.target.closest('[data-go]');if(button&&window.portfolioGalleryOpen){event.stopImmediatePropagation();navigate(Number(button.dataset.go));}},true);
+for(const header of [aboutMenu,darkMenu]){
+ header.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('click',()=>navigate(Number(button.dataset.go))));
+}
+for(const header of [introMenu,aboutMenu,darkMenu]){
+ header.addEventListener('click',event=>{
+  const button=event.target.closest('[data-go]');
+  if(button&&window.portfolioGalleryOpen){event.stopImmediatePropagation();navigate(Number(button.dataset.go));}
+ },true);
+}
 function navigate(index){if(window.portfolioGalleryOpen)closeGallery(index);else go(index);}
 function openGallery(event){
  event?.preventDefault();if(window.portfolioGalleryOpen||galleryReturning)return;
@@ -26,91 +53,106 @@ function openGallery(event){
  window.portfolioGalleryOpen=true;
  document.querySelectorAll('.gallery-close').forEach(b=>{b.inert=false;b.setAttribute('aria-hidden','false');});
  document.body.classList.remove('gallery-closing');document.body.classList.add('gallery-mode');
- window.endDeckTransition?.();window.syncMenu?.();document.dispatchEvent(new Event('gallery-mode-change'));workSurface.tabIndex=-1;workSurface.focus({preventScroll:true});
+ window.endDeckTransition?.();document.dispatchEvent(new Event('gallery-mode-change'));workSurface.tabIndex=-1;workSurface.focus({preventScroll:true});
 }
 function closeGallery(destination){
  if(galleryReturning||!window.portfolioGalleryOpen)return;
  galleryReturning=true;
  if(projectView)closeProject();
- const leavingDeck=destination!==undefined&&destination!==originState.index;
- if(leavingDeck){
-  document.body.classList.add('gallery-leaving-deck');
-  // When leaving WORK for ABOUT/CONTACTS, freeze the gallery at the exact
-  // scroll position the visitor reached. Do not anchor-correct it after the
-  // preview overlay returns; that correction was what snapped WORK to the top.
-  workAnchor=null;
-  workSurface.style.setProperty('--work-scroll',workSurface.scrollTop+'px');
- }else{
-  const visible=[...grid.children].filter(c=>!c.hidden),edge=workSurface.getBoundingClientRect().top+parseFloat(getComputedStyle(menu).height);
-  const anchor=visible.find(c=>c.getBoundingClientRect().bottom>edge);
-  workAnchor=anchor?{node:anchor,offset:anchor.getBoundingClientRect().top-workSurface.getBoundingClientRect().top}:null;
- }
+
+ const savedScroll=workSurface.scrollTop;
+ workAnchor=null;
+ workSurface.style.setProperty('--work-scroll',savedScroll+'px');
+
  window.beginDeckTransition?.();
- projectRequest++;closeDetail();window.portfolioGalleryOpen=false;
- syncWorkAnchor();
- document.body.classList.add('gallery-closing');document.body.classList.remove('gallery-mode');
+ projectRequest++;
+ closeDetail();
+ window.portfolioGalleryOpen=false;
+
+ document.body.classList.add('gallery-closing');
+ document.body.classList.remove('gallery-mode');
  document.querySelectorAll('.gallery-close').forEach(b=>{b.inert=true;b.setAttribute('aria-hidden','true');});
- if(leavingDeck)go(destination);
+
+ // Keep the exact gallery scroll position. Do not run an anchor correction after
+ // the grid changes back to preview mode: that correction caused the final jerk.
+ workSurface.scrollTop=savedScroll;
+ workSurface.style.setProperty('--work-scroll',savedScroll+'px');
+
+ if(destination!==undefined&&destination!==originState.index)go(destination);
  else originState.focus?.focus({preventScroll:true});
- window.endDeckTransition?.();window.syncMenu?.();document.dispatchEvent(new Event('gallery-mode-change'));
+
+ window.endDeckTransition?.();
+ document.dispatchEvent(new Event('gallery-mode-change'));
+
  const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();
  const duration=(reduced.matches?0:(parseFloat(raw)||0)*(raw.endsWith('ms')?1:1000));
- closingTimer=setTimeout(()=>{document.body.classList.remove('gallery-closing','gallery-leaving-deck');galleryReturning=false;window.syncMenu?.();},Math.max(duration+80,reduced.matches?0:550));
+ closingTimer=setTimeout(()=>{
+  document.body.classList.remove('gallery-closing');
+  galleryReturning=false;
+  workSurface.scrollTop=savedScroll;
+  workSurface.style.setProperty('--work-scroll',savedScroll+'px');
+ },Math.max(duration+80,reduced.matches?0:550));
 }
 document.querySelector('.gallery-launch').addEventListener('click',openGallery);
 document.querySelectorAll('.gallery-close').forEach(b=>b.addEventListener('click',()=>projectView?closeProject():closeGallery()));
 window.addEventListener('keydown',event=>{if(event.key==='Escape'&&window.portfolioGalleryOpen){if(projectView){event.stopImmediatePropagation();closeProject();}else if(!selected)closeGallery();}},true);
-// Measure the painted boundaries, not the target section index. Both text and blur
-// are clipped together, so a new theme cannot bleed ahead of its physical panel.
-function clipHeader(header,leftEdge,rightEdge,viewport=document.documentElement.clientWidth){
- const target=header.parentElement?.classList.contains('menu-clip')?header.parentElement:header;
- // menu-clip spans the viewport, so avoid getBoundingClientRect() here.
- // Reading layout after moving every panel forced a synchronous reflow on
- // every animation frame and was the main source of deck-transition jank.
- const left=Math.max(0,Math.min(viewport,leftEdge));
- const right=Math.max(left,Math.min(viewport,rightEdge));
- target.style.clip=`rect(0px, ${right}px, 9999px, ${left}px)`;
- const hidden=right-left<1;header.style.visibility=hidden?'hidden':'visible';header.inert=hidden;header.setAttribute('aria-hidden',String(hidden));
-}
-function paintMenu(state=null){
- const viewport=document.documentElement.clientWidth;
- if(window.portfolioGalleryOpen){
-  clipHeader(menu,0,0,viewport);
-  clipHeader(darkMenu,0,viewport,viewport);
-  return;
- }
- let introEdge,aboutEdge,workEdge;
- if(state){
-  introEdge=viewport+state.x[0];
-  aboutEdge=viewport+state.x[1];
-  workEdge=viewport+state.x[2]-state.rail;
- }else{
-  introEdge=panels[0].getBoundingClientRect().right;
-  aboutEdge=panels[1].getBoundingClientRect().right;
-  workEdge=panels[2].getBoundingClientRect().right-panels[2].querySelector('.spine').getBoundingClientRect().width;
- }
- const lightEnd=Math.max(0,Math.min(viewport,Math.max(introEdge,aboutEdge)));
- const page=Number(document.body.dataset.page||0);
- const visibleEnd=page===2?viewport:Math.max(lightEnd,Math.min(viewport,workEdge));
- clipHeader(menu,0,lightEnd,viewport);
- clipHeader(darkMenu,lightEnd,visibleEnd,viewport);
-}
-// Move only the panels. The header copies stay perfectly aligned to the viewport
-// and are revealed by clipping, so neither side can lag, jump, or be cropped.
+// The menus now live inside INTRO / ABOUT / WORK, so their reveal is created
+// by the same physical panels that reveal the page. No independent mask or
+// header-position tween is needed.
 let motionFrame=0,motionDepth=0,motionFrom=null;
 const position=panel=>new DOMMatrixReadOnly(getComputedStyle(panel).transform).m41;
-function deckRail(){const n=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--rail'));return Number.isFinite(n)?n:0;}
-function currentMenuShift(rail=deckRail()){return window.portfolioGalleryOpen?0:(active===3?2:active)*rail;}
-function snapshot(){const rail=deckRail();return {x:panels.map(position),rail,shift:currentMenuShift(rail)};}
-function setMotion(state){panels.forEach((panel,i)=>panel.style.transform=`translate3d(${state.x[i]}px,0,0)`);document.documentElement.style.setProperty('--menu-motion-offset',state.shift+'px');paintMenu(state);}
+function snapshot(){return {x:panels.map(position)};}
+function setMotion(state){panels.forEach((panel,i)=>panel.style.transform=`translate3d(${state.x[i]}px,0,0)`);}
 function makeDeckEase(){const values=getComputedStyle(document.documentElement).getPropertyValue('--ease').match(/[.\d]+/g)?.map(Number)||[.22,.61,.36,1];const [x1,y1,x2,y2]=values;const curve=(v,a,b)=>3*(1-v)*(1-v)*v*a+3*(1-v)*v*v*b+v*v*v;return function deckEase(t){let low=0,high=1;for(let i=0;i<16;i++){const middle=(low+high)/2;if(curve(middle,x1,x2)<t)low=middle;else high=middle;}return curve((low+high)/2,y1,y2);};}
-window.beginDeckTransition=function(){if(motionDepth++>0)return;cancelAnimationFrame(motionFrame);motionFrom=snapshot();};
-window.endDeckTransition=function(){if(--motionDepth>0)return;motionDepth=0;if(!motionFrom)return;const from=motionFrom;motionFrom=null;panels.forEach(p=>p.style.removeProperty('transform'));const to=snapshot();const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim(),duration=(reduced.matches||window.portfolioRestoring)?0:parseFloat(raw)*(raw.endsWith('ms')?1:1000);if(!duration){setMotion(to);panels.forEach(p=>p.style.removeProperty('transform'));document.documentElement.style.removeProperty('--menu-motion-offset');paintMenu();syncWorkAnchor();return;}const started=performance.now(),deckEase=makeDeckEase();setMotion(from);function tick(now){const t=Math.min(1,(now-started)/duration),k=deckEase(t);setMotion({x:from.x.map((x,i)=>x+(to.x[i]-x)*k),rail:to.rail,shift:from.shift+(to.shift-from.shift)*k});if(t<1)motionFrame=requestAnimationFrame(tick);else{motionFrame=0;panels.forEach(p=>p.style.removeProperty('transform'));document.documentElement.style.removeProperty('--menu-motion-offset');paintMenu();syncWorkAnchor();}}motionFrame=requestAnimationFrame(tick);};
-window.syncMenu=paintMenu;
-let menuPaintFrame=0;
-function scheduleMenuPaint(){if(menuPaintFrame)return;menuPaintFrame=requestAnimationFrame(()=>{menuPaintFrame=0;paintMenu();});}
-function resizeDeck(){cancelAnimationFrame(motionFrame);motionFrame=0;panels.forEach(p=>p.style.removeProperty('transform'));document.documentElement.style.removeProperty('--menu-motion-offset');paintMenu();}
-window.addEventListener('resize',resizeDeck,{passive:true});window.addEventListener('pageshow',paintMenu);document.addEventListener('visibilitychange',paintMenu);window.visualViewport?.addEventListener('resize',scheduleMenuPaint,{passive:true});paintMenu();
+window.beginDeckTransition=function(){
+ if(motionDepth++>0)return;
+ cancelAnimationFrame(motionFrame);
+ motionFrom=snapshot();
+};
+window.endDeckTransition=function(){
+ if(--motionDepth>0)return;
+ motionDepth=0;
+ if(!motionFrom)return;
+ const from=motionFrom;
+ motionFrom=null;
+
+ panels.forEach(p=>p.style.removeProperty('transform'));
+ const to=snapshot();
+
+ const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();
+ const duration=(reduced.matches||window.portfolioRestoring)?0:parseFloat(raw)*(raw.endsWith('ms')?1:1000);
+
+ if(!duration){
+  setMotion(to);
+  panels.forEach(p=>p.style.removeProperty('transform'));
+  syncWorkAnchor();
+  return;
+ }
+
+ const started=performance.now(),deckEase=makeDeckEase();
+ setMotion(from);
+ function tick(now){
+  const t=Math.min(1,(now-started)/duration),k=deckEase(t);
+  setMotion({x:from.x.map((x,i)=>x+(to.x[i]-x)*k)});
+  if(t<1)motionFrame=requestAnimationFrame(tick);
+  else{
+   motionFrame=0;
+   panels.forEach(p=>p.style.removeProperty('transform'));
+   syncWorkAnchor();
+  }
+ }
+ motionFrame=requestAnimationFrame(tick);
+};
+window.syncMenu=function(){};
+function resizeDeck(){
+ cancelAnimationFrame(motionFrame);
+ motionFrame=0;
+ panels.forEach(p=>p.style.removeProperty('transform'));
+ syncWorkAnchor();
+}
+window.addEventListener('resize',resizeDeck,{passive:true});
+window.addEventListener('pageshow',syncWorkAnchor);
+window.visualViewport?.addEventListener('resize',syncWorkAnchor,{passive:true});
 
 const returnScroll=sessionStorage.getItem('panxrt-gallery-return');
 if(returnScroll!==null){sessionStorage.removeItem('panxrt-gallery-return');go(2);openGallery();workSurface.scrollTop=Number(returnScroll)||0;}
