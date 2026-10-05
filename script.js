@@ -16,7 +16,9 @@ function go(index){
  panels.forEach((panel,i)=>{
   panel.classList.toggle('passed',i<active);
   surfaces[i].inert=i!==active;
-  surfaces[i].scrollTop=0;
+  // WORK is a scrollable gallery. Keep its exact scroll position when the deck
+  // moves to ABOUT/CONTACTS so the gallery does not jump to the top behind the transition.
+  if(i===active && i!==2)surfaces[i].scrollTop=0;
   surfaces[i].classList.remove('reveal');
   if(i===active)requestAnimationFrame(()=>surfaces[i].classList.add('reveal'));
   const spine=panel.querySelector('.spine');

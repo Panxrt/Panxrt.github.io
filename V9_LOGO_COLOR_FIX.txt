@@ -1,0 +1,14 @@
+V9 — progressive PANXRT color transition
+
+Built from stable V8.
+
+Changed only the PANXRT wordmark behavior:
+- The logo is still one persistent positioned control, so it does not jump.
+- It now contains two perfectly aligned visual layers: dark ink + paper.
+- The paper layer is clipped by the exact same moving light/dark boundary used by the menu.
+- As WORK crosses the wordmark, the letters recolor progressively at the physical boundary,
+  matching the old visual behavior without switching between two separate logo positions.
+- During section movement the wordmark position is driven by the same JS tween as the header,
+  removing independent CSS lag.
+
+All V8 stability fixes remain unchanged.

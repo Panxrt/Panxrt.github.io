@@ -6,6 +6,13 @@ for(const header of [menu,darkMenu]){const clip=document.createElement('div');cl
 // A single return control sits outside the section/header clipping layers.
 for(const header of [menu,darkMenu])header.querySelector('.gallery-close')?.remove();
 const galleryBack=document.createElement('button');galleryBack.className='gallery-close gallery-back-floating';galleryBack.type='button';galleryBack.textContent='BACK';galleryBack.inert=true;galleryBack.setAttribute('aria-hidden','true');galleryBack.setAttribute('aria-label','Back to Work');document.body.append(galleryBack);
+const stableWordmark=document.createElement('button');
+stableWordmark.className='stable-wordmark';
+stableWordmark.type='button';
+stableWordmark.innerHTML='<span class="stable-wordmark-ink">PANXRT</span><span class="stable-wordmark-paper" aria-hidden="true">PANXRT</span>';
+stableWordmark.setAttribute('aria-label','Panxrt — Intro');
+stableWordmark.addEventListener('click',()=>navigate(0));
+document.body.append(stableWordmark);
 const toTop=document.createElement('button');toTop.className='project-to-top';toTop.type='button';toTop.setAttribute('aria-label','Back to top of case');toTop.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>';document.body.append(toTop);
 toTop.onclick=()=>projectView?.scrollTo({top:0,behavior:reduced.matches?'auto':'smooth'});
 let originState=null,closingTimer=0,projectView=null,projectRequest=0,galleryReturning=false;
@@ -59,8 +66,11 @@ function clipHeader(header,leftEdge,rightEdge,viewport=document.documentElement.
 }
 function paintMenu(state=null){
  const viewport=document.documentElement.clientWidth;
- if(window.portfolioGalleryOpen){clipHeader(menu,0,0,viewport);clipHeader(darkMenu,0,viewport,viewport);}
- else{
+ const menuInset=parseFloat(getComputedStyle(document.body).getPropertyValue('--menu-inset'))||0;
+ if(window.portfolioGalleryOpen){
+  clipHeader(menu,0,0,viewport);clipHeader(darkMenu,0,viewport,viewport);
+  stableWordmark.style.setProperty('--wordmark-clip','0px');
+ }else{
   let introEdge,aboutEdge,workEdge;
   if(state){
    // During the tween each panel's painted right edge is viewport + its
@@ -74,8 +84,18 @@ function paintMenu(state=null){
    aboutEdge=panels[1].getBoundingClientRect().right;
    workEdge=panels[2].getBoundingClientRect().right-panels[2].querySelector('.spine').getBoundingClientRect().width;
   }
-  const lightEnd=Math.max(introEdge,aboutEdge),visibleEnd=Math.max(lightEnd,workEdge);
+  const lightEnd=Math.max(introEdge,aboutEdge);
+  // On WORK the dark header must cover the full viewport. Ending it at
+  // workEdge left a visible/unpainted strip equal to the right rail.
+  const page=Number(document.body.dataset.page||0);
+  const visibleEnd=page===2?viewport:Math.max(lightEnd,workEdge);
   clipHeader(menu,0,lightEnd,viewport);clipHeader(darkMenu,lightEnd,visibleEnd,viewport);
+  // Use the same physical theme boundary for PANXRT. The paper layer is
+  // revealed only on the part of the wordmark that has crossed into the
+  // dark WORK/menu region, recreating the old progressive recolor without
+  // swapping between two independently positioned logos.
+  const wordmarkLeft=(state?state.left:(parseFloat(getComputedStyle(menu).left)||0))+menuInset;
+  stableWordmark.style.setProperty('--wordmark-clip',Math.max(0,lightEnd-wordmarkLeft)+'px');
  }
 }
 // Panel transforms, header geometry and mask are committed in the same frame.
@@ -84,13 +104,25 @@ let motionFrame=0,motionDepth=0,motionFrom=null;
 const headers=[menu,darkMenu];
 const position=panel=>new DOMMatrixReadOnly(getComputedStyle(panel).transform).m41;
 function snapshot(){return {x:panels.map(position),left:parseFloat(getComputedStyle(menu).left)||0};}
-function setMotion(state){panels.forEach((panel,i)=>panel.style.transform=`translate3d(${state.x[i]}px,0,0)`);for(const header of headers){header.style.setProperty('left',state.left+'px','important');header.style.width=`calc(100vw - ${state.left}px)`;}paintMenu(state);}
+function setMotion(state){
+ panels.forEach((panel,i)=>panel.style.transform=`translate3d(${state.x[i]}px,0,0)`);
+ for(const header of headers){header.style.setProperty('left',state.left+'px','important');header.style.width=`calc(100vw - ${state.left}px)`;}
+ const inset=parseFloat(getComputedStyle(document.body).getPropertyValue('--menu-inset'))||0;
+ stableWordmark.style.left=(state.left+inset)+'px';
+ paintMenu(state);
+}
 function makeDeckEase(){const values=getComputedStyle(document.documentElement).getPropertyValue('--ease').match(/[.\d]+/g)?.map(Number)||[.22,.61,.36,1];const [x1,y1,x2,y2]=values;const curve=(v,a,b)=>3*(1-v)*(1-v)*v*a+3*(1-v)*v*v*b+v*v*v;return function deckEase(t){let low=0,high=1;for(let i=0;i<16;i++){const middle=(low+high)/2;if(curve(middle,x1,x2)<t)low=middle;else high=middle;}return curve((low+high)/2,y1,y2);};}
-window.beginDeckTransition=function(){if(motionDepth++>0)return;cancelAnimationFrame(motionFrame);document.body.classList.add('deck-moving');motionFrom=snapshot();};
-window.endDeckTransition=function(){if(--motionDepth>0)return;motionDepth=0;if(!motionFrom){document.body.classList.remove('deck-moving');return;}const from=motionFrom;motionFrom=null;panels.forEach(p=>p.style.removeProperty('transform'));headers.forEach(h=>{h.style.removeProperty('left');h.style.removeProperty('width');});const to=snapshot();const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim(),duration=(reduced.matches||window.portfolioRestoring)?0:parseFloat(raw)*(raw.endsWith('ms')?1:1000);if(!duration){setMotion(to);document.body.classList.remove('deck-moving');return;}const started=performance.now(),deckEase=makeDeckEase();setMotion(from);function tick(now){const t=Math.min(1,(now-started)/duration),k=deckEase(t);setMotion({x:from.x.map((x,i)=>x+(to.x[i]-x)*k),left:from.left+(to.left-from.left)*k});if(t<1)motionFrame=requestAnimationFrame(tick);else{motionFrame=0;setMotion(to);syncWorkAnchor();paintMenu();document.body.classList.remove('deck-moving');}}motionFrame=requestAnimationFrame(tick);};
+window.beginDeckTransition=function(){
+ if(motionDepth++>0)return;
+ cancelAnimationFrame(motionFrame);
+ motionFrom=snapshot();
+ const inset=parseFloat(getComputedStyle(document.body).getPropertyValue('--menu-inset'))||0;
+ stableWordmark.style.left=(motionFrom.left+inset)+'px';
+};
+window.endDeckTransition=function(){if(--motionDepth>0)return;motionDepth=0;if(!motionFrom)return;const from=motionFrom;motionFrom=null;panels.forEach(p=>p.style.removeProperty('transform'));headers.forEach(h=>{h.style.removeProperty('left');h.style.removeProperty('width');});const to=snapshot();const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim(),duration=(reduced.matches||window.portfolioRestoring)?0:parseFloat(raw)*(raw.endsWith('ms')?1:1000);if(!duration){setMotion(to);return;}const started=performance.now(),deckEase=makeDeckEase();setMotion(from);function tick(now){const t=Math.min(1,(now-started)/duration),k=deckEase(t);setMotion({x:from.x.map((x,i)=>x+(to.x[i]-x)*k),left:from.left+(to.left-from.left)*k});if(t<1)motionFrame=requestAnimationFrame(tick);else{motionFrame=0;setMotion(to);syncWorkAnchor();paintMenu();}}motionFrame=requestAnimationFrame(tick);};
 window.syncMenu=paintMenu;
 new MutationObserver(paintMenu).observe(document.body,{attributes:true,attributeFilter:['class','data-page']});
-function resizeDeck(){cancelAnimationFrame(motionFrame);motionFrame=0;document.body.classList.remove('deck-moving');panels.forEach(p=>p.style.removeProperty('transform'));headers.forEach(h=>{h.style.removeProperty('left');h.style.removeProperty('width');});paintMenu();}
+function resizeDeck(){cancelAnimationFrame(motionFrame);motionFrame=0;panels.forEach(p=>p.style.removeProperty('transform'));headers.forEach(h=>{h.style.removeProperty('left');h.style.removeProperty('width');});stableWordmark.style.removeProperty('left');paintMenu();}
 window.addEventListener('resize',resizeDeck);window.addEventListener('pageshow',paintMenu);document.addEventListener('visibilitychange',paintMenu);window.visualViewport?.addEventListener('resize',paintMenu);paintMenu();
 
 const returnScroll=sessionStorage.getItem('panxrt-gallery-return');
@@ -114,7 +146,13 @@ document.getElementById('case-link').addEventListener('click',async event=>{
   if(!content)throw new Error('Project unavailable');
   if(request!==projectRequest||!window.portfolioGalleryOpen)return;
   projectView=document.createElement('section');projectView.className='project-view';projectView.dataset.workId=link.dataset.workId||'';projectView.setAttribute('aria-label',content.querySelector('h1')?.textContent||'Project');projectView.tabIndex=-1;
-  projectView.append(work?content:document.importNode(content,true));projectView.classList.add('is-preparing');document.body.append(projectView);document.body.classList.add('project-mode');workSurface.inert=true;document.dispatchEvent(new Event('project-mode-change'));requestAnimationFrame(()=>requestAnimationFrame(()=>{if(projectView)projectView.classList.remove('is-preparing');}));
+  projectView.append(work?content:document.importNode(content,true));
+  projectView.classList.add('is-preparing');
+  document.body.append(projectView);
+  document.body.classList.add('project-mode');
+  workSurface.inert=true;
+  document.dispatchEvent(new Event('project-mode-change'));
+  requestAnimationFrame(()=>requestAnimationFrame(()=>projectView?.classList.remove('is-preparing')));
   projectView.addEventListener('scroll',()=>toTop.classList.toggle('is-visible',projectView.scrollTop>240),{passive:true});
   projectView.querySelector('.case-back')?.addEventListener('click',e=>{e.preventDefault();closeProject();});
   document.querySelectorAll('.gallery-close').forEach(b=>{b.textContent='BACK';b.setAttribute('aria-label','Close project and return to gallery');});

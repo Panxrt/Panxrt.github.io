@@ -62,7 +62,7 @@
 .menu .gallery-close:hover{background:#fff;box-shadow:0 0 0 4px #FAF4E61a}
 .menu .gallery-close:focus-visible{outline-color:var(--paper)}
 .gallery-mode .work .gallery-grid{padding-left:8px;padding-right:8px}
-.project-view{position:fixed;inset:0;z-index:60;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;background:var(--ink);color:var(--paper);opacity:1;transition:opacity .24s ease;transform:translateZ(0);backface-visibility:hidden}
+.project-view{position:fixed;inset:0;z-index:60;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;background:var(--ink);color:var(--paper);opacity:1;transition:opacity .22s ease;transform:translateZ(0);backface-visibility:hidden}
 .project-view .case-main{padding-top:calc(var(--header) + 65px)}
 .project-view.is-preparing{opacity:0;pointer-events:none}
 @media(max-width:700px){.gallery-mode .work .gallery-grid{padding-left:6px;padding-right:6px}.menu .gallery-close{font-size:10px;padding:8px 10px;left:44%}.gallery-mode .menu nav{gap:8px;font-size:10px}.project-view .case-main{padding-top:110px}}

@@ -1,0 +1,36 @@
+V8 — stability-first build
+
+Base:
+- Built from V4 (the last visually stable deck/menu build), not from V6/V7.
+
+Fixed:
+1. WORK -> ABOUT / CONTACTS:
+   - WORK scroll position is no longer reset to 0 while the section slides away.
+   - --work-scroll therefore remains aligned with the actual scroll position.
+   - The frosted preview and View all work stay pinned to the place where you stopped scrolling.
+
+2. Header/menu:
+   - On WORK the dark menu now paints to the full right edge (no missing right strip).
+   - One persistent PANXRT wordmark is used on desktop and mobile, so it no longer
+     swaps between clipped light/dark menu copies and jumps.
+   - The original two menus still control theme/background/navigation, so the visual
+     design is preserved.
+
+3. Panel seams:
+   - Folded spines overlap by 1px to hide fractional transform seams.
+   - WORK spine stays above gallery media so artwork cannot peek through the rail.
+
+4. Cases:
+   - Heavy case view is laid out first and then fades in.
+   - Removed the translated full-screen entry motion that could show a torn/jumping frame.
+
+5. Favicon:
+   - Inline SVG + favicon.svg + favicon.png + favicon.ico, all cache-busted.
+
+Preserved:
+- Existing deck transition timing/easing.
+- Existing gallery blur/matte effects.
+- View all work behavior.
+- Card blur and pointer hover reaction.
+- Softened inactive-card brightness (.96).
+- No V6/V7 rule that disables backdrop-filter during page transitions.

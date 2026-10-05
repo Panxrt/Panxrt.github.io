@@ -1,0 +1,24 @@
+V10 — smart loading / no visual redesign
+
+What changed:
+- Loader minimum display is ~1.25s (hard cap ~3.2s); its PANXRT entrance is smoother.
+- While the loader is visible, the browser prepares the first 10 WORK cards.
+- First images are requested eagerly and decoded before/just after reveal.
+- First few videos are allowed to preload in the background, but the loader never waits for full video downloads.
+- As the visitor scrolls WORK, media roughly 1.5 screens ahead is prepared automatically.
+- Videos farther down stay metadata/idle until they are approaching the viewport.
+- Existing video playback cap / pause-offscreen behavior remains active.
+
+Explicitly NOT changed:
+- card sizes
+- mosaic/grid layout
+- image/video crop or focal point
+- blur / frosted effects
+- hover behavior
+- section animations / timing
+- captions
+- colors
+- typography
+- case layout
+
+This is a loading-strategy layer only.
