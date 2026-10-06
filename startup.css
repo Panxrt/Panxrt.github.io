@@ -29,3 +29,39 @@
 .site-arriving .surface.reveal :is(h1,h2,.edition,.skills,.about-lead,.tool-panel,.contact-list){
   animation-play-state:paused!important;
 }
+
+
+/* ==========================================================
+   V40 — INTRO UI REVEAL ONLY
+   PANXRT keeps its existing handoff. Secondary menu controls and
+   the brand ribbon fade in with the same calm timing as page text.
+   ========================================================== */
+
+.site-arriving .header-contact-mask .menu-primary > :not(.identity),
+.site-arriving #brand-ribbon{
+  opacity:0!important;
+}
+
+.site-ui-reveal .header-contact-mask .menu-primary > :not(.identity){
+  animation:startup-ui-soft-reveal 1s ease .24s both;
+}
+
+.site-ui-reveal #brand-ribbon{
+  animation:startup-ui-soft-reveal 1s ease .34s both;
+}
+
+@keyframes startup-ui-soft-reveal{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .site-arriving .header-contact-mask .menu-primary > :not(.identity),
+  .site-arriving #brand-ribbon{
+    opacity:1!important;
+  }
+  .site-ui-reveal .header-contact-mask .menu-primary > :not(.identity),
+  .site-ui-reveal #brand-ribbon{
+    animation:none!important;
+  }
+}

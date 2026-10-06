@@ -1,1 +1,1412 @@
-{"revision":116,"brands":[{"id":"sber","name":"СБЕР","src":"/brand-sber.svg"},{"id":"petshop","name":"PETSHOP.RU","src":"/brand-petshop.svg"},{"id":"tele2","name":"TELE2","src":"/brand-tele2.svg"},{"id":"organix","name":"ORGANIX","src":"/brand-organix.svg"},{"id":"a52d28c3-2ba0-4c47-9492-e5c5db8ea66c","name":"VOZOVOZ","src":"/ea61d2bc-9f08-432f-8079-8effbde1bdaf.png"},{"id":"7fa7fff3-6dc2-4f12-af8e-fbd2ffd03578","name":"Новый бренд","src":"/75a2fa91-39ac-4710-927e-0343ca1c4448.png"},{"id":"f4c964bd-159f-4712-ab37-00e353275044","name":"Новый бренд","src":"/b9536517-869f-4323-82d7-806b4867d13d.png"},{"id":"281b0ac6-ccb1-4795-a1c6-6b9ca30e8f0a","name":"Новый бренд","src":"/40acc72e-bf24-4eac-9d54-d7dd13dd1a25.png"}],"works":[{"id":"a44443c1-3b46-4db1-b842-030cc3258ff3","title":"Tinkoff","titleRu":"Tinkoff","type":"","typeRu":"","description":"Visual Communication","descriptionRu":"Visual Communication","body":"","bodyRu":"","src":"/84c6fc71-0fc2-40c6-9c1b-f60d9d982524.png","mediaType":"image","projectMedia":[],"width":1,"height":1,"showFullProject":false,"categoryIds":["41d541f5-6f1d-49a5-a68f-5d7feaddfd24"]},{"id":"01","title":"Panda Digital  ","titleRu":"Panda Digital  ","type":"","typeRu":"","description":"Mascot Animation","descriptionRu":"Mascot Animation","body":"The project brief, approach and outcome will be added here.","bodyRu":"Здесь появятся задача, решение и результат проекта.","src":"/66eb196f-c950-486e-aff7-aabc837736b9.mp4","mediaType":"video","width":2,"height":2,"cardW":542.6667022705078,"cardH":542.6667022705078,"mediaFit":"contain","categoryIds":["2f4fab15-bf57-40ca-a5e6-e8927b770198"],"showFullProject":false},{"id":"7069971c-bfb1-43e0-a272-0eea43161aef","title":"Drutex","titleRu":"Drutex","type":"","typeRu":"","description":"Art gallery poster ","descriptionRu":"Art gallery poster ","body":"","bodyRu":"","src":"/90b10be6-7f19-40c2-8e45-d690c0b5af70.jpg","mediaType":"image","projectMedia":[],"width":1,"height":1,"showFullProject":false,"categoryIds":["5d1f5a1f-c432-4b12-a062-ba7ddda3f24e"]},{"id":"02","title":"Citrus party","titleRu":"Citrus party","type":"","typeRu":"","description":"Brand poster project ","descriptionRu":"Brand poster project ","body":"The project brief, approach and outcome will be added here.","bodyRu":"Здесь появятся задача, решение и результат проекта.","src":"/7c121f46-63ee-4b37-933f-d76312be4913.png","mediaType":"image","width":3,"height":1,"cardW":669.8901518214388,"cardH":669.8901518214388,"blocks":[{"id":"822a2ba9-3d9a-40b8-8e68-3e3f07424911","kind":"image","width":12,"place":"auto","ratio":"16/9","fit":"contain","text":"","textRu":"","src":"/7c121f46-63ee-4b37-933f-d76312be4913.png","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":242.85454222180925,"y":30.701212216417844,"w":714.2909155563815,"h":714.2909155563815},"rotation":0,"mediaMode":"native"},{"id":"584e267b-87e5-4475-97e5-9cb398858346","kind":"text","width":5,"place":"auto","ratio":"auto","fit":"contain","text":"Раз раз раз проверка","textRu":"Раз раз раз проверка","src":"","fontSize":40,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":26.07395945004742,"y":855.7805674163139,"w":491.7646976457755,"h":52.94117508462569}},{"id":"c60fe3de-0c4f-4bb4-9de4-7d940a02977a","kind":"text","width":7,"place":"auto","ratio":"auto","fit":"contain","text":"мяу мяу мяу пкпокшопшкп","textRu":"мяу мяу мяу пкпокшопшкп","src":"","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":26.07395945004742,"y":945.0142326762046,"w":487.7132111252223,"h":104.11706866851556}}],"resizeMode":"proportional","mediaFit":"contain","guides":[],"caseLayout":"free","mediaZoom":100,"focalX":50,"focalY":50,"categoryIds":["41d541f5-6f1d-49a5-a68f-5d7feaddfd24"],"showFullProject":false},{"id":"4bd29bde-a412-4f7f-96e0-e7b3939ef660","title":"AI dream girl","titleRu":"AI dream girl","type":"","typeRu":"","description":"AI Pilates Campaign","descriptionRu":"AI Pilates Campaign","body":"","bodyRu":"","src":"/4be429e0-5aad-4585-84f9-832f2f28100d.mp4","mediaType":"video","projectMedia":[],"width":1,"height":1,"showFullProject":false,"categoryIds":["2f4fab15-bf57-40ca-a5e6-e8927b770198"]},{"id":"14f4d9cb-b75e-4415-92cc-86ec79a277a4","title":"The Shining","titleRu":"The Shining","type":"","typeRu":"","description":"Animated Title Sequence","descriptionRu":"Animated Title Sequence","body":"","bodyRu":"","src":"/cc8467c7-af22-428e-921d-8c97c83da2b2.mp4","mediaType":"video","projectMedia":[],"width":1,"height":1,"cardW":306,"cardH":176.40189873417722,"mediaFit":"contain","showFullProject":false,"categoryIds":["2f4fab15-bf57-40ca-a5e6-e8927b770198"]},{"id":"9a8f2a74-6592-4f18-95b0-0494ff552e7e","title":"Nero Gold","titleRu":"Nero Gold","type":"","typeRu":"","description":"Product Motion","descriptionRu":"Product Motion","body":"","bodyRu":"","src":"/4ccf694d-9ace-48fa-9691-aed6356d4fbb.mp4","mediaType":"video","projectMedia":[],"width":1,"height":1,"cardW":600,"cardH":337.5,"mediaFit":"contain","categoryIds":["2f4fab15-bf57-40ca-a5e6-e8927b770198","41d541f5-6f1d-49a5-a68f-5d7feaddfd24"]},{"id":"09","title":"Organix – product card for marketplace","titleRu":"Organix – product card for marketplace","type":"","typeRu":"","description":"Visual system for pet product cards","descriptionRu":"Visual system for pet product cards","body":"The project brief, approach and outcome will be added here.","bodyRu":"Здесь появятся задача, решение и результат проекта.","src":"/4f3e56ce-4f26-4c89-b46f-73b5666f4182.png","mediaType":"image","width":1,"height":1,"cardW":600,"cardH":451.68081494057725,"mediaFit":"contain","showFullProject":true,"blocks":[{"id":"1c982735-7281-4d98-971f-3f0be0aad318","kind":"image","width":12,"place":"auto","ratio":"16/9","fit":"contain","text":"","textRu":"","src":"/4f3e56ce-4f26-4c89-b46f-73b5666f4182.png","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":0,"w":1200,"h":903.3616298811545},"rotation":0,"mediaMode":"native"},{"id":"dee64f84-53c4-4a25-8404-eb2cf5e6353a","kind":"image","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/6342b475-7839-4efa-b42c-d7a4878fd57e.png","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":903.3616298811545,"w":1200,"h":654.434250764526},"rotation":0,"mediaMode":"native"},{"id":"532f2ab8-ff06-47ee-91b3-ddbb09ca2ed2","kind":"video","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/bc76193c-438d-499d-b5ee-8aa35cf76734.mp4","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":1557.7958806456804,"w":1200,"h":691.7721518987341},"rotation":0,"mediaMode":"native"},{"id":"2c1acda8-f288-4503-b799-1934279e2644","kind":"video","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/60b7a9fe-7294-4570-904d-8dc69af05ee2.mp4","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":2249.5680325444146,"w":1200,"h":800},"rotation":0,"mediaMode":"native"},{"id":"99b4adea-b579-4512-8141-44f911e2331a","kind":"image","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/ef6f8127-f648-4207-880f-d7df98751c77.png","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":3049.5680325444146,"w":1200,"h":910.2886247877759},"rotation":0,"mediaMode":"native"},{"id":"ac423136-8f6b-4ec7-8ecb-9f00ef37fe56","kind":"image","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/e16e9680-6c6b-4785-bcf6-fa6402f6e2c5.png","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":3959.8566573321905,"w":1200,"h":1065.4142145767314},"rotation":0,"mediaMode":"native"},{"id":"0295f941-463c-41e5-b552-2202dbc0e24f","kind":"image","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/557b64c0-ccdd-47b3-a442-30c9a704fb97.png","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":5025.270871908922,"w":1200,"h":817.0940170940172},"rotation":0,"mediaMode":"native"},{"id":"674901d3-c3ed-4041-806a-209f602e3cd3","kind":"video","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/955f4c06-bbeb-45d2-9a5b-a7e7aa93d969.mp4","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":5866.36488900294,"w":1200,"h":993.3333333333333},"rotation":0,"mediaMode":"native"}],"caseLayout":"flow","categoryIds":["c7dfeef3-62cf-4287-a7cd-bcee78ea2227"]},{"id":"9b469384-8b95-46c8-b25d-65e5b9cb2d81","title":"Motion Showreel '26","titleRu":"Motion Showreel '26","type":"","typeRu":"","description":"A curated selection of motion design, branding, UI and advertising projects. This showreel brings together commercial and personal work, focused on typography, visual storytelling and smooth animation. \nMusic: Burgundy X - Back Alley","descriptionRu":"A curated selection of motion design, branding, UI and advertising projects. This showreel brings together commercial and personal work, focused on typography, visual storytelling and smooth animation. \nMusic: Burgundy X - Back Alley","body":"","bodyRu":"","src":"/700a1b9a-1f9a-4cf5-a737-7326873027a3.mp4","mediaType":"video","projectMedia":[],"width":1,"height":1,"blocks":[{"id":"e94892e5-6df7-4973-9079-0f1553e1d0f2","kind":"video","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/700a1b9a-1f9a-4cf5-a737-7326873027a3.mp4","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":0,"w":1200,"h":675}}],"categoryIds":["2f4fab15-bf57-40ca-a5e6-e8927b770198"],"showFullProject":false},{"id":"e1c5f200-4275-4f80-b92a-6c08db0544f6","title":"Piligrim ","titleRu":"Piligrim ","type":"","typeRu":"","description":"TV Series Pitch Deck","descriptionRu":"TV Series Pitch Deck","body":"","bodyRu":"","src":"/9731a2f2-7c8c-4c7d-96ee-705ac5f0e6e3.jpg","mediaType":"image","projectMedia":[],"width":1,"height":1,"cardW":1029.6205120536827,"cardH":593.804092033583,"mediaFit":"contain","blocks":[{"id":"ebb9cbf0-ea99-41f1-b541-a48509f82f94","kind":"image","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/e8929a58-b52b-44e3-8fc8-9f36524b3e0d.png","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":0,"w":1200,"h":692.0655737704918}},{"id":"9ed23462-ab2a-4e1a-99f2-bbf94931f284","kind":"image","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/bbc5ec21-08e4-4f98-8d4d-21927596f0bd.jpg","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":716.0655737704918,"w":1200,"h":675.1475409836065},"rotation":0,"mediaMode":"native"},{"id":"50090071-99f3-49b9-bfdf-e90e4cc5022d","kind":"image","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/3828ab44-cc7a-44f0-bbb5-0436b08c9f69.jpg","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":1415.2131147540986,"w":1200,"h":675.1475409836065},"rotation":0,"mediaMode":"native"}],"categoryIds":["41d541f5-6f1d-49a5-a68f-5d7feaddfd24"]},{"id":"e41e7318-a963-4769-9a1a-501b748efa26","title":"Petshop","titleRu":"Petshop","type":"","typeRu":"","description":"App Promo Motion","descriptionRu":"App Promo Motion","body":"","bodyRu":"","src":"/901e930c-e492-41ab-9316-91de9e0b7110.mp4","mediaType":"video","projectMedia":[],"width":1,"height":1,"showFullProject":false,"cardW":286.7519212805706,"cardH":573.5038425611413,"mediaFit":"contain","categoryIds":["c7dfeef3-62cf-4287-a7cd-bcee78ea2227","2f4fab15-bf57-40ca-a5e6-e8927b770198"]},{"id":"9196584b-3ee3-40bc-a05c-0ee533949aae","title":"Rust Dragon","titleRu":"Rust Dragon","type":"","typeRu":"","description":"Poster for the Rusty Dragon festival","descriptionRu":"Poster for the Rusty Dragon festival","body":"","bodyRu":"","src":"/f06bc29c-1201-43e8-ac54-825e18458e9f.jpg","mediaType":"image","projectMedia":[],"width":1,"height":1,"showFullProject":false,"cardW":422.6087018961797,"cardH":566.5940936339406,"mediaFit":"contain","blocks":[{"id":"0de33a0f-f1ce-4ab2-bdab-ee3c11e0fb31","kind":"image","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/f06bc29c-1201-43e8-ac54-825e18458e9f.jpg","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":0,"w":1200,"h":1608.944099378882}}],"categoryIds":["5d1f5a1f-c432-4b12-a062-ba7ddda3f24e"]},{"id":"aab2f96f-ef78-4934-ad2b-cf47e3ca5af9","title":"Viola ","titleRu":"Viola ","type":"","typeRu":"","description":"social media design","descriptionRu":"social media design","body":"","bodyRu":"","src":"/a626549e-1893-44e6-ac03-db36dd6a59dd.jpg","mediaType":"image","projectMedia":[],"width":1,"height":1,"cardW":1200,"cardH":1200,"mediaFit":"contain","blocks":[{"id":"3a3640fd-b9a7-4c87-838d-fb217cc7c903","kind":"image","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/faf0d462-0337-43ea-87f0-ddb4485b2039.png","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":0,"w":1200,"h":1200},"rotation":0,"mediaMode":"native"},{"id":"cc790881-6cbf-4f3d-8ad9-db6c25eaf22c","kind":"image","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/95a5d5ec-1c03-4969-9198-89954362a4b5.png","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":1224,"w":1200,"h":1200},"rotation":0,"mediaMode":"native"}],"categoryIds":["41d541f5-6f1d-49a5-a68f-5d7feaddfd24"]},{"id":"10","title":"Fava","titleRu":"Fava","type":"","typeRu":"","description":"3D Product Commercial","descriptionRu":"3D Product Commercial","body":"The project brief, approach and outcome will be added here.","bodyRu":"Здесь появятся задача, решение и результат проекта.","src":"/44f769e9-a9f2-44e4-8d3a-04e556523e31.mp4","mediaType":"video","width":2,"height":1,"cardW":427.8811810962271,"cardH":267.42573818514194,"mediaFit":"contain","resizeMode":"proportional","categoryIds":["2f4fab15-bf57-40ca-a5e6-e8927b770198","41d541f5-6f1d-49a5-a68f-5d7feaddfd24"],"showFullProject":false},{"id":"2f0ef01e-8f87-4f8c-9b68-196268a99563","title":"VOZOVOZ","titleRu":"VOZOVOZ","type":"","typeRu":"","description":"Rebranding Motion","descriptionRu":"Rebranding Motion","body":"","bodyRu":"","src":"/a543252f-85b3-4945-9053-25ca8f9b122b.mp4","mediaType":"video","projectMedia":[],"width":1,"height":1,"showFullProject":false,"categoryIds":["2f4fab15-bf57-40ca-a5e6-e8927b770198","5d1f5a1f-c432-4b12-a062-ba7ddda3f24e"]},{"id":"bc49e681-5dc3-4d99-a118-07fc56d916c3","title":"ART CHAOS","titleRu":"ART CHAOS","type":"","typeRu":"","description":"Exhibition Poster","descriptionRu":"Exhibition Poster","body":"","bodyRu":"","src":"/f0330a0d-cd9c-4e65-a1de-8e4f42d7a141.jpg","mediaType":"image","projectMedia":[],"width":1,"height":1,"cardW":530.2780611541499,"cardH":750.5326125525181,"mediaFit":"contain","showFullProject":false,"categoryIds":["41d541f5-6f1d-49a5-a68f-5d7feaddfd24","5d1f5a1f-c432-4b12-a062-ba7ddda3f24e"],"blocks":[{"id":"9cca6ee0-8d1e-4282-9df6-8f5602f0362d","kind":"image","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/f0330a0d-cd9c-4e65-a1de-8e4f42d7a141.jpg","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":0,"w":1200,"h":1698.428053204353}}]},{"id":"5c37130d-a520-437f-9c8a-6d0e2aba8b1b","title":"Florida","titleRu":"Florida","type":"Design","typeRu":"Дизайн","description":"Kitten food motion","descriptionRu":"Kitten food motion","body":"","bodyRu":"","src":"/25dcf97b-f0b2-44d5-a818-dc2a01fce83b.mp4","mediaType":"video","projectMedia":[],"width":1,"height":1,"categoryIds":["c7dfeef3-62cf-4287-a7cd-bcee78ea2227","2f4fab15-bf57-40ca-a5e6-e8927b770198"],"showFullProject":false,"mediaZoom":100,"focalX":50,"focalY":50},{"id":"843560fa-45dc-4384-9ff5-1fd35bc4365a","title":"Edelveis","titleRu":"Edelveis","type":"","typeRu":"","description":"Design system (work in progress)","descriptionRu":"Design system (work in progress)","body":"","bodyRu":"","src":"/630fd970-5547-4b26-b17a-d4de25daa3c9.jpg","mediaType":"image","projectMedia":[],"width":1,"height":1,"cardW":584.6547314578006,"cardH":581.1528932225063,"mediaFit":"contain","categoryIds":["41d541f5-6f1d-49a5-a68f-5d7feaddfd24"],"showFullProject":false},{"id":"534ada47-1a20-4527-b452-64e054e61291","title":"Detralex","titleRu":"Detralex","type":"","typeRu":"","description":"Pharmaceutical Motion","descriptionRu":"Pharmaceutical Motion","body":"","bodyRu":"","src":"/a5bac825-73e3-40bd-ae6d-a46396cd2f9e.mp4","mediaType":"video","projectMedia":[],"width":1,"height":1,"showFullProject":false,"categoryIds":["2f4fab15-bf57-40ca-a5e6-e8927b770198"]},{"id":"ca2b2bd2-740f-4663-8337-cc85948ffc6a","title":"Luxury","titleRu":"Luxury","type":"","typeRu":"","description":"Product Motion","descriptionRu":"Product Motion","body":"","bodyRu":"","src":"/b89e8ef4-3cfd-4f9e-8778-d3e96a278dda.mp4","mediaType":"video","projectMedia":[],"width":1,"height":1,"showFullProject":false,"categoryIds":["2f4fab15-bf57-40ca-a5e6-e8927b770198","41d541f5-6f1d-49a5-a68f-5d7feaddfd24"],"blocks":[{"id":"a7e28cd1-eaa0-4e24-9eb4-7491eeee622e","kind":"video","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/b89e8ef4-3cfd-4f9e-8778-d3e96a278dda.mp4","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":0,"w":1200,"h":1200}}]},{"id":"89eb785d-9143-486b-946d-699bbc8cb698","title":"New project","titleRu":"Новый проект","type":"Design","typeRu":"Дизайн","description":"","descriptionRu":"","body":"","bodyRu":"","src":"/f1430357-5dd3-4901-ae17-862f086b0dba.jpg","mediaType":"image","projectMedia":[],"width":1,"height":1,"showFullProject":false,"categoryIds":["c7dfeef3-62cf-4287-a7cd-bcee78ea2227"]},{"id":"f3361faa-0f80-4fb5-a93d-98ecc4b2ec54","title":"Organix","titleRu":"Organix","type":"","typeRu":"","description":"Marketplace Product Cards","descriptionRu":"Marketplace Product Cards","body":"","bodyRu":"","src":"/c0d9cb40-4243-4755-876c-2750b95f90a4.png","mediaType":"image","projectMedia":[],"width":1,"height":1,"cardW":450,"cardH":600,"mediaFit":"contain","showFullProject":false,"categoryIds":["c7dfeef3-62cf-4287-a7cd-bcee78ea2227"]},{"id":"b0312d3b-3097-49cd-ae98-0f35c4db5129","title":"Organix","titleRu":"Organix","type":"","typeRu":"","description":"Marketplace Product Cards","descriptionRu":"Marketplace Product Cards","body":"","bodyRu":"","src":"/a0ac9d82-631e-4635-acc8-ea9ae0de5b2f.png","mediaType":"image","projectMedia":[],"width":1,"height":1,"cardW":40,"cardH":53.306852035749756,"mediaFit":"cover","showFullProject":false,"categoryIds":["c7dfeef3-62cf-4287-a7cd-bcee78ea2227"]},{"id":"27b8d8a5-1c4e-4cdd-b5d0-c40fd5a4509c","title":"Organix","titleRu":"Organix","type":"","typeRu":"","description":"Marketplace Product Cards","descriptionRu":"Marketplace Product Cards","body":"","bodyRu":"","src":"/c4b0d20c-814b-45dc-8588-e47206f9b568.png","mediaType":"image","projectMedia":[],"width":1,"height":1,"showFullProject":false,"categoryIds":["c7dfeef3-62cf-4287-a7cd-bcee78ea2227"]},{"id":"10b459c1-0193-42de-8c5e-241ae23acd6a","title":"Organix","titleRu":"Organix","type":"","typeRu":"","description":"Marketplace Product Cards","descriptionRu":"Marketplace Product Cards","body":"","bodyRu":"","src":"/8d28f0a9-8961-45b9-b1e1-433af45f3c80.png","mediaType":"image","projectMedia":[],"width":1,"height":1,"showFullProject":false,"categoryIds":["c7dfeef3-62cf-4287-a7cd-bcee78ea2227"]},{"id":"77384f4f-480f-44c9-99c1-183d15b9b5b5","title":"Organix","titleRu":"Organix","type":"","typeRu":"","description":"Marketplace Product Cards","descriptionRu":"Marketplace Product Cards","body":"","bodyRu":"","src":"/08382a21-6e83-4666-b0d1-177151500286.png","mediaType":"image","projectMedia":[],"width":1,"height":1,"cardW":450.2235469448584,"cardH":600,"mediaFit":"contain","showFullProject":false,"categoryIds":["c7dfeef3-62cf-4287-a7cd-bcee78ea2227"]},{"id":"fa7b89f2-51b9-46f6-a743-9e0e32297d00","title":"Organix","titleRu":"Organix","type":"","typeRu":"","description":"Marketplace Product Cards","descriptionRu":"Marketplace Product Cards","body":"","bodyRu":"","src":"/97fc45d5-de12-4760-a7b8-2c21ba463214.png","mediaType":"image","projectMedia":[],"width":1,"height":1,"showFullProject":false,"categoryIds":["c7dfeef3-62cf-4287-a7cd-bcee78ea2227"]},{"id":"7a752caf-9aea-4790-9b73-14898c0b1c82","title":"Petshop","titleRu":"Petshop","type":"","typeRu":"","description":"Retail Promo Motion","descriptionRu":"Retail Promo Motion","body":"","bodyRu":"","src":"/0c811cad-d573-41bf-b3d5-79ef8bdf2658.mp4","mediaType":"video","projectMedia":[],"width":1,"height":1,"showFullProject":false,"categoryIds":["2f4fab15-bf57-40ca-a5e6-e8927b770198","41d541f5-6f1d-49a5-a68f-5d7feaddfd24"]},{"id":"8cc70653-0090-4062-951b-eeeb35c3b54c","title":"Colizeum","titleRu":"Colizeum","type":"","typeRu":"","description":"Gaming Promo Banner","descriptionRu":"Gaming Promo Banner","body":"","bodyRu":"","src":"/845cfd0a-8c4c-4f6e-913a-678085f8b93b.jpg","mediaType":"image","projectMedia":[],"width":1,"height":1,"cardW":71.07776261937244,"cardH":40,"mediaFit":"contain","mediaZoom":100,"focalX":50,"focalY":50,"showFullProject":false,"categoryIds":["41d541f5-6f1d-49a5-a68f-5d7feaddfd24"]},{"id":"62418a92-ecef-4b92-9734-63822e177401","title":"2U","titleRu":"2U","type":"","typeRu":"","description":"Retail Promo Motion","descriptionRu":"Retail Promo Motion","body":"","bodyRu":"","src":"/5fcfb996-5432-4cf5-9f1f-a406c7ad02ee.mp4","mediaType":"video","projectMedia":[],"width":1,"height":1,"showFullProject":false,"cardW":674.5187432985683,"cardH":421.57421456160523,"mediaFit":"contain","categoryIds":["2f4fab15-bf57-40ca-a5e6-e8927b770198","41d541f5-6f1d-49a5-a68f-5d7feaddfd24"]},{"id":"541de8dd-ccdc-412a-b329-20498047bf9f","title":"Coronafashion","titleRu":"Coronafashion","type":"","typeRu":"","description":"Logo Design","descriptionRu":"Logo Design","body":"","bodyRu":"","src":"/fd6e62cc-1496-4f6f-ab23-5160a9ba04c1.jpg","mediaType":"image","projectMedia":[],"width":1,"height":1,"categoryIds":["41d541f5-6f1d-49a5-a68f-5d7feaddfd24"],"showFullProject":false},{"id":"fc4c1ac4-365e-4835-872d-6d309423202c","title":"Archive 1965","titleRu":"Archive 1965","type":"","typeRu":"","description":"Editorial Layout","descriptionRu":"Editorial Layout","body":"","bodyRu":"","src":"/1a4c5664-b4ad-4e52-b53c-ba755cb4e19a.jpg","mediaType":"image","projectMedia":[],"width":1,"height":1,"cardW":573.19691845828,"cardH":738.6913670958588,"mediaFit":"contain","categoryIds":["41d541f5-6f1d-49a5-a68f-5d7feaddfd24"],"showFullProject":false,"blocks":[{"id":"24b9f37e-a2f1-45ca-b9c0-e17d7bb323e9","kind":"image","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/1a4c5664-b4ad-4e52-b53c-ba755cb4e19a.jpg","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":0,"w":1200,"h":1546.4661654135339}}]},{"id":"650447f5-fabd-4b7a-b98f-158c6bfc5cfe","title":"DFM 580","titleRu":"DFM 580","type":"","typeRu":"","description":"Promotional Car Wrap","descriptionRu":"Promotional Car Wrap","body":"","bodyRu":"","src":"/185612f9-4677-4b68-98dd-5de5de1e0ba4.jpg","mediaType":"image","projectMedia":[],"width":1,"height":1,"showFullProject":false,"categoryIds":["41d541f5-6f1d-49a5-a68f-5d7feaddfd24"],"blocks":[{"id":"b515321c-60f5-4086-a132-8eaffeaad0e3","kind":"image","width":12,"place":"auto","ratio":"auto","fit":"contain","text":"","textRu":"","src":"/2de210d1-48e6-4df3-bdab-9563d095573f.png","fontSize":18,"weight":400,"align":"left","font":"sans","italic":false,"frame":{"x":0,"y":0,"w":1200,"h":705.4721549636804}}]},{"id":"d3b6dff2-230f-4cdd-8708-5c043471da12","title":"Nero gold","titleRu":"Nero gold","type":"","typeRu":"","description":"Marketplace motion","descriptionRu":"Marketplace motion","body":"","bodyRu":"","src":"/7f9fcc8e-dc93-40e4-b33b-c709fe8a7bbc.mp4","mediaType":"video","projectMedia":[],"width":1,"height":1,"categoryIds":["c7dfeef3-62cf-4287-a7cd-bcee78ea2227","2f4fab15-bf57-40ca-a5e6-e8927b770198"],"showFullProject":false},{"id":"0b617de6-d9a5-4344-9d53-a48ae4939896","title":"RF","titleRu":"RF","type":"","typeRu":"","description":"T-Shirt Graphic","descriptionRu":"T-Shirt Graphic","body":"","bodyRu":"","src":"/73541f0a-c5a5-4d3d-b2a9-ed22e941b636.jpg","mediaType":"image","projectMedia":[],"width":1,"height":1,"showFullProject":false,"categoryIds":["41d541f5-6f1d-49a5-a68f-5d7feaddfd24"]}],"galleryLayout":{"mode":"rows","columns":8},"categories":[{"id":"c7dfeef3-62cf-4287-a7cd-bcee78ea2227","name":"MARKETPLACE"},{"id":"41d541f5-6f1d-49a5-a68f-5d7feaddfd24","name":"BRAND & CAMPAIGNS"},{"id":"2f4fab15-bf57-40ca-a5e6-e8927b770198","name":"MOTION"},{"id":"5d1f5a1f-c432-4b12-a062-ba7ddda3f24e","name":"POSTERS"}]}
+{
+  "revision": 117,
+  "brands": [
+    {
+      "id": "sber",
+      "name": "СБЕР",
+      "src": "/brand-sber.svg"
+    },
+    {
+      "id": "petshop",
+      "name": "PETSHOP.RU",
+      "src": "/brand-petshop.svg"
+    },
+    {
+      "id": "tele2",
+      "name": "TELE2",
+      "src": "/brand-tele2.svg"
+    },
+    {
+      "id": "organix",
+      "name": "ORGANIX",
+      "src": "/brand-organix.svg"
+    },
+    {
+      "id": "a52d28c3-2ba0-4c47-9492-e5c5db8ea66c",
+      "name": "VOZOVOZ",
+      "src": "/ea61d2bc-9f08-432f-8079-8effbde1bdaf.png"
+    },
+    {
+      "id": "7fa7fff3-6dc2-4f12-af8e-fbd2ffd03578",
+      "name": "Новый бренд",
+      "src": "/75a2fa91-39ac-4710-927e-0343ca1c4448.png"
+    },
+    {
+      "id": "f4c964bd-159f-4712-ab37-00e353275044",
+      "name": "Новый бренд",
+      "src": "/b9536517-869f-4323-82d7-806b4867d13d.png"
+    },
+    {
+      "id": "281b0ac6-ccb1-4795-a1c6-6b9ca30e8f0a",
+      "name": "Новый бренд",
+      "src": "/40acc72e-bf24-4eac-9d54-d7dd13dd1a25.png"
+    }
+  ],
+  "works": [
+    {
+      "id": "a44443c1-3b46-4db1-b842-030cc3258ff3",
+      "title": "Tinkoff",
+      "titleRu": "Tinkoff",
+      "type": "",
+      "typeRu": "",
+      "description": "Visual Communication",
+      "descriptionRu": "Visual Communication",
+      "body": "",
+      "bodyRu": "",
+      "src": "/84c6fc71-0fc2-40c6-9c1b-f60d9d982524.png",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "categoryIds": [
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ],
+      "previewSrc": "/previews/84c6fc71-0fc2-40c6-9c1b-f60d9d982524-800.webp",
+      "previewSrc2x": "/previews/84c6fc71-0fc2-40c6-9c1b-f60d9d982524-1600.webp"
+    },
+    {
+      "id": "01",
+      "title": "Panda Digital  ",
+      "titleRu": "Panda Digital  ",
+      "type": "",
+      "typeRu": "",
+      "description": "Mascot Animation",
+      "descriptionRu": "Mascot Animation",
+      "body": "The project brief, approach and outcome will be added here.",
+      "bodyRu": "Здесь появятся задача, решение и результат проекта.",
+      "src": "/66eb196f-c950-486e-aff7-aabc837736b9.mp4",
+      "mediaType": "video",
+      "width": 2,
+      "height": 2,
+      "cardW": 542.6667022705078,
+      "cardH": 542.6667022705078,
+      "mediaFit": "contain",
+      "categoryIds": [
+        "2f4fab15-bf57-40ca-a5e6-e8927b770198"
+      ],
+      "showFullProject": false
+    },
+    {
+      "id": "7069971c-bfb1-43e0-a272-0eea43161aef",
+      "title": "Drutex",
+      "titleRu": "Drutex",
+      "type": "",
+      "typeRu": "",
+      "description": "Art gallery poster ",
+      "descriptionRu": "Art gallery poster ",
+      "body": "",
+      "bodyRu": "",
+      "src": "/90b10be6-7f19-40c2-8e45-d690c0b5af70.jpg",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "categoryIds": [
+        "5d1f5a1f-c432-4b12-a062-ba7ddda3f24e"
+      ],
+      "previewSrc": "/previews/90b10be6-7f19-40c2-8e45-d690c0b5af70-800.webp",
+      "previewSrc2x": "/previews/90b10be6-7f19-40c2-8e45-d690c0b5af70-1600.webp"
+    },
+    {
+      "id": "02",
+      "title": "Citrus party",
+      "titleRu": "Citrus party",
+      "type": "",
+      "typeRu": "",
+      "description": "Brand poster project ",
+      "descriptionRu": "Brand poster project ",
+      "body": "The project brief, approach and outcome will be added here.",
+      "bodyRu": "Здесь появятся задача, решение и результат проекта.",
+      "src": "/7c121f46-63ee-4b37-933f-d76312be4913.png",
+      "mediaType": "image",
+      "width": 3,
+      "height": 1,
+      "cardW": 669.8901518214388,
+      "cardH": 669.8901518214388,
+      "blocks": [
+        {
+          "id": "822a2ba9-3d9a-40b8-8e68-3e3f07424911",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "16/9",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/7c121f46-63ee-4b37-933f-d76312be4913.png",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 242.85454222180925,
+            "y": 30.701212216417844,
+            "w": 714.2909155563815,
+            "h": 714.2909155563815
+          },
+          "rotation": 0,
+          "mediaMode": "native"
+        },
+        {
+          "id": "584e267b-87e5-4475-97e5-9cb398858346",
+          "kind": "text",
+          "width": 5,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "Раз раз раз проверка",
+          "textRu": "Раз раз раз проверка",
+          "src": "",
+          "fontSize": 40,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 26.07395945004742,
+            "y": 855.7805674163139,
+            "w": 491.7646976457755,
+            "h": 52.94117508462569
+          }
+        },
+        {
+          "id": "c60fe3de-0c4f-4bb4-9de4-7d940a02977a",
+          "kind": "text",
+          "width": 7,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "мяу мяу мяу пкпокшопшкп",
+          "textRu": "мяу мяу мяу пкпокшопшкп",
+          "src": "",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 26.07395945004742,
+            "y": 945.0142326762046,
+            "w": 487.7132111252223,
+            "h": 104.11706866851556
+          }
+        }
+      ],
+      "resizeMode": "proportional",
+      "mediaFit": "contain",
+      "guides": [],
+      "caseLayout": "free",
+      "mediaZoom": 100,
+      "focalX": 50,
+      "focalY": 50,
+      "categoryIds": [
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ],
+      "showFullProject": false,
+      "previewSrc": "/previews/7c121f46-63ee-4b37-933f-d76312be4913-800.webp",
+      "previewSrc2x": "/previews/7c121f46-63ee-4b37-933f-d76312be4913-1600.webp"
+    },
+    {
+      "id": "4bd29bde-a412-4f7f-96e0-e7b3939ef660",
+      "title": "AI dream girl",
+      "titleRu": "AI dream girl",
+      "type": "",
+      "typeRu": "",
+      "description": "AI Pilates Campaign",
+      "descriptionRu": "AI Pilates Campaign",
+      "body": "",
+      "bodyRu": "",
+      "src": "/4be429e0-5aad-4585-84f9-832f2f28100d.mp4",
+      "mediaType": "video",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "categoryIds": [
+        "2f4fab15-bf57-40ca-a5e6-e8927b770198"
+      ]
+    },
+    {
+      "id": "14f4d9cb-b75e-4415-92cc-86ec79a277a4",
+      "title": "The Shining",
+      "titleRu": "The Shining",
+      "type": "",
+      "typeRu": "",
+      "description": "Animated Title Sequence",
+      "descriptionRu": "Animated Title Sequence",
+      "body": "",
+      "bodyRu": "",
+      "src": "/cc8467c7-af22-428e-921d-8c97c83da2b2.mp4",
+      "mediaType": "video",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "cardW": 306,
+      "cardH": 176.40189873417722,
+      "mediaFit": "contain",
+      "showFullProject": false,
+      "categoryIds": [
+        "2f4fab15-bf57-40ca-a5e6-e8927b770198"
+      ]
+    },
+    {
+      "id": "9a8f2a74-6592-4f18-95b0-0494ff552e7e",
+      "title": "Nero Gold",
+      "titleRu": "Nero Gold",
+      "type": "",
+      "typeRu": "",
+      "description": "Product Motion",
+      "descriptionRu": "Product Motion",
+      "body": "",
+      "bodyRu": "",
+      "src": "/4ccf694d-9ace-48fa-9691-aed6356d4fbb.mp4",
+      "mediaType": "video",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "cardW": 600,
+      "cardH": 337.5,
+      "mediaFit": "contain",
+      "categoryIds": [
+        "2f4fab15-bf57-40ca-a5e6-e8927b770198",
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ]
+    },
+    {
+      "id": "09",
+      "title": "Organix – product card for marketplace",
+      "titleRu": "Organix – product card for marketplace",
+      "type": "",
+      "typeRu": "",
+      "description": "Visual system for pet product cards",
+      "descriptionRu": "Visual system for pet product cards",
+      "body": "The project brief, approach and outcome will be added here.",
+      "bodyRu": "Здесь появятся задача, решение и результат проекта.",
+      "src": "/4f3e56ce-4f26-4c89-b46f-73b5666f4182.png",
+      "mediaType": "image",
+      "width": 1,
+      "height": 1,
+      "cardW": 600,
+      "cardH": 451.68081494057725,
+      "mediaFit": "contain",
+      "showFullProject": true,
+      "blocks": [
+        {
+          "id": "1c982735-7281-4d98-971f-3f0be0aad318",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "16/9",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/4f3e56ce-4f26-4c89-b46f-73b5666f4182.png",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 0,
+            "w": 1200,
+            "h": 903.3616298811545
+          },
+          "rotation": 0,
+          "mediaMode": "native"
+        },
+        {
+          "id": "dee64f84-53c4-4a25-8404-eb2cf5e6353a",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/6342b475-7839-4efa-b42c-d7a4878fd57e.png",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 903.3616298811545,
+            "w": 1200,
+            "h": 654.434250764526
+          },
+          "rotation": 0,
+          "mediaMode": "native"
+        },
+        {
+          "id": "532f2ab8-ff06-47ee-91b3-ddbb09ca2ed2",
+          "kind": "video",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/bc76193c-438d-499d-b5ee-8aa35cf76734.mp4",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 1557.7958806456804,
+            "w": 1200,
+            "h": 691.7721518987341
+          },
+          "rotation": 0,
+          "mediaMode": "native"
+        },
+        {
+          "id": "2c1acda8-f288-4503-b799-1934279e2644",
+          "kind": "video",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/60b7a9fe-7294-4570-904d-8dc69af05ee2.mp4",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 2249.5680325444146,
+            "w": 1200,
+            "h": 800
+          },
+          "rotation": 0,
+          "mediaMode": "native"
+        },
+        {
+          "id": "99b4adea-b579-4512-8141-44f911e2331a",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/ef6f8127-f648-4207-880f-d7df98751c77.png",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 3049.5680325444146,
+            "w": 1200,
+            "h": 910.2886247877759
+          },
+          "rotation": 0,
+          "mediaMode": "native"
+        },
+        {
+          "id": "ac423136-8f6b-4ec7-8ecb-9f00ef37fe56",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/e16e9680-6c6b-4785-bcf6-fa6402f6e2c5.png",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 3959.8566573321905,
+            "w": 1200,
+            "h": 1065.4142145767314
+          },
+          "rotation": 0,
+          "mediaMode": "native"
+        },
+        {
+          "id": "0295f941-463c-41e5-b552-2202dbc0e24f",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/557b64c0-ccdd-47b3-a442-30c9a704fb97.png",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 5025.270871908922,
+            "w": 1200,
+            "h": 817.0940170940172
+          },
+          "rotation": 0,
+          "mediaMode": "native"
+        },
+        {
+          "id": "674901d3-c3ed-4041-806a-209f602e3cd3",
+          "kind": "video",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/955f4c06-bbeb-45d2-9a5b-a7e7aa93d969.mp4",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 5866.36488900294,
+            "w": 1200,
+            "h": 993.3333333333333
+          },
+          "rotation": 0,
+          "mediaMode": "native"
+        }
+      ],
+      "caseLayout": "flow",
+      "categoryIds": [
+        "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
+      ],
+      "previewSrc": "/previews/4f3e56ce-4f26-4c89-b46f-73b5666f4182-800.webp",
+      "previewSrc2x": "/previews/4f3e56ce-4f26-4c89-b46f-73b5666f4182-1600.webp"
+    },
+    {
+      "id": "9b469384-8b95-46c8-b25d-65e5b9cb2d81",
+      "title": "Motion Showreel '26",
+      "titleRu": "Motion Showreel '26",
+      "type": "",
+      "typeRu": "",
+      "description": "A curated selection of motion design, branding, UI and advertising projects. This showreel brings together commercial and personal work, focused on typography, visual storytelling and smooth animation. \nMusic: Burgundy X - Back Alley",
+      "descriptionRu": "A curated selection of motion design, branding, UI and advertising projects. This showreel brings together commercial and personal work, focused on typography, visual storytelling and smooth animation. \nMusic: Burgundy X - Back Alley",
+      "body": "",
+      "bodyRu": "",
+      "src": "/700a1b9a-1f9a-4cf5-a737-7326873027a3.mp4",
+      "mediaType": "video",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "blocks": [
+        {
+          "id": "e94892e5-6df7-4973-9079-0f1553e1d0f2",
+          "kind": "video",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/700a1b9a-1f9a-4cf5-a737-7326873027a3.mp4",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 0,
+            "w": 1200,
+            "h": 675
+          }
+        }
+      ],
+      "categoryIds": [
+        "2f4fab15-bf57-40ca-a5e6-e8927b770198"
+      ],
+      "showFullProject": false
+    },
+    {
+      "id": "e1c5f200-4275-4f80-b92a-6c08db0544f6",
+      "title": "Piligrim ",
+      "titleRu": "Piligrim ",
+      "type": "",
+      "typeRu": "",
+      "description": "TV Series Pitch Deck",
+      "descriptionRu": "TV Series Pitch Deck",
+      "body": "",
+      "bodyRu": "",
+      "src": "/9731a2f2-7c8c-4c7d-96ee-705ac5f0e6e3.jpg",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "cardW": 1029.6205120536827,
+      "cardH": 593.804092033583,
+      "mediaFit": "contain",
+      "blocks": [
+        {
+          "id": "ebb9cbf0-ea99-41f1-b541-a48509f82f94",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/e8929a58-b52b-44e3-8fc8-9f36524b3e0d.png",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 0,
+            "w": 1200,
+            "h": 692.0655737704918
+          }
+        },
+        {
+          "id": "9ed23462-ab2a-4e1a-99f2-bbf94931f284",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/bbc5ec21-08e4-4f98-8d4d-21927596f0bd.jpg",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 716.0655737704918,
+            "w": 1200,
+            "h": 675.1475409836065
+          },
+          "rotation": 0,
+          "mediaMode": "native"
+        },
+        {
+          "id": "50090071-99f3-49b9-bfdf-e90e4cc5022d",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/3828ab44-cc7a-44f0-bbb5-0436b08c9f69.jpg",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 1415.2131147540986,
+            "w": 1200,
+            "h": 675.1475409836065
+          },
+          "rotation": 0,
+          "mediaMode": "native"
+        }
+      ],
+      "categoryIds": [
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ],
+      "previewSrc": "/previews/9731a2f2-7c8c-4c7d-96ee-705ac5f0e6e3-800.webp",
+      "previewSrc2x": "/previews/9731a2f2-7c8c-4c7d-96ee-705ac5f0e6e3-1600.webp"
+    },
+    {
+      "id": "e41e7318-a963-4769-9a1a-501b748efa26",
+      "title": "Petshop",
+      "titleRu": "Petshop",
+      "type": "",
+      "typeRu": "",
+      "description": "App Promo Motion",
+      "descriptionRu": "App Promo Motion",
+      "body": "",
+      "bodyRu": "",
+      "src": "/901e930c-e492-41ab-9316-91de9e0b7110.mp4",
+      "mediaType": "video",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "cardW": 286.7519212805706,
+      "cardH": 573.5038425611413,
+      "mediaFit": "contain",
+      "categoryIds": [
+        "c7dfeef3-62cf-4287-a7cd-bcee78ea2227",
+        "2f4fab15-bf57-40ca-a5e6-e8927b770198"
+      ]
+    },
+    {
+      "id": "9196584b-3ee3-40bc-a05c-0ee533949aae",
+      "title": "Rust Dragon",
+      "titleRu": "Rust Dragon",
+      "type": "",
+      "typeRu": "",
+      "description": "Poster for the Rusty Dragon festival",
+      "descriptionRu": "Poster for the Rusty Dragon festival",
+      "body": "",
+      "bodyRu": "",
+      "src": "/f06bc29c-1201-43e8-ac54-825e18458e9f.jpg",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "cardW": 422.6087018961797,
+      "cardH": 566.5940936339406,
+      "mediaFit": "contain",
+      "blocks": [
+        {
+          "id": "0de33a0f-f1ce-4ab2-bdab-ee3c11e0fb31",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/f06bc29c-1201-43e8-ac54-825e18458e9f.jpg",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 0,
+            "w": 1200,
+            "h": 1608.944099378882
+          }
+        }
+      ],
+      "categoryIds": [
+        "5d1f5a1f-c432-4b12-a062-ba7ddda3f24e"
+      ],
+      "previewSrc": "/previews/f06bc29c-1201-43e8-ac54-825e18458e9f-800.webp",
+      "previewSrc2x": "/previews/f06bc29c-1201-43e8-ac54-825e18458e9f-1600.webp"
+    },
+    {
+      "id": "aab2f96f-ef78-4934-ad2b-cf47e3ca5af9",
+      "title": "Viola ",
+      "titleRu": "Viola ",
+      "type": "",
+      "typeRu": "",
+      "description": "social media design",
+      "descriptionRu": "social media design",
+      "body": "",
+      "bodyRu": "",
+      "src": "/a626549e-1893-44e6-ac03-db36dd6a59dd.jpg",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "cardW": 1200,
+      "cardH": 1200,
+      "mediaFit": "contain",
+      "blocks": [
+        {
+          "id": "3a3640fd-b9a7-4c87-838d-fb217cc7c903",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/faf0d462-0337-43ea-87f0-ddb4485b2039.png",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 0,
+            "w": 1200,
+            "h": 1200
+          },
+          "rotation": 0,
+          "mediaMode": "native"
+        },
+        {
+          "id": "cc790881-6cbf-4f3d-8ad9-db6c25eaf22c",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/95a5d5ec-1c03-4969-9198-89954362a4b5.png",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 1224,
+            "w": 1200,
+            "h": 1200
+          },
+          "rotation": 0,
+          "mediaMode": "native"
+        }
+      ],
+      "categoryIds": [
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ],
+      "previewSrc": "/previews/a626549e-1893-44e6-ac03-db36dd6a59dd-800.webp",
+      "previewSrc2x": "/previews/a626549e-1893-44e6-ac03-db36dd6a59dd-1600.webp"
+    },
+    {
+      "id": "10",
+      "title": "Fava",
+      "titleRu": "Fava",
+      "type": "",
+      "typeRu": "",
+      "description": "3D Product Commercial",
+      "descriptionRu": "3D Product Commercial",
+      "body": "The project brief, approach and outcome will be added here.",
+      "bodyRu": "Здесь появятся задача, решение и результат проекта.",
+      "src": "/44f769e9-a9f2-44e4-8d3a-04e556523e31.mp4",
+      "mediaType": "video",
+      "width": 2,
+      "height": 1,
+      "cardW": 427.8811810962271,
+      "cardH": 267.42573818514194,
+      "mediaFit": "contain",
+      "resizeMode": "proportional",
+      "categoryIds": [
+        "2f4fab15-bf57-40ca-a5e6-e8927b770198",
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ],
+      "showFullProject": false
+    },
+    {
+      "id": "2f0ef01e-8f87-4f8c-9b68-196268a99563",
+      "title": "VOZOVOZ",
+      "titleRu": "VOZOVOZ",
+      "type": "",
+      "typeRu": "",
+      "description": "Rebranding Motion",
+      "descriptionRu": "Rebranding Motion",
+      "body": "",
+      "bodyRu": "",
+      "src": "/a543252f-85b3-4945-9053-25ca8f9b122b.mp4",
+      "mediaType": "video",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "categoryIds": [
+        "2f4fab15-bf57-40ca-a5e6-e8927b770198",
+        "5d1f5a1f-c432-4b12-a062-ba7ddda3f24e"
+      ]
+    },
+    {
+      "id": "bc49e681-5dc3-4d99-a118-07fc56d916c3",
+      "title": "ART CHAOS",
+      "titleRu": "ART CHAOS",
+      "type": "",
+      "typeRu": "",
+      "description": "Exhibition Poster",
+      "descriptionRu": "Exhibition Poster",
+      "body": "",
+      "bodyRu": "",
+      "src": "/f0330a0d-cd9c-4e65-a1de-8e4f42d7a141.jpg",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "cardW": 530.2780611541499,
+      "cardH": 750.5326125525181,
+      "mediaFit": "contain",
+      "showFullProject": false,
+      "categoryIds": [
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24",
+        "5d1f5a1f-c432-4b12-a062-ba7ddda3f24e"
+      ],
+      "blocks": [
+        {
+          "id": "9cca6ee0-8d1e-4282-9df6-8f5602f0362d",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/f0330a0d-cd9c-4e65-a1de-8e4f42d7a141.jpg",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 0,
+            "w": 1200,
+            "h": 1698.428053204353
+          }
+        }
+      ],
+      "previewSrc": "/previews/f0330a0d-cd9c-4e65-a1de-8e4f42d7a141-800.webp",
+      "previewSrc2x": "/previews/f0330a0d-cd9c-4e65-a1de-8e4f42d7a141-1600.webp"
+    },
+    {
+      "id": "5c37130d-a520-437f-9c8a-6d0e2aba8b1b",
+      "title": "Florida",
+      "titleRu": "Florida",
+      "type": "Design",
+      "typeRu": "Дизайн",
+      "description": "Kitten food motion",
+      "descriptionRu": "Kitten food motion",
+      "body": "",
+      "bodyRu": "",
+      "src": "/25dcf97b-f0b2-44d5-a818-dc2a01fce83b.mp4",
+      "mediaType": "video",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "categoryIds": [
+        "c7dfeef3-62cf-4287-a7cd-bcee78ea2227",
+        "2f4fab15-bf57-40ca-a5e6-e8927b770198"
+      ],
+      "showFullProject": false,
+      "mediaZoom": 100,
+      "focalX": 50,
+      "focalY": 50
+    },
+    {
+      "id": "843560fa-45dc-4384-9ff5-1fd35bc4365a",
+      "title": "Edelveis",
+      "titleRu": "Edelveis",
+      "type": "",
+      "typeRu": "",
+      "description": "Design system (work in progress)",
+      "descriptionRu": "Design system (work in progress)",
+      "body": "",
+      "bodyRu": "",
+      "src": "/630fd970-5547-4b26-b17a-d4de25daa3c9.jpg",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "cardW": 584.6547314578006,
+      "cardH": 581.1528932225063,
+      "mediaFit": "contain",
+      "categoryIds": [
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ],
+      "showFullProject": false,
+      "previewSrc": "/previews/630fd970-5547-4b26-b17a-d4de25daa3c9-800.webp",
+      "previewSrc2x": "/previews/630fd970-5547-4b26-b17a-d4de25daa3c9-1600.webp"
+    },
+    {
+      "id": "534ada47-1a20-4527-b452-64e054e61291",
+      "title": "Detralex",
+      "titleRu": "Detralex",
+      "type": "",
+      "typeRu": "",
+      "description": "Pharmaceutical Motion",
+      "descriptionRu": "Pharmaceutical Motion",
+      "body": "",
+      "bodyRu": "",
+      "src": "/a5bac825-73e3-40bd-ae6d-a46396cd2f9e.mp4",
+      "mediaType": "video",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "categoryIds": [
+        "2f4fab15-bf57-40ca-a5e6-e8927b770198"
+      ]
+    },
+    {
+      "id": "ca2b2bd2-740f-4663-8337-cc85948ffc6a",
+      "title": "Luxury",
+      "titleRu": "Luxury",
+      "type": "",
+      "typeRu": "",
+      "description": "Product Motion",
+      "descriptionRu": "Product Motion",
+      "body": "",
+      "bodyRu": "",
+      "src": "/b89e8ef4-3cfd-4f9e-8778-d3e96a278dda.mp4",
+      "mediaType": "video",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "categoryIds": [
+        "2f4fab15-bf57-40ca-a5e6-e8927b770198",
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ],
+      "blocks": [
+        {
+          "id": "a7e28cd1-eaa0-4e24-9eb4-7491eeee622e",
+          "kind": "video",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/b89e8ef4-3cfd-4f9e-8778-d3e96a278dda.mp4",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 0,
+            "w": 1200,
+            "h": 1200
+          }
+        }
+      ]
+    },
+    {
+      "id": "89eb785d-9143-486b-946d-699bbc8cb698",
+      "title": "New project",
+      "titleRu": "Новый проект",
+      "type": "Design",
+      "typeRu": "Дизайн",
+      "description": "",
+      "descriptionRu": "",
+      "body": "",
+      "bodyRu": "",
+      "src": "/f1430357-5dd3-4901-ae17-862f086b0dba.jpg",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "categoryIds": [
+        "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
+      ],
+      "previewSrc": "/previews/f1430357-5dd3-4901-ae17-862f086b0dba-800.webp",
+      "previewSrc2x": "/previews/f1430357-5dd3-4901-ae17-862f086b0dba-1600.webp"
+    },
+    {
+      "id": "f3361faa-0f80-4fb5-a93d-98ecc4b2ec54",
+      "title": "Organix",
+      "titleRu": "Organix",
+      "type": "",
+      "typeRu": "",
+      "description": "Marketplace Product Cards",
+      "descriptionRu": "Marketplace Product Cards",
+      "body": "",
+      "bodyRu": "",
+      "src": "/c0d9cb40-4243-4755-876c-2750b95f90a4.png",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "cardW": 450,
+      "cardH": 600,
+      "mediaFit": "contain",
+      "showFullProject": false,
+      "categoryIds": [
+        "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
+      ],
+      "previewSrc": "/previews/c0d9cb40-4243-4755-876c-2750b95f90a4-800.webp",
+      "previewSrc2x": "/previews/c0d9cb40-4243-4755-876c-2750b95f90a4-1600.webp"
+    },
+    {
+      "id": "b0312d3b-3097-49cd-ae98-0f35c4db5129",
+      "title": "Organix",
+      "titleRu": "Organix",
+      "type": "",
+      "typeRu": "",
+      "description": "Marketplace Product Cards",
+      "descriptionRu": "Marketplace Product Cards",
+      "body": "",
+      "bodyRu": "",
+      "src": "/a0ac9d82-631e-4635-acc8-ea9ae0de5b2f.png",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "cardW": 40,
+      "cardH": 53.306852035749756,
+      "mediaFit": "cover",
+      "showFullProject": false,
+      "categoryIds": [
+        "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
+      ],
+      "previewSrc": "/previews/a0ac9d82-631e-4635-acc8-ea9ae0de5b2f-800.webp",
+      "previewSrc2x": "/previews/a0ac9d82-631e-4635-acc8-ea9ae0de5b2f-1600.webp"
+    },
+    {
+      "id": "27b8d8a5-1c4e-4cdd-b5d0-c40fd5a4509c",
+      "title": "Organix",
+      "titleRu": "Organix",
+      "type": "",
+      "typeRu": "",
+      "description": "Marketplace Product Cards",
+      "descriptionRu": "Marketplace Product Cards",
+      "body": "",
+      "bodyRu": "",
+      "src": "/c4b0d20c-814b-45dc-8588-e47206f9b568.png",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "categoryIds": [
+        "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
+      ],
+      "previewSrc": "/previews/c4b0d20c-814b-45dc-8588-e47206f9b568-800.webp",
+      "previewSrc2x": "/previews/c4b0d20c-814b-45dc-8588-e47206f9b568-1600.webp"
+    },
+    {
+      "id": "10b459c1-0193-42de-8c5e-241ae23acd6a",
+      "title": "Organix",
+      "titleRu": "Organix",
+      "type": "",
+      "typeRu": "",
+      "description": "Marketplace Product Cards",
+      "descriptionRu": "Marketplace Product Cards",
+      "body": "",
+      "bodyRu": "",
+      "src": "/8d28f0a9-8961-45b9-b1e1-433af45f3c80.png",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "categoryIds": [
+        "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
+      ],
+      "previewSrc": "/previews/8d28f0a9-8961-45b9-b1e1-433af45f3c80-800.webp",
+      "previewSrc2x": "/previews/8d28f0a9-8961-45b9-b1e1-433af45f3c80-1600.webp"
+    },
+    {
+      "id": "77384f4f-480f-44c9-99c1-183d15b9b5b5",
+      "title": "Organix",
+      "titleRu": "Organix",
+      "type": "",
+      "typeRu": "",
+      "description": "Marketplace Product Cards",
+      "descriptionRu": "Marketplace Product Cards",
+      "body": "",
+      "bodyRu": "",
+      "src": "/08382a21-6e83-4666-b0d1-177151500286.png",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "cardW": 450.2235469448584,
+      "cardH": 600,
+      "mediaFit": "contain",
+      "showFullProject": false,
+      "categoryIds": [
+        "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
+      ],
+      "previewSrc": "/previews/08382a21-6e83-4666-b0d1-177151500286-800.webp",
+      "previewSrc2x": "/previews/08382a21-6e83-4666-b0d1-177151500286-1600.webp"
+    },
+    {
+      "id": "fa7b89f2-51b9-46f6-a743-9e0e32297d00",
+      "title": "Organix",
+      "titleRu": "Organix",
+      "type": "",
+      "typeRu": "",
+      "description": "Marketplace Product Cards",
+      "descriptionRu": "Marketplace Product Cards",
+      "body": "",
+      "bodyRu": "",
+      "src": "/97fc45d5-de12-4760-a7b8-2c21ba463214.png",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "categoryIds": [
+        "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
+      ],
+      "previewSrc": "/previews/97fc45d5-de12-4760-a7b8-2c21ba463214-800.webp",
+      "previewSrc2x": "/previews/97fc45d5-de12-4760-a7b8-2c21ba463214-1600.webp"
+    },
+    {
+      "id": "7a752caf-9aea-4790-9b73-14898c0b1c82",
+      "title": "Petshop",
+      "titleRu": "Petshop",
+      "type": "",
+      "typeRu": "",
+      "description": "Retail Promo Motion",
+      "descriptionRu": "Retail Promo Motion",
+      "body": "",
+      "bodyRu": "",
+      "src": "/0c811cad-d573-41bf-b3d5-79ef8bdf2658.mp4",
+      "mediaType": "video",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "categoryIds": [
+        "2f4fab15-bf57-40ca-a5e6-e8927b770198",
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ]
+    },
+    {
+      "id": "8cc70653-0090-4062-951b-eeeb35c3b54c",
+      "title": "Colizeum",
+      "titleRu": "Colizeum",
+      "type": "",
+      "typeRu": "",
+      "description": "Gaming Promo Banner",
+      "descriptionRu": "Gaming Promo Banner",
+      "body": "",
+      "bodyRu": "",
+      "src": "/845cfd0a-8c4c-4f6e-913a-678085f8b93b.jpg",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "cardW": 71.07776261937244,
+      "cardH": 40,
+      "mediaFit": "contain",
+      "mediaZoom": 100,
+      "focalX": 50,
+      "focalY": 50,
+      "showFullProject": false,
+      "categoryIds": [
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ],
+      "previewSrc": "/previews/845cfd0a-8c4c-4f6e-913a-678085f8b93b-800.webp",
+      "previewSrc2x": "/previews/845cfd0a-8c4c-4f6e-913a-678085f8b93b-1600.webp"
+    },
+    {
+      "id": "62418a92-ecef-4b92-9734-63822e177401",
+      "title": "2U",
+      "titleRu": "2U",
+      "type": "",
+      "typeRu": "",
+      "description": "Retail Promo Motion",
+      "descriptionRu": "Retail Promo Motion",
+      "body": "",
+      "bodyRu": "",
+      "src": "/5fcfb996-5432-4cf5-9f1f-a406c7ad02ee.mp4",
+      "mediaType": "video",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "cardW": 674.5187432985683,
+      "cardH": 421.57421456160523,
+      "mediaFit": "contain",
+      "categoryIds": [
+        "2f4fab15-bf57-40ca-a5e6-e8927b770198",
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ]
+    },
+    {
+      "id": "541de8dd-ccdc-412a-b329-20498047bf9f",
+      "title": "Coronafashion",
+      "titleRu": "Coronafashion",
+      "type": "",
+      "typeRu": "",
+      "description": "Logo Design",
+      "descriptionRu": "Logo Design",
+      "body": "",
+      "bodyRu": "",
+      "src": "/fd6e62cc-1496-4f6f-ab23-5160a9ba04c1.jpg",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "categoryIds": [
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ],
+      "showFullProject": false,
+      "previewSrc": "/previews/fd6e62cc-1496-4f6f-ab23-5160a9ba04c1-800.webp",
+      "previewSrc2x": "/previews/fd6e62cc-1496-4f6f-ab23-5160a9ba04c1-1600.webp"
+    },
+    {
+      "id": "fc4c1ac4-365e-4835-872d-6d309423202c",
+      "title": "Archive 1965",
+      "titleRu": "Archive 1965",
+      "type": "",
+      "typeRu": "",
+      "description": "Editorial Layout",
+      "descriptionRu": "Editorial Layout",
+      "body": "",
+      "bodyRu": "",
+      "src": "/1a4c5664-b4ad-4e52-b53c-ba755cb4e19a.jpg",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "cardW": 573.19691845828,
+      "cardH": 738.6913670958588,
+      "mediaFit": "contain",
+      "categoryIds": [
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ],
+      "showFullProject": false,
+      "blocks": [
+        {
+          "id": "24b9f37e-a2f1-45ca-b9c0-e17d7bb323e9",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/1a4c5664-b4ad-4e52-b53c-ba755cb4e19a.jpg",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 0,
+            "w": 1200,
+            "h": 1546.4661654135339
+          }
+        }
+      ],
+      "previewSrc": "/previews/1a4c5664-b4ad-4e52-b53c-ba755cb4e19a-800.webp",
+      "previewSrc2x": "/previews/1a4c5664-b4ad-4e52-b53c-ba755cb4e19a-1600.webp"
+    },
+    {
+      "id": "650447f5-fabd-4b7a-b98f-158c6bfc5cfe",
+      "title": "DFM 580",
+      "titleRu": "DFM 580",
+      "type": "",
+      "typeRu": "",
+      "description": "Promotional Car Wrap",
+      "descriptionRu": "Promotional Car Wrap",
+      "body": "",
+      "bodyRu": "",
+      "src": "/185612f9-4677-4b68-98dd-5de5de1e0ba4.jpg",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "categoryIds": [
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ],
+      "blocks": [
+        {
+          "id": "b515321c-60f5-4086-a132-8eaffeaad0e3",
+          "kind": "image",
+          "width": 12,
+          "place": "auto",
+          "ratio": "auto",
+          "fit": "contain",
+          "text": "",
+          "textRu": "",
+          "src": "/2de210d1-48e6-4df3-bdab-9563d095573f.png",
+          "fontSize": 18,
+          "weight": 400,
+          "align": "left",
+          "font": "sans",
+          "italic": false,
+          "frame": {
+            "x": 0,
+            "y": 0,
+            "w": 1200,
+            "h": 705.4721549636804
+          }
+        }
+      ],
+      "previewSrc": "/previews/185612f9-4677-4b68-98dd-5de5de1e0ba4-800.webp",
+      "previewSrc2x": "/previews/185612f9-4677-4b68-98dd-5de5de1e0ba4-1600.webp"
+    },
+    {
+      "id": "d3b6dff2-230f-4cdd-8708-5c043471da12",
+      "title": "Nero gold",
+      "titleRu": "Nero gold",
+      "type": "",
+      "typeRu": "",
+      "description": "Marketplace motion",
+      "descriptionRu": "Marketplace motion",
+      "body": "",
+      "bodyRu": "",
+      "src": "/7f9fcc8e-dc93-40e4-b33b-c709fe8a7bbc.mp4",
+      "mediaType": "video",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "categoryIds": [
+        "c7dfeef3-62cf-4287-a7cd-bcee78ea2227",
+        "2f4fab15-bf57-40ca-a5e6-e8927b770198"
+      ],
+      "showFullProject": false
+    },
+    {
+      "id": "0b617de6-d9a5-4344-9d53-a48ae4939896",
+      "title": "RF",
+      "titleRu": "RF",
+      "type": "",
+      "typeRu": "",
+      "description": "T-Shirt Graphic",
+      "descriptionRu": "T-Shirt Graphic",
+      "body": "",
+      "bodyRu": "",
+      "src": "/73541f0a-c5a5-4d3d-b2a9-ed22e941b636.jpg",
+      "mediaType": "image",
+      "projectMedia": [],
+      "width": 1,
+      "height": 1,
+      "showFullProject": false,
+      "categoryIds": [
+        "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
+      ],
+      "previewSrc": "/previews/73541f0a-c5a5-4d3d-b2a9-ed22e941b636-800.webp",
+      "previewSrc2x": "/previews/73541f0a-c5a5-4d3d-b2a9-ed22e941b636-1600.webp"
+    }
+  ],
+  "galleryLayout": {
+    "mode": "rows",
+    "columns": 8
+  },
+  "categories": [
+    {
+      "id": "c7dfeef3-62cf-4287-a7cd-bcee78ea2227",
+      "name": "MARKETPLACE"
+    },
+    {
+      "id": "41d541f5-6f1d-49a5-a68f-5d7feaddfd24",
+      "name": "BRAND & CAMPAIGNS"
+    },
+    {
+      "id": "2f4fab15-bf57-40ca-a5e6-e8927b770198",
+      "name": "MOTION"
+    },
+    {
+      "id": "5d1f5a1f-c432-4b12-a062-ba7ddda3f24e",
+      "name": "POSTERS"
+    }
+  ]
+}

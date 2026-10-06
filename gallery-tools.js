@@ -20,6 +20,28 @@
 
  let galleryScrolling=false,scrollStopTimer=0;
  let pending=0;
+ let workPreviewReady=false,workPreviewTimer=0,lastWorkActive=document.body.dataset.page==='2';
+
+ function deckDurationMs(){
+  const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();
+  const n=parseFloat(raw)||0;
+  return n*(raw.endsWith('ms')?1:1000);
+ }
+
+ function armWorkPreview(){
+  clearTimeout(workPreviewTimer);
+  workPreviewReady=false;
+  schedule();
+  if(document.body.dataset.page!=='2')return;
+  workPreviewTimer=setTimeout(()=>{
+   if(document.body.dataset.page==='2'){
+    workPreviewReady=true;
+    schedule();
+    scheduleWarm(40);
+   }
+  },Math.max(120,deckDurationMs()+70));
+ }
+
  const visible=new Map();
  const warmQueue=new Set();
  let warmTimer=0,warmIdle=0;
@@ -147,7 +169,10 @@
      // Gallery videos do not start/resume while the scroll or the gallery/page
      // transition is active. This keeps the compositor free for movement.
      const movementBusy=galleryScrolling||isGalleryTransitioning();
-     const galleryPlayback=window.portfolioGalleryOpen&&workActive&&!isCase;
+     // Preview videos are allowed on the normal WORK page too, but only after
+     // the page transition has settled. IntersectionObserver still limits this
+     // to videos actually visible in the WORK viewport.
+     const workPlayback=workActive&&!isCase&&(window.portfolioGalleryOpen||workPreviewReady);
 
      const allowed=
        !window.portfolioMediaOpen&&
@@ -155,7 +180,7 @@
        !movementBusy&&
        visible.get(video)&&
        !card?.hidden&&
-       (inCase?isCase:galleryPlayback)&&
+       (inCase?isCase:workPlayback)&&
        playing<cap;
 
      if(allowed){
@@ -185,6 +210,14 @@
 
  new MutationObserver(scan).observe(document.body,{childList:true,subtree:true});
  new MutationObserver(schedule).observe(document.body,{attributes:true,attributeFilter:['data-page','class']});
+ new MutationObserver(()=>{
+   const now=document.body.dataset.page==='2';
+   if(now===lastWorkActive)return;
+   lastWorkActive=now;
+   armWorkPreview();
+ }).observe(document.body,{attributes:true,attributeFilter:['data-page']});
+
+ document.addEventListener('portfolio-startup-complete',armWorkPreview);
 
  for(const name of ['visibilitychange','portfolio-content','gallery-mode-change','project-mode-change','gallery-filter-change','media-mode-change']){
    document.addEventListener(name,()=>{
@@ -201,4 +234,5 @@
 
  scan();
  scheduleWarm(250);
+ if(!document.documentElement.classList.contains('site-booting')&&document.body.dataset.page==='2')armWorkPreview();
 })();

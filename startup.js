@@ -137,14 +137,17 @@
 
      // Reveal the real target UNDER an identical, already aligned copy.
      // Remove the copy one frame later: there is no visible replacement flash.
+     root.classList.add('site-ui-reveal');
      root.classList.remove('site-arriving');
      await new Promise(resolve=>requestAnimationFrame(resolve));
      handoff.remove();
    }else{
+     root.classList.add('site-ui-reveal');
      root.classList.remove('site-arriving');
    }
 
    loader.remove();
+   setTimeout(()=>root.classList.remove('site-ui-reveal'),1500);
 
    for(const type of ['wheel','touchstart','touchmove','keydown']){
      window.removeEventListener(type,block,true);
