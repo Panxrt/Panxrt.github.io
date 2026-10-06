@@ -239,13 +239,21 @@ function paintMenu(state=null,contactProgress=null){
  // the physical panel geometry, so it moves smoothly with the rails.
  menuMask.style.setProperty('--filter-left',foldedLightEnd+'px');
  document.documentElement.style.setProperty('--filter-left',foldedLightEnd+'px');
- let lightEnd=foldedLightEnd*(1-galleryProgress);
+ // Normal deck transitions use the real moving panel edge as the colour mask.
+ // Gallery -> ABOUT / INTRO must use that SAME rule. Multiplying by
+ // (1-galleryProgress) made the white/black boundary visibly lag behind ABOUT.
+ const galleryToIntroOrAbout=
+  document.body.classList.contains('gallery-closing')&&(page===0||page===1);
+
+ let lightEnd=galleryToIntroOrAbout
+  ? foldedLightEnd
+  : foldedLightEnd*(1-galleryProgress);
 
  // Direct INTRO -> CONTACTS only:
- // the logo must be cut by the LEFT edge of the moving ABOUT spine.
- // INTRO->ABOUT and INTRO->WORK keep their established behavior unchanged.
+ // keep the normal INTRO colour (no white flash) and cut PANXRT/menu at the
+ // LEFT edge of INTRO's own spine.
  if(directIntroToContacts){
-  lightEnd=Math.max(0,Math.min(viewport,aboutEdge-rail()));
+  lightEnd=Math.max(0,Math.min(viewport,introEdge-rail()));
  }
  let cp=contactProgress;
  if(cp==null)cp=page===3?1:0;
@@ -265,7 +273,11 @@ function paintMenu(state=null,contactProgress=null){
  menuMask.style.width=workSpineLeft+'px';
  const visibleRight=workSpineLeft;
  clipHeader(menu,0,Math.min(lightEnd,visibleRight),viewport);
- clipHeader(darkMenu,lightEnd,visibleRight,viewport);
+
+ // Direct INTRO -> CONTACTS should never flash white before disappearing.
+ // The black INTRO header is simply cut by the moving INTRO-spine boundary.
+ const darkStart=directIntroToContacts?visibleRight:lightEnd;
+ clipHeader(darkMenu,darkStart,visibleRight,viewport);
  // Matte belongs to WORK: its RIGHT edge follows WORK itself, never the
  // CONTACTS text mask. Because this layer sits in the deck below ABOUT, the
  // small overlap is genuinely underneath ABOUT rather than on top of it.
@@ -309,7 +321,14 @@ function contactProgress(fromPage,toPage,k,fromGallery,toGallery){
 }
 function setMotion(state,cp){
  for(const i of motionIndices){
-  panels[i].style.transform=`translate3d(${state.x[i]}px,0,0)`;
+  // Inline !important is intentional: the old gallery CSS contains
+  // !important panel transforms. The deck compositor is the single source of
+  // motion while a transition is running, so its exact frame must win.
+  panels[i].style.setProperty(
+   'transform',
+   `translate3d(${state.x[i]}px,0,0)`,
+   'important'
+  );
  }
  paintMenu(state,cp);
 }
@@ -350,8 +369,8 @@ window.endDeckTransition=function(){
  panels.forEach(p=>p.style.removeProperty('transform'));
  const to=snapshot();
 
- // Only the direct INTRO -> CONTACTS jump needs a different light-header cut:
- // use the LEFT side of ABOUT's spine, not ABOUT panel's outer edge.
+ // Only the direct INTRO -> CONTACTS jump needs a special header cut:
+ // use the LEFT side of INTRO's own spine and never reveal the white copy.
  directIntroToContacts=
   !from.gallery&&!to.gallery&&from.page===0&&to.page===3;
 

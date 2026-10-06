@@ -2097,3 +2097,30 @@ body:not(.gallery-mode):not(.gallery-closing) .header-contact-mask #menu-dark .s
   visibility:hidden!important;
   pointer-events:none!important;
 }
+
+
+/* ==========================================================
+   V57 — MASK + GALLERY TRANSITION SYNCHRONISATION
+   ========================================================== */
+
+/* During Gallery -> CONTACTS the real panels are animated by interaction.js.
+   Do not let CSS transitions on the spines add a second, delayed movement. */
+body.gallery-to-contacts .panel.intro .spine,
+body.gallery-to-contacts .panel.about .spine,
+body.gallery-to-contacts .panel.work .spine{
+  opacity:1!important;
+}
+
+/* Preserve the rounded physical cards throughout the compositor tween. */
+body.gallery-to-contacts .panel.intro,
+body.gallery-to-contacts .panel.about,
+body.gallery-to-contacts .panel.work{
+  border-radius:0 20px 20px 0!important;
+}
+@media(max-width:700px){
+  body.gallery-to-contacts .panel.intro,
+  body.gallery-to-contacts .panel.about,
+  body.gallery-to-contacts .panel.work{
+    border-radius:0 13px 13px 0!important;
+  }
+}
