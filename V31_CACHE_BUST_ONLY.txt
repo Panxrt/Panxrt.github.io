@@ -1,0 +1,15 @@
+V31 — CACHE-BUST ONLY
+
+Base: V30.
+
+No CSS, JS logic, transitions, geometry, masks, PANXRT, filter tray, gallery, cards,
+loading behavior, or CONTACTS behavior was changed.
+
+Only index.html was changed:
+- all local .css references now use ?v=31
+- all local .js references now use ?v=31
+- favicon references use ?v=31
+
+Purpose:
+Force GitHub Pages / browser to load one consistent V30 asset set instead of mixing
+new HTML/JS with stale CSS/JS from cache.
