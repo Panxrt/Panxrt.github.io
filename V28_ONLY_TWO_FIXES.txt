@@ -1,0 +1,28 @@
+V28 — rebuilt directly from V26.
+
+ONLY THESE TWO BEHAVIORS CHANGED:
+
+1) Filter submenu tray
+- .filter-reveal (the existing frosted 50px backing) now moves vertically.
+- Filter buttons no longer have a separate vertical transform.
+- Glass + filter controls therefore enter/leave as one physical tray.
+- V26 height, left alignment, typography and glass recipe are preserved.
+
+2) WORK -> CONTACTS clipping
+- Removed the synthetic viewport*(1-contactProgress) cut.
+- Header clipping now follows the actual physical LEFT edge of the WORK spine.
+- The calculation also includes galleryProgress because the WORK spine slides
+  one rail to the right while gallery mode is open.
+- PANXRT and menu labels therefore share the same physical clipping boundary.
+- No artificial delay was added to CONTACTS.
+
+NOT TOUCHED:
+- gallery/grid geometry
+- card sizes/crop/hover
+- WORK matte
+- PANXRT movement itself
+- page transition speed/easing
+- bottom blur/gradient
+- startup/loading
+- cases/media
+- filter size/alignment/glass look from V26

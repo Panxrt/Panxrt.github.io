@@ -203,11 +203,16 @@ function paintMenu(state=null,contactProgress=null){
  let cp=contactProgress;
  if(cp==null)cp=page===3?1:0;
  cp=Math.max(0,Math.min(1,cp));
- // CONTACTS progressively masks the whole fixed header right -> left.
- const headerRight=viewport*(1-cp);
- menuMask.style.width=headerRight+'px';
- const visibleRight=Math.max(0,Math.min(headerRight,workEdge));
- clipHeader(menu,0,Math.min(lightEnd,headerRight),viewport);
+ // Clip the fixed header by the REAL physical left edge of the WORK spine.
+ // In gallery mode the WORK spine itself slides one rail to the right,
+ // so galleryProgress is part of that same physical boundary.
+ const workSpineLeft=Math.max(0,Math.min(
+  viewport,
+  workEdge-workSpineWidth*(1-galleryProgress)
+ ));
+ menuMask.style.width=workSpineLeft+'px';
+ const visibleRight=workSpineLeft;
+ clipHeader(menu,0,Math.min(lightEnd,visibleRight),viewport);
  clipHeader(darkMenu,lightEnd,visibleRight,viewport);
  // Matte belongs to WORK: its RIGHT edge follows WORK itself, never the
  // CONTACTS text mask. Because this layer sits in the deck below ABOUT, the

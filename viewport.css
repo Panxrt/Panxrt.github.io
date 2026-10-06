@@ -1352,3 +1352,72 @@ body.project-mode .work .work-header-glass{
     padding-right:var(--menu-inset)!important;
   }
 }
+
+
+/* ==========================================================
+   V28 — ONLY TWO TARGETED FIXES, rebuilt from V26
+   1) filter glass + controls move as ONE 50px tray
+   2) header/PANXRT clip follows the physical WORK spine (JS)
+   Everything else remains V26.
+   ========================================================== */
+
+/* Move the WHOLE frosted wrapper, not only the filter buttons.
+   V26's glass/background, 50px height and left alignment stay unchanged. */
+.header-contact-mask #menu-dark .filter-reveal{
+  transform:translate3d(0,-104%,0)!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transition:
+    transform .84s cubic-bezier(.22,.61,.36,1),
+    visibility 0s .84s!important;
+  will-change:transform;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+
+.gallery-opening.gallery-mode .header-contact-mask #menu-dark .filter-reveal,
+.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .filter-reveal{
+  transform:translate3d(0,0,0)!important;
+  visibility:visible!important;
+  transition:
+    transform .84s cubic-bezier(.22,.61,.36,1) .05s,
+    visibility 0s!important;
+}
+
+.gallery-closing .header-contact-mask #menu-dark .filter-reveal{
+  transform:translate3d(0,-104%,0)!important;
+  visibility:visible!important;
+  transition:
+    transform .84s cubic-bezier(.22,.61,.36,1),
+    visibility 0s .84s!important;
+}
+
+/* The child row stays fixed INSIDE that moving glass tray.
+   No second vertical animation, so the matte backing can never remain behind. */
+.header-contact-mask #menu-dark .gallery-filters,
+.gallery-opening.gallery-mode .header-contact-mask #menu-dark .gallery-filters,
+.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .gallery-filters,
+.gallery-closing .header-contact-mask #menu-dark .gallery-filters{
+  transform:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+  transition:none!important;
+  background:transparent!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+
+.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .gallery-filters{
+  pointer-events:auto!important;
+}
+
+.gallery-closing .header-contact-mask #menu-dark .gallery-filters,
+body:not(.gallery-mode) .header-contact-mask #menu-dark .gallery-filters{
+  pointer-events:none!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .header-contact-mask #menu-dark .filter-reveal{
+    transition:none!important;
+  }
+}
