@@ -107,8 +107,6 @@ function closeGallery(destination){
   // INTRO/ABOUT folded rails to travel back in during the SAME move to CONTACTS.
   // WORK/gallery geometry stays untouched until the transition is finished.
   document.body.classList.add('gallery-to-contacts');
-  // Apply physical header/submenu cuts before the first moving frame.
-  window.syncMenu?.();
   go(destination);
   window.endDeckTransition?.();
   document.dispatchEvent(new Event('gallery-mode-change'));
@@ -222,46 +220,6 @@ function clipHeader(header,leftEdge,rightEdge,viewport=document.documentElement.
  target.style.clip=`rect(0px, ${right}px, 9999px, ${left}px)`;
  const hidden=right-left<.5;header.style.visibility=hidden?'hidden':'visible';header.inert=hidden;header.setAttribute('aria-hidden',String(hidden));
 }
-
-let submenuOverlay=null;
-function setSubmenuBounds(leftEdge,rightEdge,viewport=document.documentElement.clientWidth){
- const overlay=submenuOverlay||document.querySelector('.submenu-overlay');
- if(!overlay)return;
- submenuOverlay=overlay;
- const left=Math.max(0,Math.min(viewport,leftEdge));
- const right=Math.max(left,Math.min(viewport,rightEdge));
- // Inline !important deliberately wins over old historical submenu rules.
- overlay.style.setProperty('left',left+'px','important');
- overlay.style.setProperty('width',(right-left)+'px','important');
-}
-
-function setHeaderPhysicalWindow(leftEdge,rightEdge,active,viewport=document.documentElement.clientWidth){
- const clips=menuMask.querySelectorAll('.menu-clip');
-
- if(!active){
-  // Everywhere except Gallery -> CONTACTS keep the established full-width
-  // fixed header. PANXRT therefore remains above rails exactly as before.
-  menuMask.style.setProperty('left','0px','important');
-  menuMask.style.setProperty('width','100vw','important');
-  for(const clip of clips)clip.style.setProperty('left','0px','important');
-  return;
- }
-
- const left=Math.max(0,Math.min(viewport,leftEdge));
- const right=Math.max(left,Math.min(viewport,rightEdge));
-
- // The parent is the REAL paint boundary. Header/backdrop simply does not
- // exist above INTRO/ABOUT or above the WORK spine during this transition.
-  menuMask.style.setProperty('left',left+'px','important');
-  menuMask.style.setProperty('width',(right-left)+'px','important');
-
- // Keep both light/dark header copies locked to viewport coordinates.
- // Parent starts at +left, child starts at -left => child global X remains 0.
- for(const clip of clips){
-  clip.style.setProperty('left',(-left)+'px','important');
- }
-}
-
 function paintMenu(state=null,contactProgress=null){
  const viewport=document.documentElement.clientWidth;
  const x=state?.x||panels.map(position);
@@ -281,63 +239,39 @@ function paintMenu(state=null,contactProgress=null){
  // the physical panel geometry, so it moves smoothly with the rails.
  menuMask.style.setProperty('--filter-left',foldedLightEnd+'px');
  document.documentElement.style.setProperty('--filter-left',foldedLightEnd+'px');
- // Gallery -> INTRO / ABOUT:
- // the black/white cut follows the REAL returning panel edge immediately.
- // This removes the delayed colour-mask catch-up.
- const galleryToLight=document.body.classList.contains('gallery-closing')&&(page===0||page===1);
- const lightEnd=galleryToLight?foldedLightEnd:foldedLightEnd*(1-galleryProgress);
+ let lightEnd=foldedLightEnd*(1-galleryProgress);
 
+ // Direct INTRO -> CONTACTS only:
+ // the logo must be cut by the LEFT edge of the moving ABOUT spine.
+ // INTRO->ABOUT and INTRO->WORK keep their established behavior unchanged.
+ if(directIntroToContacts){
+  lightEnd=Math.max(0,Math.min(viewport,aboutEdge-rail()));
+ }
  let cp=contactProgress;
  if(cp==null)cp=page===3?1:0;
  cp=Math.max(0,Math.min(1,cp));
-
+ // Clip the fixed header by the REAL physical left edge of the WORK spine.
+ // In gallery mode the WORK spine itself slides one rail to the right,
+ // so galleryProgress is part of that same physical boundary.
  const galleryToContacts=document.body.classList.contains('gallery-to-contacts');
-
- // During Gallery -> CONTACTS the REAL WORK spine is attached to WORK from the
- // first frame. Therefore its physical edge is workEdge - workSpineWidth,
- // even though gallery-mode intentionally remains painted behind the move.
- const spineGalleryProgress=galleryToContacts?0:galleryProgress;
+ const effectiveSpineGalleryProgress=galleryToContacts?0:galleryProgress;
  const workSpineLeft=Math.max(0,Math.min(
   viewport,
-  workEdge-workSpineWidth*(1-spineGalleryProgress)
+  workEdge-workSpineWidth*(1-effectiveSpineGalleryProgress)
  ));
-
- // Submenu and header are cut from EXACTLY the same physical moving geometry.
- // No z-index tricks or rail copies are involved.
+ // Body-level submenu keeps its working frosted-glass architecture,
+ // but its RIGHT edge follows the physical LEFT edge of the WORK spine.
  document.documentElement.style.setProperty('--filter-right',workSpineLeft+'px');
- setSubmenuBounds(foldedLightEnd,workSpineLeft,viewport);
-
- // V55: physically constrain the ENTIRE fixed header during Gallery -> CONTACTS.
- // This is stronger than clipping PANXRT text alone: the dark frosted header,
- // PANXRT, RU/nav and both light/dark copies cannot paint over side rails.
- setHeaderPhysicalWindow(foldedLightEnd,workSpineLeft,galleryToContacts,viewport);
-
+ menuMask.style.width=workSpineLeft+'px';
  const visibleRight=workSpineLeft;
-
- // The physical parent already owns the CONTACTS transition boundary.
- // clipHeader still controls the light/dark colour split inside that window.
- const headerLeft=galleryToContacts?foldedLightEnd:0;
- clipHeader(menu,headerLeft,Math.min(lightEnd,visibleRight),viewport);
- clipHeader(darkMenu,Math.max(headerLeft,lightEnd),visibleRight,viewport);
- // Matte belongs to WORK.
- // Normally preserve the established V53/V18 matte geometry.
- // ONLY during Gallery -> CONTACTS, force matte/header glass to use the exact
- // same physical window as PANXRT/menu/submenu:
- //   left  = after the returning INTRO/ABOUT rail stack
- //   right = before the real WORK spine
- // This prevents the frosted strip from painting over any side button.
+ clipHeader(menu,0,Math.min(lightEnd,visibleRight),viewport);
+ clipHeader(darkMenu,lightEnd,visibleRight,viewport);
+ // Matte belongs to WORK: its RIGHT edge follows WORK itself, never the
+ // CONTACTS text mask. Because this layer sits in the deck below ABOUT, the
+ // small overlap is genuinely underneath ABOUT rather than on top of it.
  const overlap=1*(1-galleryProgress);
- const normalBgLeft=Math.max(0,lightEnd-overlap);
- const normalMatteRight=Math.max(0,Math.min(viewport,workEdge));
-
- const bgLeft=galleryToContacts
-  ? foldedLightEnd
-  : normalBgLeft;
-
- const matteRight=galleryToContacts
-  ? workSpineLeft
-  : normalMatteRight;
-
+ const bgLeft=Math.max(0,lightEnd-overlap);
+ const matteRight=Math.max(0,Math.min(viewport,workEdge));
  const bgRight=Math.max(bgLeft,matteRight);
  const rightInset=Math.max(0,viewport-bgRight);
  workMenuBackdrop.style.clipPath=`inset(0 ${rightInset}px 0 ${bgLeft}px)`;
@@ -348,14 +282,14 @@ function paintMenu(state=null,contactProgress=null){
 // V45 only avoids writing transforms to panels whose X position does not change.
 let motionFrame=0,motionDepth=0,motionFrom=null,motionFromPage=0,motionFromGallery=false;
 let motionIndices=[];
+let directIntroToContacts=false;
 
 function snapshot(){
  const page=Number(document.body.dataset.page||0);
  const visualGallery=visualGalleryState();
 
- // Gallery -> CONTACTS deliberately keeps .gallery-mode on the WORK content
- // until the panel has left. Header geometry must NOT stay in gallery state:
- // it transitions 1 -> 0 together with the page motion.
+ // CONTACTS from Gallery keeps the expanded artwork painted while WORK leaves,
+ // but header/rails must animate exactly toward the normal non-gallery state.
  const gallery=document.body.classList.contains('gallery-to-contacts')
   ? false
   : visualGallery;
@@ -416,6 +350,11 @@ window.endDeckTransition=function(){
  panels.forEach(p=>p.style.removeProperty('transform'));
  const to=snapshot();
 
+ // Only the direct INTRO -> CONTACTS jump needs a different light-header cut:
+ // use the LEFT side of ABOUT's spine, not ABOUT panel's outer edge.
+ directIntroToContacts=
+  !from.gallery&&!to.gallery&&from.page===0&&to.page===3;
+
  // Only panels whose X actually changes are touched during the rAF loop.
  motionIndices=from.x
   .map((x,i)=>Math.abs(to.x[i]-x)>.25?i:-1)
@@ -431,6 +370,7 @@ window.endDeckTransition=function(){
   for(const i of motionIndices)panels[i].style.removeProperty('transform');
   paintMenu(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));
   motionIndices=[];
+  directIntroToContacts=false;
   document.body.classList.remove('deck-motion-active');
   return;
  }
@@ -461,6 +401,7 @@ window.endDeckTransition=function(){
     motionIndices=[];
     syncWorkAnchor();
     paintMenu(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));
+    directIntroToContacts=false;
     document.body.classList.remove('deck-motion-active');
    });
   }

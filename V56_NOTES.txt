@@ -1,0 +1,26 @@
+V56 — rebuilt directly from V47 after reviewing IMG_5195.mp4.
+
+TRANSITION DESIGN:
+Gallery -> CONTACTS is one simultaneous scene:
+- INTRO / ABOUT return smoothly from the left
+- WORK simultaneously moves left into its CONTACTS folded position
+- the real WORK spine stays attached to WORK for the whole move
+- PANXRT shifts from Gallery position toward its normal WORK position
+- PANXRT is then naturally clipped by the moving WORK boundary, exactly like
+  a normal WORK -> CONTACTS transition
+- BACK starts retracting immediately on click
+- filter row starts retracting immediately on click
+
+FILTER SUBMENU:
+- now mounted INSIDE #menu-dark as a second row of the main header
+- slides vertically from under the primary menu
+- gets its own physical rail clip (ABOUT edge -> WORK spine edge)
+- no separate body-level stacking behavior
+
+OTHER FIXES:
+- direct INTRO -> CONTACTS logo cut uses LEFT edge of ABOUT spine
+- filter category change scrolls Gallery to top
+- all actually viewport-visible videos may play
+- opening/closing Gallery and page navigation do not pause videos by themselves
+- offscreen videos still pause
+- no cloned rails / no handoff layers

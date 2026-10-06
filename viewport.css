@@ -1960,20 +1960,20 @@ body.gallery-mode.gallery-to-contacts .panel.about.passed{
 
 
 /* ==========================================================
-   V53 — SINGLE-SOURCE TRANSITIONS
-   Real panels + real spines only. No copies, no handoff layer.
+   V56 — UNIFIED GALLERY / CONTACTS TRANSITION
+   Base: V47. No rail clones. No global z-index swaps.
    ========================================================== */
 
-/* INTRO and ABOUT leave full-gallery position using their original physical
-   panels and arrive at the normal CONTACTS rail stack in one continuous move. */
+/* CONTACTS from Gallery:
+   INTRO + ABOUT return with the same real-panel geometry used by Gallery BACK.
+   WORK moves left at the same time. */
 body.gallery-mode.gallery-to-contacts .panel.intro.passed,
 body.gallery-mode.gallery-to-contacts .panel.about.passed{
   transform:translate3d(calc(-100% + (var(--i) + 1)*var(--rail)),0,0)!important;
 }
 
-/* WORK's REAL spine stays attached to the WORK panel for the whole transition.
-   It starts just outside the viewport, enters with WORK, arrives once, and stays.
-   No transform transition of its own = no second departure/return. */
+/* The real WORK spine belongs to WORK for the entire move.
+   No independent transform = no arrive/leave/return bounce. */
 body.gallery-mode.gallery-to-contacts .work .spine,
 body.gallery-to-contacts .work .spine{
   transform:none!important;
@@ -1981,8 +1981,7 @@ body.gallery-to-contacts .work .spine{
   transition:none!important;
 }
 
-/* One real rounded panel is used throughout, so the rail corner radius cannot
-   disappear between gallery and CONTACTS states. */
+/* Keep one continuous rounded real panel/spine geometry during the transition. */
 body.gallery-to-contacts .panel.intro,
 body.gallery-to-contacts .panel.about,
 body.gallery-to-contacts .panel.work,
@@ -1992,7 +1991,6 @@ body.gallery-to-contacts .panel.work.passed{
   border-radius:0 20px 20px 0!important;
   overflow:hidden!important;
 }
-
 @media(max-width:700px){
   body.gallery-to-contacts .panel.intro,
   body.gallery-to-contacts .panel.about,
@@ -2004,41 +2002,98 @@ body.gallery-to-contacts .panel.work.passed{
   }
 }
 
-/* The approved V36 submenu remains body-level for real backdrop blur, but its
-   actual painted box is cut to the same physical ABOUT/WORK edges every frame. */
-body.gallery-to-contacts .submenu-overlay{
-  overflow:hidden!important;
-  contain:paint;
+/* BACK starts leaving on the FIRST frame of Gallery -> CONTACTS,
+   rather than waiting until gallery-mode is finally removed. */
+body.gallery-to-contacts .gallery-back-floating{
+  transform:translateX(calc(100% + 30px))!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transition:
+    transform .55s cubic-bezier(.22,.61,.36,1),
+    visibility 0s .55s,
+    background .25s!important;
 }
 
-
-/* ==========================================================
-   V54 — Gallery -> CONTACTS matte follows the real rail window
-   ========================================================== */
-
-/* The backdrop itself is still the approved WORK matte. During this one move
-   its clip is updated from interaction.js using the exact same moving edges as
-   PANXRT, submenu and WORK spine. Keep the layer paint-contained so blur cannot
-   bleed beyond that clip while rails pass in front. */
-body.gallery-to-contacts .work-menu-backdrop{
-  contain:paint;
+/* ----------------------------------------------------------
+   FILTER ROW = SECOND ROW OF THE MAIN DARK HEADER.
+   It is no longer a body-level fixed overlay.
+   ---------------------------------------------------------- */
+.header-contact-mask #menu-dark{
+  overflow:visible!important;
 }
 
-
-/* ==========================================================
-   V55 — PHYSICAL HEADER WINDOW FOR Gallery -> CONTACTS
-   ========================================================== */
-
-/* interaction.js changes the actual fixed header box to the space between
-   ABOUT and WORK spine. This guarantees the matte/header/PANXRT cannot paint
-   over side rails, regardless of z-index/backdrop-filter composition. */
-body.gallery-to-contacts .header-contact-mask{
-  overflow:hidden!important;
-  contain:paint;
-}
-
-/* Keep inner clips viewport-sized while their parent becomes a narrow window.
-   JS supplies their negative left offset every frame. */
-body.gallery-to-contacts .header-contact-mask .menu-clip{
+.header-contact-mask #menu-dark .submenu-overlay{
+  position:absolute!important;
+  top:var(--header)!important;
+  left:0!important;
+  right:auto!important;
   width:100vw!important;
+  height:50px!important;
+
+  /* The main menu-clip provides the outer header mask.
+     This second clip uses the PHYSICAL side-rail boundaries, so matte/filter
+     content can never paint over INTRO/ABOUT or WORK spine. */
+  clip-path:inset(
+    0
+    max(0px,calc(100vw - var(--filter-right,100vw)))
+    0
+    var(--filter-left,0px)
+  )!important;
+  -webkit-clip-path:inset(
+    0
+    max(0px,calc(100vw - var(--filter-right,100vw)))
+    0
+    var(--filter-left,0px)
+  )!important;
+
+  overflow:hidden!important;
+  pointer-events:none!important;
+  z-index:0!important;
+  background:transparent!important;
+  contain:paint;
+}
+
+/* The sheet is viewport-aligned inside the main header.
+   It only moves vertically under the primary row. */
+.header-contact-mask #menu-dark .submenu-overlay .submenu-sheet{
+  position:absolute!important;
+  left:0!important;
+  width:100vw!important;
+  height:50px!important;
+}
+
+/* Keep the approved V36 glass appearance. */
+.header-contact-mask #menu-dark .submenu-overlay .submenu-glass{
+  background:rgba(24,24,24,.42)!important;
+  backdrop-filter:blur(28px) saturate(130%)!important;
+  -webkit-backdrop-filter:blur(28px) saturate(130%)!important;
+}
+
+/* The filter controls keep their viewport/header alignment. */
+.header-contact-mask #menu-dark .submenu-overlay .submenu-controls{
+  width:100vw!important;
+  padding-left:var(--menu-inset)!important;
+}
+
+/* Opening Gallery: filter row slides out from beneath the main header. */
+.gallery-opening.gallery-mode .header-contact-mask #menu-dark .submenu-overlay .submenu-sheet,
+.gallery-mode:not(.gallery-closing):not(.project-mode) .header-contact-mask #menu-dark .submenu-overlay .submenu-sheet{
+  top:0!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+
+/* BACK, CONTACTS or project: retract immediately beneath the main header. */
+.gallery-closing .header-contact-mask #menu-dark .submenu-overlay .submenu-sheet,
+body.project-mode .header-contact-mask #menu-dark .submenu-overlay .submenu-sheet{
+  top:-50px!important;
+  visibility:visible!important;
+  pointer-events:none!important;
+}
+
+/* Outside Gallery it remains fully tucked under the main menu. */
+body:not(.gallery-mode):not(.gallery-closing) .header-contact-mask #menu-dark .submenu-overlay .submenu-sheet{
+  top:-50px!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
 }

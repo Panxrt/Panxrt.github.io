@@ -9,7 +9,12 @@
  const submenuGlass=document.createElement('div');submenuGlass.className='submenu-glass';
  submenuSheet.append(submenuGlass,filters);submenuMask.append(submenuSheet);
  submenuMask.classList.add('submenu-overlay');
- document.body.append(submenuMask);
+
+ // The filter row is now structurally part of the MAIN dark header.
+ // It inherits the same menu clip/motion instead of living as a separate
+ // body-level overlay with independent stacking.
+ const darkHeader=document.getElementById('menu-dark');
+ (darkHeader||document.body).append(submenuMask);
  function applyFilter(){const data=window.portfolioData;if(!data)return;closeDetail();const works=data.works.filter(w=>category==='all'||w.categoryIds?.includes(category)),ids=new Set(works.map(w=>w.id));for(const card of grid.children)card.hidden=!ids.has(card.dataset.id);grid._fineWorks=works;MosaicLayout.apply(grid,works);document.dispatchEvent(new Event('gallery-filter-change'));}
  window.getGalleryFilter=()=>category;window.restoreGalleryFilter=value=>{category=value;render();};
  function labels(){const data=window.portfolioData;if(!data)return;const ru=window.portfolioLanguage?.()==='ru';for(const card of grid.children){const w=data.works.find(w=>w.id===card.dataset.id);if(!w)continue;card.querySelector('.work-caption-title').textContent=ru?w.titleRu||w.title:w.title;card.querySelector('.work-caption-description').textContent=ru?w.descriptionRu||w.description:w.description;card.querySelector('.work-caption-more').textContent=ru?'Подробнее +':'Details +';}}
@@ -186,14 +191,11 @@
      const isCase=!!video.closest('.project-view');
      const card=video.closest('.gallery-card');
 
-     // V53:
-     // OPEN/BACK, page transitions and filter state changes never pause a video
-     // merely because a class changed. Playback follows real screen visibility.
-     // Direct geometry is a fallback for the first frame before IntersectionObserver
-     // has delivered its next callback, eliminating the short action pause.
+     // Playback depends on REAL screen visibility, not UI transition classes.
+     // This keeps motion continuous when opening/closing Gallery or changing pages.
+     // inWorkViewport is a first-frame fallback until IntersectionObserver updates.
      const transitionPlayback=deckMoving||isGalleryTransitioning();
      const screenVisible=!!viewportVisible.get(video)||inWorkViewport(video);
-     const visibleNow=screenVisible;
 
      const workPlayback=!isCase&&(
        window.portfolioGalleryOpen||
@@ -204,7 +206,7 @@
      const allowed=
        !window.portfolioMediaOpen&&
        !document.hidden&&
-       visibleNow&&
+       screenVisible&&
        !card?.hidden&&
        (inCase?isCase:workPlayback);
 
