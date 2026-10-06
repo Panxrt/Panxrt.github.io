@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>PANXRT — Admin</title>
+  <link rel="icon" href="../favicon.svg">
+  <link rel="stylesheet" href="./admin.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <strong class="brand">PANXRT / ADMIN</strong>
+      <span class="safe">DEV ONLY · live-сайт не меняется</span>
+    </div>
+    <div class="top-actions">
+      <button id="resetBtn" class="ghost">Сбросить черновик</button>
+      <button id="exportBtn" class="ghost">Скачать JSON</button>
+      <button id="publishBtn" class="primary" disabled title="Публикацию подключим на следующем этапе">PUBLISH — позже</button>
+    </div>
+  </header>
+
+  <main class="app">
+    <aside class="sidebar">
+      <div class="tabs">
+        <button class="tab is-active" data-tab="works">Работы</button>
+        <button class="tab" data-tab="brands">Бренды</button>
+      </div>
+
+      <section id="worksPanel" class="sidebar-panel">
+        <div class="section-head">
+          <span>Проекты <b id="workCount"></b></span>
+          <button id="addWorkBtn" class="mini">+ проект</button>
+        </div>
+        <div id="workList" class="list"></div>
+      </section>
+
+      <section id="brandsPanel" class="sidebar-panel" hidden>
+        <div class="section-head">
+          <span>Бренды <b id="brandCount"></b></span>
+          <button id="addBrandBtn" class="mini">+ бренд</button>
+        </div>
+        <div id="brandList" class="list"></div>
+      </section>
+    </aside>
+
+    <section class="workspace">
+      <div class="workspace-head">
+        <div>
+          <h1>Gallery editor</h1>
+          <p>Перетаскивай карточки мышкой. Изменения пока сохраняются только в этом браузере.</p>
+        </div>
+        <div class="preview-switch">
+          <label for="preview-size">Preview</label>
+          <select id="preview-size">
+            <option value="desktop">Desktop</option>
+            <option value="tablet">Tablet</option>
+            <option value="mobile">Mobile</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="previewShell" class="preview-shell desktop">
+        <div id="galleryPreview" class="gallery-preview" aria-label="Предпросмотр галереи"></div>
+      </div>
+    </section>
+
+    <aside class="inspector">
+      <div id="emptyInspector" class="empty-inspector">
+        Выбери проект или бренд слева.
+      </div>
+
+      <form id="workEditor" class="editor" hidden>
+        <div class="editor-head">
+          <div>
+            <small>PROJECT</small>
+            <h2 id="editorTitle">—</h2>
+          </div>
+          <button type="button" id="deleteWorkBtn" class="danger">Удалить</button>
+        </div>
+
+        <label>Название
+          <input id="titleInput" type="text">
+        </label>
+
+        <label>Описание
+          <textarea id="descriptionInput" rows="4"></textarea>
+        </label>
+
+        <label>Файл / URL
+          <input id="srcInput" type="text" spellcheck="false">
+        </label>
+
+        <div class="two">
+          <label>Тип медиа
+            <select id="mediaTypeInput">
+              <option value="image">image</option>
+              <option value="video">video</option>
+            </select>
+          </label>
+          <label>Fit
+            <select id="mediaFitInput">
+              <option value="cover">cover</option>
+              <option value="contain">contain</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="two">
+          <label>Ширина
+            <select id="widthInput">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </label>
+          <label>Высота
+            <select id="heightInput">
+              <option value="1">1 ряд</option>
+              <option value="2">2 ряда</option>
+              <option value="3">3 ряда</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="checkline">
+          <input id="fullProjectInput" type="checkbox">
+          <span>Показывать Full Project</span>
+        </label>
+
+        <fieldset>
+          <legend>Категории</legend>
+          <div id="categoryChecks" class="checks"></div>
+        </fieldset>
+
+        <div class="notice">
+          Редактор содержимого Full Project добавим следующим блоком. Поля <code>blocks</code>,
+          <code>frame</code>, <code>caseLayout</code> и остальные существующие данные сейчас не удаляются.
+        </div>
+      </form>
+
+      <form id="brandEditor" class="editor" hidden>
+        <div class="editor-head">
+          <div>
+            <small>BRAND</small>
+            <h2 id="brandEditorTitle">—</h2>
+          </div>
+          <button type="button" id="deleteBrandBtn" class="danger">Удалить</button>
+        </div>
+
+        <label>Название
+          <input id="brandNameInput" type="text">
+        </label>
+
+        <label>Файл / URL логотипа
+          <input id="brandSrcInput" type="text" spellcheck="false">
+        </label>
+
+        <div class="brand-preview">
+          <img id="brandPreviewImage" alt="">
+        </div>
+      </form>
+    </aside>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="./admin.js"></script>
+</body>
+</html>
