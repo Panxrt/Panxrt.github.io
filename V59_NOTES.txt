@@ -1,0 +1,24 @@
+V59 — BASE: V58
+
+ONLY FIX:
+The frosted-glass underlay is now clipped inside a dedicated 50px vertical
+window at the submenu row.
+
+Why:
+V58 moved the body-level blur plane upward on close, so the blur itself could
+remain visible inside the main header for part of the closing animation.
+
+Now:
+- glass uses the same 0 <-> -50px / .82s motion as the filter tray
+- a static overflow:hidden window clips that motion at the submenu row
+- blur disappears progressively WITH the filter tray
+- it cannot rise over / remain visible on the main header
+
+UNCHANGED:
+- all V57 page transitions
+- logo masks
+- Gallery -> CONTACTS rails
+- BACK timing
+- submenu/filter structure and controls
+- video playback
+- all horizontal filter/rail clipping

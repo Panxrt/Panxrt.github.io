@@ -2127,23 +2127,23 @@ body.gallery-to-contacts .panel.work{
 
 
 /* ==========================================================
-   V58 — GLASS ONLY
-   Restore the approved V36 frosted-glass look WITHOUT changing V57 mechanics.
+   V59 — GLASS SYNC ONLY
+   Same V36 glass, now vertically clipped to the exact submenu row.
+   No transition/page/header/rail logic changed.
    ========================================================== */
 
-/* The V57 submenu stays structurally inside #menu-dark.
-   Its nested glass no longer paints a second tint; the real blur is rendered
-   by the visual-only body-level plane below. */
+/* Keep the nested V57 glass visual-neutral to avoid double tint. */
 .header-contact-mask #menu-dark .submenu-overlay .submenu-glass{
   background:transparent!important;
   backdrop-filter:none!important;
   -webkit-backdrop-filter:none!important;
 }
 
-/* Real backdrop-filter needs to live outside the header clip/compositor tree.
-   This plane contains NO text/buttons and uses the SAME physical V57
-   --filter-left / --filter-right boundaries, so it cannot cover side rails. */
-.submenu-blur-underlay{
+/* STATIC 50px viewport window.
+   It is the same horizontal physical area already used by V57 filters.
+   Most importantly: overflow:hidden means the blur can never rise into the
+   main header while the submenu retracts. */
+.submenu-blur-window{
   position:fixed!important;
   top:var(--header)!important;
   left:var(--filter-left,0px)!important;
@@ -2151,12 +2151,29 @@ body.gallery-to-contacts .panel.work{
   width:max(0px,calc(var(--filter-right,100vw) - var(--filter-left,0px)))!important;
   height:50px!important;
 
-  z-index:99!important; /* below main header (100), same safe level as old V36 glass */
+  z-index:99!important;
   pointer-events:none!important;
   overflow:hidden!important;
   box-sizing:border-box!important;
 
-  /* EXACT approved V36 glass recipe */
+  background:transparent!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+
+  visibility:hidden!important;
+}
+
+/* The actual glass plane moves with EXACTLY the same 50px vertical motion
+   and timing as .submenu-sheet. The outer window clips it during that motion. */
+.submenu-blur-underlay{
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  width:100%!important;
+  height:50px!important;
+  box-sizing:border-box!important;
+
   background:rgba(24,24,24,.42)!important;
   backdrop-filter:blur(28px) saturate(130%)!important;
   -webkit-backdrop-filter:blur(28px) saturate(130%)!important;
@@ -2166,35 +2183,42 @@ body.gallery-to-contacts .panel.work{
   box-shadow:none!important;
 
   transform:translate3d(0,-50px,0)!important;
-  visibility:hidden!important;
-  transition:
-    transform .82s cubic-bezier(.22,.61,.36,1),
-    visibility 0s .82s!important;
-
+  transition:transform .82s cubic-bezier(.22,.61,.36,1)!important;
   will-change:transform;
 }
 
-/* Mirror ONLY the vertical reveal/retract timing of the existing V57
-   filter sheet. Horizontal clipping still comes exclusively from the
-   already-perfect V57 physical rail variables. */
+/* OPEN: same state/timing as the existing filter tray. */
+.gallery-opening.gallery-mode .submenu-blur-window,
+.gallery-mode:not(.gallery-closing):not(.project-mode) .submenu-blur-window{
+  visibility:visible!important;
+}
+
 .gallery-opening.gallery-mode .submenu-blur-underlay,
 .gallery-mode:not(.gallery-closing):not(.project-mode) .submenu-blur-underlay{
   transform:translate3d(0,0,0)!important;
+}
+
+/* CLOSE/BACK/CONTACTS:
+   keep only the 50px window alive while the glass slides upward inside it.
+   Because the window clips at top:var(--header), no blur can linger over the
+   main menu. */
+.gallery-closing .submenu-blur-window,
+body.project-mode .submenu-blur-window{
   visibility:visible!important;
-  transition:
-    transform .82s cubic-bezier(.22,.61,.36,1),
-    visibility 0s!important;
 }
 
 .gallery-closing .submenu-blur-underlay,
 body.project-mode .submenu-blur-underlay{
   transform:translate3d(0,-50px,0)!important;
-  visibility:visible!important;
+}
+
+/* Fully closed: hide the window immediately once the gallery-close state ends. */
+body:not(.gallery-mode):not(.gallery-closing) .submenu-blur-window{
+  visibility:hidden!important;
 }
 
 body:not(.gallery-mode):not(.gallery-closing) .submenu-blur-underlay{
   transform:translate3d(0,-50px,0)!important;
-  visibility:hidden!important;
 }
 
 @media(prefers-reduced-motion:reduce){
