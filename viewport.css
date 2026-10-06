@@ -1934,3 +1934,26 @@ body:not(.gallery-mode) .work .gallery-launch{
 .gallery-closing .work .gallery-entry:after{
   top:calc(var(--work-scroll,0px) + 50px)!important;
 }
+
+
+/* ==========================================================
+   V43 — ONLY SUBMENU RIGHT CLIP + DECK COMPOSITOR SUPPORT
+   ========================================================== */
+
+/* The body-level glass submenu keeps the architecture that made blur work,
+   but its visible window is now bounded on BOTH sides:
+   left  -> returning INTRO/ABOUT edge
+   right -> LEFT edge of the physical WORK spine.
+   The inner sheet remains viewport-anchored, so text does not shift. */
+.submenu-overlay{
+  left:var(--filter-left,0px)!important;
+  right:calc(100vw - var(--filter-right,100vw))!important;
+  width:auto!important;
+}
+
+/* Keep panels promoted while CSS performs the only page transform animation. */
+.deck .panel{
+  transform-style:preserve-3d;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}

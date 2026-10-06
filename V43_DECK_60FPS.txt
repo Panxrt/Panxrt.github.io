@@ -1,0 +1,32 @@
+V43 — DECK SMOOTHNESS + SUBMENU WORK-SPINE CLIP
+BASE: V42
+
+ONLY THESE SYSTEMS CHANGED:
+
+1) Page/deck movement
+- Original CSS .panel transform transition is now the ONLY thing moving panels.
+- JS no longer writes panel.style.transform on every animation frame.
+- Same --duration and --ease remain unchanged.
+- Same INTRO / ABOUT / WORK / CONTACTS positions remain unchanged.
+- Header masks are still synchronized, but from precomputed start/end geometry.
+- No repeated getComputedStyle(panel).transform reads during the animation.
+
+2) Decorative grain
+- Full-screen grain animation is paused only while deck/gallery panels move.
+- Grain appearance is unchanged and resumes immediately after motion.
+
+3) Gallery submenu -> CONTACTS clipping
+- Body-level submenu still keeps its working frosted glass architecture.
+- Its LEFT edge still follows INTRO/ABOUT.
+- Its RIGHT edge now follows the LEFT edge of the physical WORK spine.
+- Therefore the submenu cannot draw across CONTACTS after WORK has passed.
+
+NOT TOUCHED:
+- V42 startup/menu/brand reveal
+- V42 video behavior
+- gallery grid/cards/crops
+- submenu glass recipe / filter scrolling
+- WORK matte look
+- gallery bottom gradient/blur fix
+- typography/colors/sizes
+- cases/media content

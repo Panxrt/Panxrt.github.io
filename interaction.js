@@ -219,7 +219,7 @@ function paintMenu(state=null,contactProgress=null){
  const viewport=document.documentElement.clientWidth;
  const x=state?.x||panels.map(position);
  const page=state?.page??Number(document.body.dataset.page||0);
- const gallery=state?.gallery??window.portfolioGalleryOpen;
+ const gallery=state?.gallery??document.body.classList.contains('gallery-mode');
  const galleryProgress=Math.max(0,Math.min(1,state?.galleryProgress??(gallery?1:0)));
  const shift=state?.shift??desiredMenuShift(page,gallery);
  menuMask.style.setProperty('--menu-shift',shift+'px');
@@ -245,6 +245,10 @@ function paintMenu(state=null,contactProgress=null){
   viewport,
   workEdge-workSpineWidth*(1-galleryProgress)
  ));
+ // Body-level filter submenu must end EXACTLY at the LEFT edge of the
+ // physical WORK spine. It keeps its glass outside the header clip tree,
+ // but now receives the same real moving boundary as WORK.
+ document.documentElement.style.setProperty('--filter-right',workSpineLeft+'px');
  menuMask.style.width=workSpineLeft+'px';
  const visibleRight=workSpineLeft;
  clipHeader(menu,0,Math.min(lightEnd,visibleRight),viewport);
@@ -261,50 +265,154 @@ function paintMenu(state=null,contactProgress=null){
  workMenuBackdrop.style.webkitClipPath=`inset(0 ${rightInset}px 0 ${bgLeft}px)`;
 }
 
-// Panel movement keeps the original visual geometry, but the header is sampled
-// from the SAME tween rather than running its own left/width transition.
-let motionFrame=0,motionDepth=0,motionFrom=null,motionFromPage=0,motionFromGallery=false;
-function snapshot(){const page=Number(document.body.dataset.page||0),gallery=window.portfolioGalleryOpen;return {x:panels.map(position),page,gallery,galleryProgress:gallery?1:0,shift:desiredMenuShift(page,gallery)};}
-function contactProgress(fromPage,toPage,k,fromGallery,toGallery){
+// ------------------------------------------------------------
+// V43 compositor: PANELS ARE CSS-DRIVEN ONLY.
+// The original .panel / .panel.passed / .gallery-mode transforms and
+// var(--duration)/var(--ease) remain the sole owner of page movement.
+// JS only mirrors that same mathematical progress into the small header masks.
+// This removes the old CSS-transition + JS-transform fight on every frame.
+// ------------------------------------------------------------
+let motionFrame=0,motionDepth=0,motionFrom=null;
+let panelWidths=[];
+
+function measurePanelWidths(){
+ panelWidths=panels.map(panel=>panel.getBoundingClientRect().width);
+}
+
+function visualGalleryState(){
+ return document.body.classList.contains('gallery-mode');
+}
+
+function targetPanelX(index,page=Number(document.body.dataset.page||0),gallery=visualGalleryState()){
+ const width=panelWidths[index]||panels[index].getBoundingClientRect().width;
+ // In expanded gallery INTRO / ABOUT move completely off-screen.
+ if(gallery&&(index===0||index===1))return -width;
+ // Normal deck folding leaves one rail visible.
+ if(index<page)return -width+rail();
+ return 0;
+}
+
+function targetSnapshot(){
+ const page=Number(document.body.dataset.page||0);
+ const gallery=visualGalleryState();
+ return {
+  x:panels.map((_,i)=>targetPanelX(i,page,gallery)),
+  page,
+  gallery,
+  galleryProgress:gallery?1:0,
+  shift:desiredMenuShift(page,gallery)
+ };
+}
+
+function liveSnapshot(){
+ const page=Number(document.body.dataset.page||0);
+ const gallery=visualGalleryState();
+ return {
+  // One DOM read per panel ONLY when a transition begins, never each frame.
+  x:panels.map(position),
+  page,
+  gallery,
+  galleryProgress:gallery?1:0,
+  shift:desiredMenuShift(page,gallery)
+ };
+}
+
+function contactProgress(fromPage,toPage,k){
  if(fromPage===3&&toPage!==3)return 1-k;
  if(fromPage!==3&&toPage===3)return k;
  return toPage===3?1:0;
 }
-function setMotion(state,cp){panels.forEach((panel,i)=>panel.style.transform=`translate3d(${state.x[i]}px,0,0)`);paintMenu(state,cp);}
-function makeDeckEase(){const values=getComputedStyle(document.documentElement).getPropertyValue('--ease').match(/[.\d]+/g)?.map(Number)||[.22,.61,.36,1];const [x1,y1,x2,y2]=values;const curve=(v,a,b)=>3*(1-v)*(1-v)*v*a+3*(1-v)*v*v*b+v*v*v;return function deckEase(t){let low=0,high=1;for(let i=0;i<16;i++){const middle=(low+high)/2;if(curve(middle,x1,x2)<t)low=middle;else high=middle;}return curve((low+high)/2,y1,y2);};}
-window.beginDeckTransition=function(){if(motionDepth++>0)return;cancelAnimationFrame(motionFrame);motionFrom=snapshot();motionFromPage=motionFrom.page;motionFromGallery=motionFrom.gallery;};
+
+function makeDeckEase(){
+ const values=getComputedStyle(document.documentElement)
+  .getPropertyValue('--ease').match(/[.\d]+/g)?.map(Number)||[.22,.61,.36,1];
+ const [x1,y1,x2,y2]=values;
+ const curve=(v,a,b)=>3*(1-v)*(1-v)*v*a+3*(1-v)*v*v*b+v*v*v;
+ return function deckEase(t){
+  let low=0,high=1;
+  for(let i=0;i<14;i++){
+   const middle=(low+high)/2;
+   if(curve(middle,x1,x2)<t)low=middle;else high=middle;
+  }
+  return curve((low+high)/2,y1,y2);
+ };
+}
+
+function paintInterpolated(from,to,k){
+ const state={
+  x:from.x.map((x,i)=>x+(to.x[i]-x)*k),
+  page:to.page,
+  gallery:to.gallery,
+  galleryProgress:from.galleryProgress+(to.galleryProgress-from.galleryProgress)*k,
+  shift:from.shift+(to.shift-from.shift)*k
+ };
+ paintMenu(state,contactProgress(from.page,to.page,k));
+}
+
+measurePanelWidths();
+
+window.beginDeckTransition=function(){
+ if(motionDepth++>0)return;
+ cancelAnimationFrame(motionFrame);
+ motionFrame=0;
+ motionFrom=liveSnapshot();
+ document.documentElement.classList.add('deck-motion-active');
+};
+
 window.endDeckTransition=function(){
- if(--motionDepth>0)return;motionDepth=0;if(!motionFrom)return;
- const from=motionFrom;motionFrom=null;
- panels.forEach(p=>p.style.removeProperty('transform'));
- const to=snapshot();
- const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim(),duration=(reduced.matches||window.portfolioRestoring)?0:parseFloat(raw)*(raw.endsWith('ms')?1:1000);
- if(!duration){setMotion(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));panels.forEach(p=>p.style.removeProperty('transform'));return;}
- const started=performance.now(),deckEase=makeDeckEase();
- setMotion(from,contactProgress(from.page,to.page,0,from.gallery,to.gallery));
+ if(--motionDepth>0)return;
+ motionDepth=0;
+ if(!motionFrom){
+  document.documentElement.classList.remove('deck-motion-active');
+  return;
+ }
+
+ const from=motionFrom;
+ motionFrom=null;
+ const to=targetSnapshot();
+
+ const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();
+ const duration=(reduced.matches||window.portfolioRestoring)
+  ?0
+  :(parseFloat(raw)||0)*(raw.endsWith('ms')?1:1000);
+
+ if(!duration){
+  paintMenu(to,contactProgress(from.page,to.page,1));
+  document.documentElement.classList.remove('deck-motion-active');
+  syncWorkAnchor();
+  return;
+ }
+
+ const started=performance.now();
+ const deckEase=makeDeckEase();
+
+ // Header begins from the exact currently painted panel geometry.
+ paintInterpolated(from,to,0);
+
  function tick(now){
-  const t=Math.min(1,(now-started)/duration),k=deckEase(t);
-  const state={x:from.x.map((x,i)=>x+(to.x[i]-x)*k),page:to.page,gallery:to.gallery,galleryProgress:from.galleryProgress+(to.galleryProgress-from.galleryProgress)*k,shift:from.shift+(to.shift-from.shift)*k};
-  setMotion(state,contactProgress(from.page,to.page,k,from.gallery,to.gallery));
+  const t=Math.min(1,(now-started)/duration);
+  const k=deckEase(t);
+  paintInterpolated(from,to,k);
+
   if(t<1){
    motionFrame=requestAnimationFrame(tick);
   }else{
-   // Keep the exact final transform painted for one complete frame before
-   // returning ownership to the class-based final state. This removes the
-   // tiny end-of-transition snap without changing the trajectory/easing.
-   setMotion(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));
-   motionFrame=requestAnimationFrame(()=>{
-    motionFrame=0;
-    panels.forEach(p=>p.style.removeProperty('transform'));
-    syncWorkAnchor();
-    paintMenu(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));
-   });
+   motionFrame=0;
+   paintMenu(to,contactProgress(from.page,to.page,1));
+   syncWorkAnchor();
+   document.documentElement.classList.remove('deck-motion-active');
   }
  }
+
  motionFrame=requestAnimationFrame(tick);
 };
+
 window.syncMenu=()=>paintMenu();
-function resizeDeck(){cancelAnimationFrame(motionFrame);motionFrame=0;panels.forEach(p=>p.style.removeProperty('transform'));measureHeaderGeometry();paintMenu();}
+function resizeDeck(){
+ cancelAnimationFrame(motionFrame);motionFrame=0;motionDepth=0;motionFrom=null;
+ document.documentElement.classList.remove('deck-motion-active');
+ measureHeaderGeometry();measurePanelWidths();paintMenu();
+}
 window.addEventListener('resize',resizeDeck,{passive:true});window.addEventListener('pageshow',paintMenu);document.addEventListener('visibilitychange',paintMenu);window.visualViewport?.addEventListener('resize',resizeDeck,{passive:true});paintMenu();
 
 const returnScroll=sessionStorage.getItem('panxrt-gallery-return');
