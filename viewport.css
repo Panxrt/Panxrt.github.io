@@ -1538,3 +1538,110 @@ body:not(.gallery-mode) .header-contact-mask #menu-dark .gallery-filters{
     transition:none!important;
   }
 }
+
+
+/* ==========================================================
+   V32 — ONLY FILTER GLASS + TRANSITION SEAM FIX
+   Base: V31.
+   No gallery/header/page geometry changes.
+   ========================================================== */
+
+/* Keep the 50px window stationary. It only clips the moving controls. */
+.header-contact-mask #menu-dark .filter-reveal{
+  position:absolute!important;
+  left:0!important;
+  top:var(--header)!important;
+  width:100vw!important;
+  height:50px!important;
+  overflow:hidden!important;
+
+  transform:none!important;
+  visibility:visible!important;
+  pointer-events:none!important;
+
+  background:transparent!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  transition:none!important;
+}
+
+/* Real frosted glass is rendered on a STATIONARY layer.
+   We reveal/hide that layer with clip-path instead of moving the
+   backdrop-filter surface itself; this restores the V25/V26 glass look. */
+.header-contact-mask #menu-dark .filter-reveal::before{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  pointer-events:none!important;
+
+  background:rgba(24,24,24,.58)!important;
+  backdrop-filter:blur(20px) saturate(125%)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(125%)!important;
+
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+
+  clip-path:inset(0 0 100% 0)!important;
+  -webkit-clip-path:inset(0 0 100% 0)!important;
+
+  transition:
+    clip-path .84s cubic-bezier(.22,.61,.36,1),
+    -webkit-clip-path .84s cubic-bezier(.22,.61,.36,1)!important;
+}
+
+/* Glass reveals with the same timing as the controls. */
+.gallery-opening.gallery-mode .header-contact-mask #menu-dark .filter-reveal::before,
+.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .filter-reveal::before{
+  clip-path:inset(0 0 0 0)!important;
+  -webkit-clip-path:inset(0 0 0 0)!important;
+  transition:
+    clip-path .84s cubic-bezier(.22,.61,.36,1) .05s,
+    -webkit-clip-path .84s cubic-bezier(.22,.61,.36,1) .05s!important;
+}
+
+/* BACK: glass closes upward at the same time as the filters. */
+.gallery-closing .header-contact-mask #menu-dark .filter-reveal::before{
+  clip-path:inset(0 0 100% 0)!important;
+  -webkit-clip-path:inset(0 0 100% 0)!important;
+  transition:
+    clip-path .84s cubic-bezier(.22,.61,.36,1),
+    -webkit-clip-path .84s cubic-bezier(.22,.61,.36,1)!important;
+}
+
+/* The moving tray carries only the controls.
+   Remove every visual edge from it so no horizontal seam can flash
+   while it travels behind the main menu. */
+.header-contact-mask #menu-dark .filter-tray{
+  z-index:1!important;
+  background:transparent!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+}
+
+/* Also eliminate any inherited edge on the row itself. */
+.header-contact-mask #menu-dark .filter-tray .gallery-filters{
+  background:transparent!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .header-contact-mask #menu-dark .filter-reveal::before{
+    transition:none!important;
+  }
+}

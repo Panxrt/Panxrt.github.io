@@ -1,0 +1,26 @@
+V32 — based on V31.
+
+ONLY TWO VISUAL FIXES:
+
+1) Filter submenu frosted glass
+- backdrop-filter is no longer placed on the transformed filter tray.
+- A stationary ::before glass layer uses the exact V25/V26 recipe:
+  rgba(24,24,24,.58) + blur(20px) + saturate(125%).
+- Its clip-path opens/closes with the same .84s timing as the filter controls.
+- This preserves real backdrop blur while still making the glass visually
+  enter/leave together with the filters.
+
+2) Horizontal line/seam during BACK
+- Removed box-shadow/border/outline from filter tray, filter row and glass layer.
+- No edge decoration remains that can flash while the submenu moves behind
+  the main menu.
+
+NOT TOUCHED:
+- PANXRT clip/movement
+- WORK -> CONTACTS transition
+- main WORK matte/menu
+- filter size/alignment/typography
+- gallery/grid/cards/crop/hover
+- bottom blur/gradient
+- startup/loading
+- cases/media
