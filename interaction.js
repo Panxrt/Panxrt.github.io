@@ -235,6 +235,33 @@ function setSubmenuBounds(leftEdge,rightEdge,viewport=document.documentElement.c
  overlay.style.setProperty('width',(right-left)+'px','important');
 }
 
+function setHeaderPhysicalWindow(leftEdge,rightEdge,active,viewport=document.documentElement.clientWidth){
+ const clips=menuMask.querySelectorAll('.menu-clip');
+
+ if(!active){
+  // Everywhere except Gallery -> CONTACTS keep the established full-width
+  // fixed header. PANXRT therefore remains above rails exactly as before.
+  menuMask.style.setProperty('left','0px','important');
+  menuMask.style.setProperty('width','100vw','important');
+  for(const clip of clips)clip.style.setProperty('left','0px','important');
+  return;
+ }
+
+ const left=Math.max(0,Math.min(viewport,leftEdge));
+ const right=Math.max(left,Math.min(viewport,rightEdge));
+
+ // The parent is the REAL paint boundary. Header/backdrop simply does not
+ // exist above INTRO/ABOUT or above the WORK spine during this transition.
+  menuMask.style.setProperty('left',left+'px','important');
+  menuMask.style.setProperty('width',(right-left)+'px','important');
+
+ // Keep both light/dark header copies locked to viewport coordinates.
+ // Parent starts at +left, child starts at -left => child global X remains 0.
+ for(const clip of clips){
+  clip.style.setProperty('left',(-left)+'px','important');
+ }
+}
+
 function paintMenu(state=null,contactProgress=null){
  const viewport=document.documentElement.clientWidth;
  const x=state?.x||panels.map(position);
@@ -279,12 +306,16 @@ function paintMenu(state=null,contactProgress=null){
  // No z-index tricks or rail copies are involved.
  document.documentElement.style.setProperty('--filter-right',workSpineLeft+'px');
  setSubmenuBounds(foldedLightEnd,workSpineLeft,viewport);
- menuMask.style.width=workSpineLeft+'px';
+
+ // V55: physically constrain the ENTIRE fixed header during Gallery -> CONTACTS.
+ // This is stronger than clipping PANXRT text alone: the dark frosted header,
+ // PANXRT, RU/nav and both light/dark copies cannot paint over side rails.
+ setHeaderPhysicalWindow(foldedLightEnd,workSpineLeft,galleryToContacts,viewport);
+
  const visibleRight=workSpineLeft;
 
- // PANXRT/menu stay above rails everywhere normally.
- // ONLY Gallery -> CONTACTS clips the header behind the returning INTRO/ABOUT
- // stack, so the rails visually pass in front without changing global stacking.
+ // The physical parent already owns the CONTACTS transition boundary.
+ // clipHeader still controls the light/dark colour split inside that window.
  const headerLeft=galleryToContacts?foldedLightEnd:0;
  clipHeader(menu,headerLeft,Math.min(lightEnd,visibleRight),viewport);
  clipHeader(darkMenu,Math.max(headerLeft,lightEnd),visibleRight,viewport);

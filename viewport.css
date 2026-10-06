@@ -2023,3 +2023,22 @@ body.gallery-to-contacts .submenu-overlay{
 body.gallery-to-contacts .work-menu-backdrop{
   contain:paint;
 }
+
+
+/* ==========================================================
+   V55 — PHYSICAL HEADER WINDOW FOR Gallery -> CONTACTS
+   ========================================================== */
+
+/* interaction.js changes the actual fixed header box to the space between
+   ABOUT and WORK spine. This guarantees the matte/header/PANXRT cannot paint
+   over side rails, regardless of z-index/backdrop-filter composition. */
+body.gallery-to-contacts .header-contact-mask{
+  overflow:hidden!important;
+  contain:paint;
+}
+
+/* Keep inner clips viewport-sized while their parent becomes a narrow window.
+   JS supplies their negative left offset every frame. */
+body.gallery-to-contacts .header-contact-mask .menu-clip{
+  width:100vw!important;
+}
