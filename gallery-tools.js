@@ -1,6 +1,8 @@
 'use strict';
 (function(){
- const grid=document.getElementById('gallery-grid'),entry=grid.closest('.gallery-entry');let category='all';
+ const grid=document.getElementById('gallery-grid'),entry=grid.closest('.gallery-entry');
+ const gallerySurface=document.querySelector('.work .surface');
+ let category='all';
  const filters=document.createElement('nav');filters.className='submenu-controls';filters.setAttribute('aria-label','Filter projects');
  const submenuMask=document.createElement('div');submenuMask.className='submenu-mask';
  const submenuSheet=document.createElement('div');submenuSheet.className='submenu-sheet';
@@ -11,12 +13,26 @@
  function applyFilter(){const data=window.portfolioData;if(!data)return;closeDetail();const works=data.works.filter(w=>category==='all'||w.categoryIds?.includes(category)),ids=new Set(works.map(w=>w.id));for(const card of grid.children)card.hidden=!ids.has(card.dataset.id);grid._fineWorks=works;MosaicLayout.apply(grid,works);document.dispatchEvent(new Event('gallery-filter-change'));}
  window.getGalleryFilter=()=>category;window.restoreGalleryFilter=value=>{category=value;render();};
  function labels(){const data=window.portfolioData;if(!data)return;const ru=window.portfolioLanguage?.()==='ru';for(const card of grid.children){const w=data.works.find(w=>w.id===card.dataset.id);if(!w)continue;card.querySelector('.work-caption-title').textContent=ru?w.titleRu||w.title:w.title;card.querySelector('.work-caption-description').textContent=ru?w.descriptionRu||w.description:w.description;card.querySelector('.work-caption-more').textContent=ru?'Подробнее +':'Details +';}}
- function render(){const data=window.portfolioData;if(!data)return;if(category!=='all'&&!data.categories?.some(c=>c.id===category))category='all';filters.replaceChildren();const label=document.createElement('span');label.className='filter-label';label.textContent=window.portfolioLanguage?.()==='ru'?'ФИЛЬТРЫ':'FILTERS';filters.append(label);for(const c of [{id:'all',name:'ALL'},...(data.categories||[])]){const b=document.createElement('button');b.textContent=c.name;b.type='button';b.setAttribute('aria-pressed',String(category===c.id));b.onclick=()=>{category=c.id;render();};filters.append(b);}labels();applyFilter();}
+ function chooseCategory(next){
+  if(next===category)return;
+  category=next;
+  render();
+
+  // A filtered gallery is a new result set: always present it from the top.
+  // Native smooth scrolling keeps this motion cheap and avoids a custom RAF loop.
+  requestAnimationFrame(()=>{
+   gallerySurface?.scrollTo({
+    top:0,
+    left:0,
+    behavior:reduced.matches?'auto':'smooth'
+   });
+  });
+ }
+ function render(){const data=window.portfolioData;if(!data)return;if(category!=='all'&&!data.categories?.some(c=>c.id===category))category='all';filters.replaceChildren();const label=document.createElement('span');label.className='filter-label';label.textContent=window.portfolioLanguage?.()==='ru'?'ФИЛЬТРЫ':'FILTERS';filters.append(label);for(const c of [{id:'all',name:'ALL'},...(data.categories||[])]){const b=document.createElement('button');b.textContent=c.name;b.type='button';b.setAttribute('aria-pressed',String(category===c.id));b.onclick=()=>chooseCategory(c.id);filters.append(b);}labels();applyFilter();}
  document.addEventListener('portfolio-content',render);document.addEventListener('portfolio-language',labels);if(window.portfolioData)render();
 
  // Performance-safe media loading.
  // Scroll itself stays 100% native: no synthetic scrollTop animation.
- const gallerySurface=document.querySelector('.work .surface');
 
  let galleryScrolling=false,scrollStopTimer=0;
  let pending=0;

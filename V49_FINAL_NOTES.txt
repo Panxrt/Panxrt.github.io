@@ -1,0 +1,17 @@
+V49 — BASE: V48
+
+PRESERVED FROM V45/V46/V47/V48:
+- smooth optimized page movement
+- smooth INTRO/ABOUT rail return during Gallery -> CONTACTS
+- viewport-only video playback during page slides (offscreen videos pause)
+- Gallery -> CONTACTS submenu clipping synced with rails
+- filter changes return the gallery to the top with native smooth scroll
+- Gallery -> INTRO / ABOUT header colour mask follows physical panel edge
+- all existing layout, glass, matte, grid, video, gradient and menu styling
+
+FINAL FIX:
+- During Gallery -> CONTACTS only, both fixed header copies are clipped out of
+  the physical INTRO/ABOUT rail area.
+- Therefore the returning rails pass visually above PANXRT/header.
+- No global z-index was changed, so on every normal page PANXRT remains above
+  the side buttons exactly as before.

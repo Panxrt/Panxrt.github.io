@@ -1957,3 +1957,29 @@ body.gallery-mode.gallery-to-contacts .panel.intro.passed,
 body.gallery-mode.gallery-to-contacts .panel.about.passed{
   transform:translate3d(calc(-100% + (var(--i) + 1)*var(--rail)),0,0)!important;
 }
+
+
+/* ==========================================================
+   V48 — TRANSITION SYNC ONLY
+   ========================================================== */
+
+/* During Gallery -> CONTACTS the filter sheet is still a body-level backdrop
+   layer. Force its own paint boundary so its blur/text cannot composite beyond
+   the directly-synchronised left/right bounds while INTRO/ABOUT rails return. */
+body.gallery-to-contacts .submenu-overlay{
+  contain:paint;
+  overflow:hidden!important;
+  will-change:left,width;
+}
+
+/* Gallery -> INTRO / ABOUT:
+   only the JS header-cut math changes; no menu colour/style is redefined here. */
+
+
+/* ==========================================================
+   V49 — Gallery -> CONTACTS header stacking fix
+   No global z-index is changed. PANXRT stays above folded rails everywhere
+   else. During gallery-to-contacts, interaction.js clips both header copies
+   out of the returning INTRO/ABOUT rail area, so those rails visually pass
+   over PANXRT without changing the site's normal stacking order.
+   ========================================================== */
