@@ -1,0 +1,38 @@
+V36 — ONLY SUBMENU CHANGES, based on V35
+
+What changed:
+1) The submenu is mounted directly under <body>, OUTSIDE:
+   - .header-contact-mask
+   - .menu-clip
+   - #menu-dark
+   This lets backdrop-filter see the real gallery/card pixels behind it.
+
+2) Structure remains:
+   submenu-overlay/mask (fixed, stationary)
+   └── submenu-sheet (only moving object)
+       ├── submenu-glass (real blur layer)
+       └── submenu-controls (buttons)
+
+3) Glass and text are still one moving sheet.
+   They cannot animate separately.
+
+4) No clip-path is used on the body-level submenu.
+   The left mask edge is implemented with real left/width geometry using
+   the existing --filter-left value mirrored from interaction.js.
+
+5) Mobile controls scroll horizontally with touch and hidden scrollbar.
+
+Frosted glass:
+- rgba(24,24,24,.42)
+- blur(28px)
+- saturate(130%)
+
+NOT TOUCHED:
+- main header/menu
+- PANXRT movement/clipping
+- WORK spine
+- WORK->CONTACTS transitions
+- gallery/grid/cards/crop/hover
+- bottom gradient/blur
+- startup/loading
+- case rendering/media

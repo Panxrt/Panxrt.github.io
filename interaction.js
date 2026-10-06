@@ -199,6 +199,7 @@ function paintMenu(state=null,contactProgress=null){
  // INTRO/ABOUT rails, not paint over them. This edge is taken directly from
  // the physical panel geometry, so it moves smoothly with the rails.
  menuMask.style.setProperty('--filter-left',foldedLightEnd+'px');
+ document.documentElement.style.setProperty('--filter-left',foldedLightEnd+'px');
  const lightEnd=foldedLightEnd*(1-galleryProgress);
  let cp=contactProgress;
  if(cp==null)cp=page===3?1:0;
