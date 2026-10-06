@@ -1,11 +1,7 @@
 'use strict';
 (function(){
  const grid=document.getElementById('gallery-grid'),entry=grid.closest('.gallery-entry');let category='all';
- const filters=document.createElement('nav');filters.className='gallery-filters';filters.setAttribute('aria-label','Filter projects');
- const reveal=document.createElement('div');reveal.className='filter-reveal';
- const tray=document.createElement('div');tray.className='filter-tray';
- tray.append(filters);reveal.append(tray);
- (document.getElementById('menu-dark')||entry).append(reveal);
+ const filters=document.createElement('nav');filters.className='gallery-filters';filters.setAttribute('aria-label','Filter projects');const reveal=document.createElement('div');reveal.className='filter-reveal';reveal.append(filters);(document.getElementById('menu-dark')||entry).append(reveal);
  function applyFilter(){const data=window.portfolioData;if(!data)return;closeDetail();const works=data.works.filter(w=>category==='all'||w.categoryIds?.includes(category)),ids=new Set(works.map(w=>w.id));for(const card of grid.children)card.hidden=!ids.has(card.dataset.id);grid._fineWorks=works;MosaicLayout.apply(grid,works);document.dispatchEvent(new Event('gallery-filter-change'));}
  window.getGalleryFilter=()=>category;window.restoreGalleryFilter=value=>{category=value;render();};
  function labels(){const data=window.portfolioData;if(!data)return;const ru=window.portfolioLanguage?.()==='ru';for(const card of grid.children){const w=data.works.find(w=>w.id===card.dataset.id);if(!w)continue;card.querySelector('.work-caption-title').textContent=ru?w.titleRu||w.title:w.title;card.querySelector('.work-caption-description').textContent=ru?w.descriptionRu||w.description:w.description;card.querySelector('.work-caption-more').textContent=ru?'Подробнее +':'Details +';}}

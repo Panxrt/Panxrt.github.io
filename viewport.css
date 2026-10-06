@@ -1424,51 +1424,84 @@ body:not(.gallery-mode) .header-contact-mask #menu-dark .gallery-filters{
 
 
 /* ==========================================================
-   V30 — ACTUAL FILTER TRAY FIX
-   The submenu is created by gallery-tools.js, so the tray is now
-   created there at the real DOM creation point.
+   V33 — SUBMENU REBUILT AS ONE PHYSICAL OBJECT
+   Base: V28 (V26 visuals + WORK-spine/PANXRT clip fix)
+
+   filter-reveal  = stationary 50px mask BELOW the main header
+   gallery-filters = the ONLY moving object; it owns BOTH glass + text
    ========================================================== */
 
-/* 1) STATIONARY MASK WINDOW under the main WORK menu */
+/* 1) STATIONARY MASK.
+   It never moves above the main menu and has NO visual background of its own. */
 .header-contact-mask #menu-dark .filter-reveal{
   position:absolute!important;
   left:0!important;
   top:var(--header)!important;
   width:100vw!important;
   height:50px!important;
+  overflow:hidden!important;
 
   transform:none!important;
   visibility:visible!important;
-  overflow:hidden!important;
   pointer-events:none!important;
 
   background:transparent!important;
   backdrop-filter:none!important;
   -webkit-backdrop-filter:none!important;
   box-shadow:none!important;
+  border:0!important;
+  outline:0!important;
 
   transition:none!important;
   will-change:auto!important;
+  contain:none!important;
 }
 
-/* 2) ONE MOVING PHYSICAL TRAY = frosted glass + filters */
-.header-contact-mask #menu-dark .filter-tray{
+/* Kill every legacy/pseudo glass layer.
+   There must be exactly ONE glass surface: .gallery-filters itself. */
+.header-contact-mask #menu-dark .filter-reveal::before,
+.header-contact-mask #menu-dark .filter-reveal::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* 2) ONE MOVING SUBMENU = GLASS + FILTER TEXT.
+   Closed state is exactly one tray-height above the mask, therefore fully hidden. */
+.header-contact-mask #menu-dark .gallery-filters{
   position:absolute!important;
   left:0!important;
+  right:0!important;
   top:0!important;
-  width:100%!important;
+  width:100vw!important;
   height:50px!important;
+  min-height:50px!important;
   box-sizing:border-box!important;
 
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  padding:0 var(--menu-inset)!important;
+  gap:6px!important;
+  margin:0!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+
+  /* The accepted V25/V26 frosted-glass recipe,
+     now placed on the SAME element as the filter text. */
   background:rgba(24,24,24,.58)!important;
   backdrop-filter:blur(20px) saturate(125%)!important;
   -webkit-backdrop-filter:blur(20px) saturate(125%)!important;
-  box-shadow:inset 0 -1px 0 rgba(250,244,230,.10)!important;
+
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
 
   transform:translate3d(0,-50px,0)!important;
+  opacity:1!important;
   visibility:hidden!important;
   pointer-events:none!important;
 
+  z-index:1!important;
   will-change:transform;
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
@@ -1478,10 +1511,11 @@ body:not(.gallery-mode) .header-contact-mask #menu-dark .gallery-filters{
     visibility 0s .84s!important;
 }
 
-/* OPEN: glass + filters slide down together */
-.gallery-opening.gallery-mode .header-contact-mask #menu-dark .filter-tray,
-.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .filter-tray{
+/* OPEN: the complete glass panel + its text slides DOWN from under the main menu. */
+.gallery-opening.gallery-mode .header-contact-mask #menu-dark .gallery-filters,
+.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .gallery-filters{
   transform:translate3d(0,0,0)!important;
+  opacity:1!important;
   visibility:visible!important;
   pointer-events:auto!important;
 
@@ -1490,9 +1524,11 @@ body:not(.gallery-mode) .header-contact-mask #menu-dark .gallery-filters{
     visibility 0s!important;
 }
 
-/* BACK: glass + filters slide up together */
-.gallery-closing .header-contact-mask #menu-dark .filter-tray{
+/* BACK: the exact same object slides UP behind the fixed mask.
+   It remains visible until the transform is completely finished. */
+.gallery-closing .header-contact-mask #menu-dark .gallery-filters{
   transform:translate3d(0,-50px,0)!important;
+  opacity:1!important;
   visibility:visible!important;
   pointer-events:none!important;
 
@@ -1501,147 +1537,34 @@ body:not(.gallery-mode) .header-contact-mask #menu-dark .gallery-filters{
     visibility 0s .84s!important;
 }
 
-/* 3) Filter row itself is STATIC inside the moving tray.
-      Keep V26 size/alignment/typography exactly as before. */
-.header-contact-mask #menu-dark .filter-tray .gallery-filters,
-.gallery-opening.gallery-mode .header-contact-mask #menu-dark .filter-tray .gallery-filters,
-.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .filter-tray .gallery-filters,
-.gallery-closing .header-contact-mask #menu-dark .filter-tray .gallery-filters{
-  position:absolute!important;
-  left:0!important;
-  right:0!important;
-  top:0!important;
-  width:100vw!important;
-  height:50px!important;
-  min-height:50px!important;
-
-  transform:none!important;
-  opacity:1!important;
-  visibility:visible!important;
-
-  background:transparent!important;
-  backdrop-filter:none!important;
-  -webkit-backdrop-filter:none!important;
-
-  transition:none!important;
-  pointer-events:inherit!important;
+/* Compact V26 controls are preserved. */
+#menu-dark .gallery-filters button,
+#menu-dark .gallery-filters button[aria-pressed=true],
+#menu-dark .gallery-filters button:last-child{
+  height:30px!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:6px 13px!important;
+  border-radius:15px!important;
+  font-size:11px!important;
+  line-height:16px!important;
+  letter-spacing:.035em!important;
 }
 
-/* No extra pseudo-glass layer. */
-.header-contact-mask #menu-dark .filter-reveal::before{
-  content:none!important;
-  display:none!important;
+/* Keep the gallery offset matched to the 50px tray. */
+.gallery-mode .work .gallery-entry{
+  padding-top:calc(var(--header) + 50px)!important;
 }
 
-@media(prefers-reduced-motion:reduce){
-  .header-contact-mask #menu-dark .filter-tray{
-    transition:none!important;
+@media(max-width:700px){
+  .header-contact-mask #menu-dark .gallery-filters{
+    padding-left:var(--menu-inset)!important;
+    padding-right:var(--menu-inset)!important;
   }
 }
 
-
-/* ==========================================================
-   V32 — ONLY FILTER GLASS + TRANSITION SEAM FIX
-   Base: V31.
-   No gallery/header/page geometry changes.
-   ========================================================== */
-
-/* Keep the 50px window stationary. It only clips the moving controls. */
-.header-contact-mask #menu-dark .filter-reveal{
-  position:absolute!important;
-  left:0!important;
-  top:var(--header)!important;
-  width:100vw!important;
-  height:50px!important;
-  overflow:hidden!important;
-
-  transform:none!important;
-  visibility:visible!important;
-  pointer-events:none!important;
-
-  background:transparent!important;
-  backdrop-filter:none!important;
-  -webkit-backdrop-filter:none!important;
-
-  border:0!important;
-  outline:0!important;
-  box-shadow:none!important;
-  transition:none!important;
-}
-
-/* Real frosted glass is rendered on a STATIONARY layer.
-   We reveal/hide that layer with clip-path instead of moving the
-   backdrop-filter surface itself; this restores the V25/V26 glass look. */
-.header-contact-mask #menu-dark .filter-reveal::before{
-  content:""!important;
-  display:block!important;
-  position:absolute!important;
-  inset:0!important;
-  z-index:0!important;
-  pointer-events:none!important;
-
-  background:rgba(24,24,24,.58)!important;
-  backdrop-filter:blur(20px) saturate(125%)!important;
-  -webkit-backdrop-filter:blur(20px) saturate(125%)!important;
-
-  border:0!important;
-  outline:0!important;
-  box-shadow:none!important;
-
-  clip-path:inset(0 0 100% 0)!important;
-  -webkit-clip-path:inset(0 0 100% 0)!important;
-
-  transition:
-    clip-path .84s cubic-bezier(.22,.61,.36,1),
-    -webkit-clip-path .84s cubic-bezier(.22,.61,.36,1)!important;
-}
-
-/* Glass reveals with the same timing as the controls. */
-.gallery-opening.gallery-mode .header-contact-mask #menu-dark .filter-reveal::before,
-.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .filter-reveal::before{
-  clip-path:inset(0 0 0 0)!important;
-  -webkit-clip-path:inset(0 0 0 0)!important;
-  transition:
-    clip-path .84s cubic-bezier(.22,.61,.36,1) .05s,
-    -webkit-clip-path .84s cubic-bezier(.22,.61,.36,1) .05s!important;
-}
-
-/* BACK: glass closes upward at the same time as the filters. */
-.gallery-closing .header-contact-mask #menu-dark .filter-reveal::before{
-  clip-path:inset(0 0 100% 0)!important;
-  -webkit-clip-path:inset(0 0 100% 0)!important;
-  transition:
-    clip-path .84s cubic-bezier(.22,.61,.36,1),
-    -webkit-clip-path .84s cubic-bezier(.22,.61,.36,1)!important;
-}
-
-/* The moving tray carries only the controls.
-   Remove every visual edge from it so no horizontal seam can flash
-   while it travels behind the main menu. */
-.header-contact-mask #menu-dark .filter-tray{
-  z-index:1!important;
-  background:transparent!important;
-  backdrop-filter:none!important;
-  -webkit-backdrop-filter:none!important;
-
-  border:0!important;
-  outline:0!important;
-  box-shadow:none!important;
-}
-
-/* Also eliminate any inherited edge on the row itself. */
-.header-contact-mask #menu-dark .filter-tray .gallery-filters{
-  background:transparent!important;
-  backdrop-filter:none!important;
-  -webkit-backdrop-filter:none!important;
-
-  border:0!important;
-  outline:0!important;
-  box-shadow:none!important;
-}
-
 @media(prefers-reduced-motion:reduce){
-  .header-contact-mask #menu-dark .filter-reveal::before{
+  .header-contact-mask #menu-dark .gallery-filters{
     transition:none!important;
   }
 }

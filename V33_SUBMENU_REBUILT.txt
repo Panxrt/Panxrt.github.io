@@ -1,0 +1,26 @@
+V33 — submenu rebuilt from V28.
+
+Exact behavior:
+- The outer .filter-reveal is a stationary 50px clipping window below the main menu.
+- It has no background, blur, pseudo-layer or animation.
+- .gallery-filters is ONE moving object and owns BOTH:
+  1) the frosted glass
+  2) all filter text/buttons
+- Closed: translateY(-50px), fully clipped by the fixed window.
+- Open: translateY(0), slides down from under the main menu.
+- Back: translateY(-50px), slides up under the mask and remains one object until fully hidden.
+- There is no separate opacity animation and no independent glass layer.
+- No element of the submenu can render above the main menu because the mask begins at top: var(--header).
+
+Glass recipe:
+rgba(24,24,24,.58) + blur(20px) + saturate(125%)
+
+Preserved:
+- V26 compact 50px size and left alignment
+- V28 PANXRT/WORK-spine clipping fix
+- WORK matte
+- page transitions
+- gallery/grid/cards
+- bottom gradient/blur
+- startup/loading
+- cases/media
