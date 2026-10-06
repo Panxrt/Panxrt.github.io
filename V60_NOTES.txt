@@ -1,0 +1,23 @@
+V60 — BASE: V59
+
+ONLY CHANGE:
+Filter active/hover styling.
+
+Behavior:
+- selected filter keeps the capsule
+- hovering another filter shows underline only
+- no second capsule appears on hover
+- clicking another filter smoothly transitions capsule styles because buttons
+  are no longer rebuilt on every filter click
+- selected filter hover remains capsule-only
+
+UNCHANGED:
+- glass / blur
+- submenu motion
+- Gallery -> CONTACTS
+- Gallery -> ABOUT / INTRO
+- PANXRT masks
+- side rails
+- BACK
+- video playback
+- grid/layout

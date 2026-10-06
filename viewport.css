@@ -2224,3 +2224,39 @@ body:not(.gallery-mode):not(.gallery-closing) .submenu-blur-underlay{
 @media(prefers-reduced-motion:reduce){
   .submenu-blur-underlay{transition:none!important}
 }
+
+
+/* ==========================================================
+   V60 — FILTER ACTIVE / HOVER ONLY
+   No layout, glass, transition, rail or header changes.
+   ========================================================== */
+
+/* Selected filter keeps the capsule. Its existing background/border transition
+   remains the only capsule animation. */
+.submenu-overlay .submenu-controls button[aria-pressed="true"],
+.header-contact-mask #menu-dark .submenu-controls button[aria-pressed="true"]{
+  border-color:rgba(250,244,230,.34)!important;
+  background:rgba(250,244,230,.04)!important;
+  opacity:1!important;
+  text-decoration:none!important;
+}
+
+/* Hovering any OTHER filter must never create a second capsule.
+   Only underline the label; the currently selected capsule stays where it is. */
+.submenu-overlay .submenu-controls button:not([aria-pressed="true"]):hover,
+.header-contact-mask #menu-dark .submenu-controls button:not([aria-pressed="true"]):hover{
+  border-color:transparent!important;
+  background:transparent!important;
+  opacity:1!important;
+  text-decoration:underline!important;
+  text-decoration-thickness:1px!important;
+  text-underline-offset:4px!important;
+}
+
+/* Hovering the already-selected filter does not add an underline. */
+.submenu-overlay .submenu-controls button[aria-pressed="true"]:hover,
+.header-contact-mask #menu-dark .submenu-controls button[aria-pressed="true"]:hover{
+  border-color:rgba(250,244,230,.34)!important;
+  background:rgba(250,244,230,.04)!important;
+  text-decoration:none!important;
+}
