@@ -1,0 +1,15 @@
+V39 — ONLY ONE FIX, based on V38
+
+Problem:
+- On VIEW ALL WORK, .gallery-mode is added before the bottom preview
+  gradient/blur has finished fading out.
+- V38's +50px preview compensation was scoped only to body:not(.gallery-mode).
+- Therefore the still-visible overlay jumped upward 50px at the first frame.
+
+Fix:
+- Keep ::before and ::after at:
+  top: calc(var(--work-scroll,0px) + 50px)
+  during .gallery-opening and .gallery-closing too.
+- Opacity/blur/fade timing is unchanged.
+- No gallery geometry, scroll, videos, menu, submenu, PANXRT, cards,
+  transitions, or other visuals were changed.

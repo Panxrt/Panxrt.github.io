@@ -1915,3 +1915,22 @@ body:not(.gallery-mode) .work .gallery-launch{
 .deck{
   touch-action:pinch-zoom!important;
 }
+
+
+/* ==========================================================
+   V39 — ONLY BOTTOM GRADIENT/BLUR ENTRY FIX
+   Base: V38.
+   Keep the preview overlay at the SAME compensated position
+   for the entire gallery-opening transition.
+   ========================================================== */
+
+/* V38 correctly uses +50px in preview, but .gallery-mode is added at the
+   START of opening. Without this rule the pseudo overlays instantly lose that
+   +50px compensation while still visible, producing the upward jump.
+   Hold their position until the fade is complete. */
+.gallery-opening.gallery-mode .work .gallery-entry:before,
+.gallery-opening.gallery-mode .work .gallery-entry:after,
+.gallery-closing .work .gallery-entry:before,
+.gallery-closing .work .gallery-entry:after{
+  top:calc(var(--work-scroll,0px) + 50px)!important;
+}
