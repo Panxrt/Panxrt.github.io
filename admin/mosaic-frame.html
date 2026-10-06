@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../gallery.css">
+<link rel="stylesheet" href="../cms.css">
+<link rel="stylesheet" href="../viewport.css">
+<style>
+html,body{margin:0!important;min-height:100%;background:#181818!important;overflow:auto!important}
+body{--header:0px!important}
+.panel.work{position:relative!important;inset:auto!important;width:100%!important;min-height:100vh!important;transform:none!important;background:#181818!important}
+.work .surface{position:relative!important;inset:auto!important;overflow:visible!important;transform:none!important}
+.work .gallery-entry{padding:0!important;position:relative!important;inset:auto!important;transform:none!important}
+.work .gallery-grid{width:100%!important}
+.work .spine,.work-header-glass,.gallery-launch,.gallery-filters{display:none!important}
+.gallery-card{cursor:grab!important}
+.gallery-card.admin-selected{outline:4px solid #7D6BA8!important;outline-offset:-4px!important;z-index:20!important}
+.gallery-card.admin-drop{outline:4px dashed #FAF4E6!important;outline-offset:-6px!important;z-index:21!important}
+.gallery-card.admin-drag{opacity:.28!important}
+.admin-grip{position:absolute;z-index:20;top:10px;left:10px;width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:rgba(24,24,24,.68);border:1px solid rgba(250,244,230,.36);color:#FAF4E6;font:700 12px/1 Arial;pointer-events:none;backdrop-filter:blur(8px)}
+body.admin-frame .work-caption{opacity:0!important;translate:0 8px!important}
+body.admin-frame .gallery-card:hover .work-caption,
+body.admin-frame .gallery-card.admin-selected .work-caption{opacity:1!important;translate:0!important}
+</style>
+</head>
+<body class="gallery-mode admin-frame">
+<section class="panel work" data-index="2">
+  <div class="surface">
+    <div class="gallery-entry">
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </div>
+  </div>
+</section>
+<script src="../mosaic-layout.js"></script>
+<script>
+'use strict';
+let data={works:[],galleryLayout:{}},selectedId=null,dragId=null;
+const grid=document.getElementById('gallery-grid');
+const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function mediaNode(w){
+ const n=document.createElement(w.mediaType==='video'?'video':'img');
+ n.src=w.src;
+ MosaicLayout.styleMedia(n,w);
+ if(n.tagName==='VIDEO'){n.muted=true;n.defaultMuted=true;n.loop=true;n.autoplay=true;n.playsInline=true;n.preload='metadata';}
+ else{n.alt='';n.loading='lazy';n.decoding='async';}
+ return n;
+}
+function post(type,payload={}){parent.postMessage({source:'panxrt-mosaic-frame',type,...payload},location.origin)}
+function render(){
+ grid.replaceChildren();
+ for(const w of data.works){
+  const card=document.createElement('article');
+  card.className='gallery-card'+(w.id===selectedId?' admin-selected':'');
+  card.dataset.id=w.id;card.draggable=true;card.style.setProperty('--cols',w.width||1);card.style.setProperty('--rows',w.height||1);
+  const btn=document.createElement('button');btn.className='card-button';btn.type='button';btn.tabIndex=-1;
+  if(w.src)btn.append(mediaNode(w));
+  const caption=document.createElement('span');caption.className='work-caption';
+  const title=document.createElement('strong');title.className='work-caption-title';title.textContent=w.title||'';
+  const desc=document.createElement('span');desc.className='work-caption-description';desc.textContent=w.description||'';
+  const more=document.createElement('span');more.className='work-caption-more';more.textContent=w.showFullProject?'VIEW FULL PROJECT':'';
+  caption.append(title,desc,more);
+  const grip=document.createElement('span');grip.className='admin-grip';grip.textContent='⋮⋮';
+  btn.append(caption,grip);card.append(btn);
+  card.addEventListener('click',()=>post('select',{id:w.id}));
+  card.addEventListener('dragstart',e=>{dragId=w.id;card.classList.add('admin-drag');e.dataTransfer.effectAllowed='move'});
+  card.addEventListener('dragend',()=>{dragId=null;card.classList.remove('admin-drag');document.querySelectorAll('.admin-drop').forEach(n=>n.classList.remove('admin-drop'))});
+  card.addEventListener('dragenter',e=>{e.preventDefault();if(dragId&&dragId!==w.id)card.classList.add('admin-drop')});
+  card.addEventListener('dragleave',()=>card.classList.remove('admin-drop'));
+  card.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move'});
+  card.addEventListener('drop',e=>{e.preventDefault();card.classList.remove('admin-drop');if(dragId&&dragId!==w.id)post('reorder',{sourceId:dragId,targetId:w.id})});
+  grid.append(card);
+ }
+ requestAnimationFrame(()=>{MosaicLayout.apply(grid,data.works,false);resizeParent();});
+}
+function resizeParent(){
+ const h=Math.max(document.documentElement.scrollHeight,document.body.scrollHeight,grid.scrollHeight);
+ post('height',{height:h});
+}
+addEventListener('message',e=>{
+ if(e.origin!==location.origin||e.data?.source!=='panxrt-admin')return;
+ if(e.data.type==='render'){data=e.data.data||data;selectedId=e.data.selectedId||null;render()}
+ if(e.data.type==='select'){selectedId=e.data.id||null;render()}
+});
+new ResizeObserver(resizeParent).observe(document.documentElement);
+document.addEventListener('mosaic-media-ready',()=>{MosaicLayout.apply(grid,data.works,false);resizeParent()});
+post('ready');
+</script>
+</body>
+</html>
