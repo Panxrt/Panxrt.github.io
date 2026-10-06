@@ -1421,3 +1421,95 @@ body:not(.gallery-mode) .header-contact-mask #menu-dark .gallery-filters{
     transition:none!important;
   }
 }
+
+
+/* ==========================================================
+   V29 — ONLY FILTER MASK/TRAY FIX, on top of V28
+   The 50px mask stays fixed below the main WORK menu.
+   A single inner tray (glass + filter controls) moves inside it.
+   ========================================================== */
+
+/* STATIONARY MASK WINDOW */
+.header-contact-mask #menu-dark .filter-reveal{
+  transform:none!important;
+  visibility:visible!important;
+  pointer-events:none!important;
+  overflow:hidden!important;
+  background:transparent!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+  transition:none!important;
+  will-change:auto!important;
+}
+
+/* MOVING PHYSICAL TRAY = GLASS + FILTERS */
+.header-contact-mask #menu-dark .filter-tray{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:50px;
+  overflow:hidden;
+  pointer-events:none;
+
+  background:rgba(24,24,24,.58);
+  backdrop-filter:blur(20px) saturate(125%);
+  -webkit-backdrop-filter:blur(20px) saturate(125%);
+  box-shadow:inset 0 -1px 0 rgba(250,244,230,.10);
+
+  transform:translate3d(0,-104%,0);
+  visibility:hidden;
+  will-change:transform;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+
+  transition:
+    transform .84s cubic-bezier(.22,.61,.36,1),
+    visibility 0s .84s;
+}
+
+.gallery-opening.gallery-mode .header-contact-mask #menu-dark .filter-tray,
+.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .filter-tray{
+  transform:translate3d(0,0,0);
+  visibility:visible;
+  pointer-events:auto;
+  transition:
+    transform .84s cubic-bezier(.22,.61,.36,1) .05s,
+    visibility 0s;
+}
+
+.gallery-closing .header-contact-mask #menu-dark .filter-tray{
+  transform:translate3d(0,-104%,0);
+  visibility:visible;
+  pointer-events:none;
+  transition:
+    transform .84s cubic-bezier(.22,.61,.36,1),
+    visibility 0s .84s;
+}
+
+/* FILTER ROW IS STATIC INSIDE THE MOVING TRAY */
+.header-contact-mask #menu-dark .filter-tray .gallery-filters,
+.gallery-opening.gallery-mode .header-contact-mask #menu-dark .filter-tray .gallery-filters,
+.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .filter-tray .gallery-filters,
+.gallery-closing .header-contact-mask #menu-dark .filter-tray .gallery-filters{
+  transform:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+  transition:none!important;
+  background:transparent!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  pointer-events:inherit!important;
+}
+
+/* No legacy pseudo-glass layer. */
+.header-contact-mask #menu-dark .filter-reveal::before{
+  content:none!important;
+  display:none!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .header-contact-mask #menu-dark .filter-tray{
+    transition:none!important;
+  }
+}
