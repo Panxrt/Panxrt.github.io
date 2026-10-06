@@ -33,6 +33,7 @@
   return r.bottom>top&&r.top<bottom&&r.right>0&&r.left<innerWidth;
  }
  const visible=new Map();
+ const viewportVisible=new Map();
  const warmQueue=new Set();
  let warmTimer=0,warmIdle=0;
 
@@ -111,6 +112,17 @@
    schedule();
  },{root:gallerySurface,threshold:[0,.05,.25]});
 
+ // Real SCREEN visibility. Unlike the gallery-surface observer, this follows
+ // videos while the whole WORK panel itself is sliding between pages.
+ // The browser performs the intersection tracking natively, so we do not add
+ // layout reads to every deck animation frame.
+ const viewportObserver=new IntersectionObserver(entries=>{
+   for(const e of entries){
+     viewportVisible.set(e.target,e.isIntersecting&&e.intersectionRatio>.01);
+   }
+   schedule();
+ },{root:null,threshold:[0,.01,.1,.25]});
+
  function scan(){
    observeWarmTargets();
 
@@ -121,14 +133,18 @@
      video.loop=true;
      if(!video.preload)video.preload='none';
      visible.set(video,false);
+     viewportVisible.set(video,false);
      observer.observe(video);
+     viewportObserver.observe(video);
    }
 
    for(const video of [...visible.keys()]){
      if(video.isConnected)continue;
      observer.unobserve(video);
+     viewportObserver.unobserve(video);
      video.pause();
      visible.delete(video);
+     viewportVisible.delete(video);
    }
 
    schedule();
@@ -146,9 +162,15 @@
    const cap=mobile?1:2;
    let playing=0;
 
-   const videos=[...visible.keys()].sort(
-     (a,b)=>Number(!!b.closest('.selected'))-Number(!!a.closest('.selected'))
-   );
+   const deckMoving=document.body.classList.contains('deck-motion-active');
+
+   const videos=[...visible.keys()].sort((a,b)=>{
+     if(deckMoving){
+       const screenDelta=Number(!!viewportVisible.get(b))-Number(!!viewportVisible.get(a));
+       if(screenDelta)return screenDelta;
+     }
+     return Number(!!b.closest('.selected'))-Number(!!a.closest('.selected'));
+   });
 
    for(const video of videos){
      if(video.closest('.media-viewer'))continue;
@@ -156,11 +178,28 @@
      const isCase=!!video.closest('.project-view');
      const card=video.closest('.gallery-card');
 
-     // Gallery videos do not start/resume while the scroll or the gallery/page
-     // transition is active. This keeps the compositor free for movement.
-     const movementBusy=galleryScrolling||isGalleryTransitioning()||document.body.classList.contains('deck-motion-active');
-     const visibleNow=window.portfolioGalleryOpen?visible.get(video):(workActive&&workSettled&&inWorkViewport(video));
-     const workPlayback=workActive&&!isCase&&(window.portfolioGalleryOpen||workSettled);
+     // V47:
+     // - scrolling still pauses gallery videos;
+     // - gallery OPEN/BACK choreography still pauses them to protect that effect;
+     // - normal PAGE sliding keeps only videos that are actually inside the
+     //   browser viewport running;
+     // - Gallery -> CONTACTS is the one gallery-closing state that is also a
+     //   page slide, so viewport-visible videos keep playing there too.
+     const leavingGalleryToContacts=document.body.classList.contains('gallery-to-contacts');
+     const internalGalleryMotion=isGalleryTransitioning()&&!leavingGalleryToContacts;
+     const deckViewportPlayback=deckMoving&&!internalGalleryMotion;
+     const movementBusy=galleryScrolling||internalGalleryMotion;
+
+     const visibleNow=deckViewportPlayback
+       ? !!viewportVisible.get(video)
+       : (window.portfolioGalleryOpen
+          ? !!visible.get(video)
+          : (workActive&&workSettled&&inWorkViewport(video)));
+
+     const workPlayback=!isCase&&(
+       (workActive&&(window.portfolioGalleryOpen||workSettled))||
+       deckViewportPlayback
+     );
 
      const allowed=
        !window.portfolioMediaOpen&&

@@ -1,0 +1,17 @@
+V46 — BASE V45. ONE CHANGE ONLY.
+
+Gallery -> CONTACTS:
+- INTRO and ABOUT side rails now glide in during the same existing page transition.
+- Start state is still the fully expanded gallery.
+- End state is the exact normal folded CONTACTS rail position.
+- The temporary gallery-to-contacts class is removed with gallery-mode after motion.
+
+NOT CHANGED:
+- V45 page smoothness logic
+- submenu clipping
+- WORK/gallery layout
+- filters/glass
+- matte/gradient
+- media/video behavior
+- startup/header
+- timings/easing/colors/sizes

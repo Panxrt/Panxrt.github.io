@@ -103,13 +103,17 @@ function closeGallery(destination){
   window.portfolioGalleryOpen=false;
   document.querySelectorAll('.gallery-close').forEach(b=>{b.inert=true;b.setAttribute('aria-hidden','true');});
   window.beginDeckTransition?.();
+  // V46: after V45 captures the real expanded-gallery start frame, allow
+  // INTRO/ABOUT folded rails to travel back in during the SAME move to CONTACTS.
+  // WORK/gallery geometry stays untouched until the transition is finished.
+  document.body.classList.add('gallery-to-contacts');
   go(destination);
   window.endDeckTransition?.();
   document.dispatchEvent(new Event('gallery-mode-change'));
   const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();
   const duration=(reduced.matches?0:(parseFloat(raw)||0)*(raw.endsWith('ms')?1:1000));
   closingTimer=setTimeout(()=>{
-   document.body.classList.remove('gallery-mode','gallery-closing','gallery-transitioning');
+   document.body.classList.remove('gallery-mode','gallery-closing','gallery-transitioning','gallery-to-contacts');
    galleryReturning=false;galleryAnimating=false;
    workSurface.scrollTop=savedWorkScroll;workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
    window.syncMenu?.();

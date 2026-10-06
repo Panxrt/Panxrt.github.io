@@ -1945,3 +1945,15 @@ body:not(.gallery-mode) .work .gallery-launch{
   right:auto!important;
   width:max(0px,calc(var(--filter-right,100vw) - var(--filter-left,0px)))!important;
 }
+
+
+/* ==========================================================
+   V46 — ONLY Gallery -> CONTACTS side-rail return
+   INTRO and ABOUT leave their full-gallery offscreen position and glide into
+   the exact normal folded CONTACTS positions during the existing V45 tween.
+   No WORK/gallery/menu/submenu geometry is changed.
+   ========================================================== */
+body.gallery-mode.gallery-to-contacts .panel.intro.passed,
+body.gallery-mode.gallery-to-contacts .panel.about.passed{
+  transform:translate3d(calc(-100% + (var(--i) + 1)*var(--rail)),0,0)!important;
+}
