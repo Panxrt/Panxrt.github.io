@@ -3,20 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
   <title>PANXRT — Admin</title>
   <link rel="icon" href="../favicon.svg">
+  <link rel="stylesheet" href="../cms.css">
   <link rel="stylesheet" href="./admin.css">
 </head>
 <body>
   <header class="topbar">
     <div>
       <strong class="brand">PANXRT / ADMIN</strong>
-      <span class="safe">DEV ONLY · live-сайт не меняется</span>
+      <span class="safe">DEV PREVIEW · основной сайт не меняется</span>
     </div>
     <div class="top-actions">
       <button id="resetBtn" class="ghost">Сбросить черновик</button>
       <button id="exportBtn" class="ghost">Скачать JSON</button>
-      <button id="publishBtn" class="primary" disabled title="Публикацию подключим на следующем этапе">PUBLISH — позже</button>
+      <button id="publishBtn" class="primary" disabled>PUBLISH — позже</button>
     </div>
   </header>
 
@@ -27,7 +29,7 @@
         <button class="tab" data-tab="brands">Бренды</button>
       </div>
 
-      <section id="worksPanel" class="sidebar-panel">
+      <section id="worksPanel">
         <div class="section-head">
           <span>Проекты <b id="workCount"></b></span>
           <button id="addWorkBtn" class="mini">+ проект</button>
@@ -35,7 +37,7 @@
         <div id="workList" class="list"></div>
       </section>
 
-      <section id="brandsPanel" class="sidebar-panel" hidden>
+      <section id="brandsPanel" hidden>
         <div class="section-head">
           <span>Бренды <b id="brandCount"></b></span>
           <button id="addBrandBtn" class="mini">+ бренд</button>
@@ -47,8 +49,8 @@
     <section class="workspace">
       <div class="workspace-head">
         <div>
-          <h1>Gallery editor</h1>
-          <p>Перетаскивай карточки мышкой. Изменения пока сохраняются только в этом браузере.</p>
+          <h1>Мозаика WORK</h1>
+          <p>Это тот же алгоритм раскладки, что используется на сайте. Перетаскивай плитки прямо в мозаике.</p>
         </div>
         <div class="preview-switch">
           <label for="preview-size">Preview</label>
@@ -60,22 +62,27 @@
         </div>
       </div>
 
+      <div class="mosaic-help">
+        <span><i class="dot active-dot"></i> выбранная плитка</span>
+        <span>⋮⋮ перетаскивание меняет порядок</span>
+        <span>размер выбранной плитки — справа</span>
+      </div>
+
       <div id="previewShell" class="preview-shell desktop">
-        <div id="galleryPreview" class="gallery-preview" aria-label="Предпросмотр галереи"></div>
+        <div class="work admin-work">
+          <div class="gallery-entry">
+            <div id="galleryPreview" class="gallery-grid gallery-preview" aria-label="Предпросмотр галереи"></div>
+          </div>
+        </div>
       </div>
     </section>
 
     <aside class="inspector">
-      <div id="emptyInspector" class="empty-inspector">
-        Выбери проект или бренд слева.
-      </div>
+      <div id="emptyInspector" class="empty-inspector">Выбери проект или бренд.</div>
 
       <form id="workEditor" class="editor" hidden>
         <div class="editor-head">
-          <div>
-            <small>PROJECT</small>
-            <h2 id="editorTitle">—</h2>
-          </div>
+          <div><small>PROJECT</small><h2 id="editorTitle">—</h2></div>
           <button type="button" id="deleteWorkBtn" class="danger">Удалить</button>
         </div>
 
@@ -93,35 +100,24 @@
 
         <div class="two">
           <label>Тип медиа
-            <select id="mediaTypeInput">
-              <option value="image">image</option>
-              <option value="video">video</option>
-            </select>
+            <select id="mediaTypeInput"><option value="image">image</option><option value="video">video</option></select>
           </label>
           <label>Fit
-            <select id="mediaFitInput">
-              <option value="cover">cover</option>
-              <option value="contain">contain</option>
-            </select>
+            <select id="mediaFitInput"><option value="cover">cover</option><option value="contain">contain</option></select>
           </label>
         </div>
 
-        <div class="two">
-          <label>Ширина
-            <select id="widthInput">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
+        <fieldset class="size-panel">
+          <legend>Размер плитки в мозаике</legend>
+          <label>Ширина <strong id="cardWValue">—</strong>
+            <input id="cardWInput" type="range" min="80" max="1000" step="5">
           </label>
-          <label>Высота
-            <select id="heightInput">
-              <option value="1">1 ряд</option>
-              <option value="2">2 ряда</option>
-              <option value="3">3 ряда</option>
-            </select>
+          <label>Высота <strong id="cardHValue">—</strong>
+            <input id="cardHInput" type="range" min="80" max="1000" step="5">
           </label>
-        </div>
+          <button type="button" id="resetSizeBtn" class="ghost small-button">Сбросить размер к исходному</button>
+          <p>Эти параметры влияют именно на ту же раскладку, которую видит посетитель сайта.</p>
+        </fieldset>
 
         <label class="checkline">
           <input id="fullProjectInput" type="checkbox">
@@ -134,36 +130,25 @@
         </fieldset>
 
         <div class="notice">
-          Редактор содержимого Full Project добавим следующим блоком. Поля <code>blocks</code>,
-          <code>frame</code>, <code>caseLayout</code> и остальные существующие данные сейчас не удаляются.
+          Содержимое Full Project не затрагивается. <code>blocks</code>, <code>frame</code>,
+          <code>caseLayout</code> и другие существующие поля сохраняются.
         </div>
       </form>
 
       <form id="brandEditor" class="editor" hidden>
         <div class="editor-head">
-          <div>
-            <small>BRAND</small>
-            <h2 id="brandEditorTitle">—</h2>
-          </div>
+          <div><small>BRAND</small><h2 id="brandEditorTitle">—</h2></div>
           <button type="button" id="deleteBrandBtn" class="danger">Удалить</button>
         </div>
-
-        <label>Название
-          <input id="brandNameInput" type="text">
-        </label>
-
-        <label>Файл / URL логотипа
-          <input id="brandSrcInput" type="text" spellcheck="false">
-        </label>
-
-        <div class="brand-preview">
-          <img id="brandPreviewImage" alt="">
-        </div>
+        <label>Название<input id="brandNameInput" type="text"></label>
+        <label>Файл / URL логотипа<input id="brandSrcInput" type="text" spellcheck="false"></label>
+        <div class="brand-preview"><img id="brandPreviewImage" alt=""></div>
       </form>
     </aside>
   </main>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="../mosaic-layout.js"></script>
   <script src="./admin.js"></script>
 </body>
 </html>
