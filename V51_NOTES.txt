@@ -1,0 +1,28 @@
+V51 — built directly from V47, not from broken V49/V50 stacking patches.
+
+PRESERVED:
+- V45/V46 smooth page + rail movement
+- V47 viewport observer and transition playback behavior
+- V36 submenu glass architecture
+- V39 bottom gradient fix
+- all gallery/grid/matte/layout styling
+
+FIXED:
+1. Gallery -> CONTACTS:
+   - temporary INTRO/ABOUT/WORK spine copies are rendered above header/submenu
+     ONLY during this transition
+   - no global panel/header z-index is changed
+   - PANXRT remains above rails everywhere else
+   - WORK spine follows WORK's physical right edge from the first frame
+   - temporary copies disappear immediately after the transition
+
+2. Gallery -> INTRO / ABOUT:
+   - black/white menu boundary follows the physical rail edge without lag
+
+3. Gallery filters:
+   - selecting another category smoothly returns gallery to top
+
+4. Gallery videos:
+   - removed artificial 2 desktop / 1 mobile cap
+   - all videos actually in the viewport may play
+   - offscreen videos remain paused via existing observers

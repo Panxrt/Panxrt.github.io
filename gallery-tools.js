@@ -17,16 +17,11 @@
   if(next===category)return;
   category=next;
   render();
-
-  // A filtered gallery is a new result set: always present it from the top.
-  // Native smooth scrolling keeps this motion cheap and avoids a custom RAF loop.
-  requestAnimationFrame(()=>{
-   gallerySurface?.scrollTo({
-    top:0,
-    left:0,
-    behavior:reduced.matches?'auto':'smooth'
-   });
-  });
+  requestAnimationFrame(()=>gallerySurface?.scrollTo({
+   top:0,
+   left:0,
+   behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'
+  }));
  }
  function render(){const data=window.portfolioData;if(!data)return;if(category!=='all'&&!data.categories?.some(c=>c.id===category))category='all';filters.replaceChildren();const label=document.createElement('span');label.className='filter-label';label.textContent=window.portfolioLanguage?.()==='ru'?'ФИЛЬТРЫ':'FILTERS';filters.append(label);for(const c of [{id:'all',name:'ALL'},...(data.categories||[])]){const b=document.createElement('button');b.textContent=c.name;b.type='button';b.setAttribute('aria-pressed',String(category===c.id));b.onclick=()=>chooseCategory(c.id);filters.append(b);}labels();applyFilter();}
  document.addEventListener('portfolio-content',render);document.addEventListener('portfolio-language',labels);if(window.portfolioData)render();
@@ -174,8 +169,6 @@
    pending=0;
    const inCase=!!document.querySelector('.project-view');
    const workActive=document.body.dataset.page==='2';
-   const mobile=matchMedia('(max-width:700px)').matches;
-   const cap=mobile?1:2;
    let playing=0;
 
    const deckMoving=document.body.classList.contains('deck-motion-active');
@@ -223,8 +216,7 @@
        !movementBusy&&
        visibleNow&&
        !card?.hidden&&
-       (inCase?isCase:workPlayback)&&
-       playing<cap;
+       (inCase?isCase:workPlayback);
 
      if(allowed){
        playing++;

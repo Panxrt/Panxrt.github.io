@@ -1960,26 +1960,50 @@ body.gallery-mode.gallery-to-contacts .panel.about.passed{
 
 
 /* ==========================================================
-   V48 — TRANSITION SYNC ONLY
+   V51 — Gallery -> CONTACTS temporary rail overlay ONLY
    ========================================================== */
 
-/* During Gallery -> CONTACTS the filter sheet is still a body-level backdrop
-   layer. Force its own paint boundary so its blur/text cannot composite beyond
-   the directly-synchronised left/right bounds while INTRO/ABOUT rails return. */
-body.gallery-to-contacts .submenu-overlay{
-  contain:paint;
+/* This layer exists only to reproduce the three physical side buttons above
+   fixed header/submenu during Gallery -> CONTACTS. It does NOT change the
+   normal stacking order of the real deck or PANXRT. */
+.transition-rail-layer{
+  position:fixed!important;
+  inset:0!important;
+  z-index:101!important; /* header 100, submenu 99 */
   overflow:hidden!important;
-  will-change:left,width;
+  pointer-events:none!important;
+}
+.transition-rail-layer[hidden]{
+  display:none!important;
+}
+.transition-rail-clone{
+  position:fixed!important;
+  top:0!important;
+  bottom:0!important;
+  right:auto!important;
+  height:100vh!important;
+  height:100dvh!important;
+  margin:0!important;
+  transform:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:none!important;
+  transition:none!important;
+  box-sizing:border-box!important;
 }
 
-/* Gallery -> INTRO / ABOUT:
-   only the JS header-cut math changes; no menu colour/style is redefined here. */
+/* Hide the real rail buttons only during this one transition so the temporary
+   copies are the single visible source. The actual panels keep moving exactly
+   as in V46/V47. */
+body.gallery-to-contacts .panel.intro .spine,
+body.gallery-to-contacts .panel.about .spine,
+body.gallery-to-contacts .panel.work .spine{
+  opacity:0!important;
+}
 
-
-/* ==========================================================
-   V49 — Gallery -> CONTACTS header stacking fix
-   No global z-index is changed. PANXRT stays above folded rails everywhere
-   else. During gallery-to-contacts, interaction.js clips both header copies
-   out of the returning INTRO/ABOUT rail area, so those rails visually pass
-   over PANXRT without changing the site's normal stacking order.
-   ========================================================== */
+/* Keep the approved body-level submenu implementation and force its own box to
+   paint-clip while the temporary rails pass over it. */
+body.gallery-to-contacts .submenu-overlay{
+  overflow:hidden!important;
+  contain:paint;
+}

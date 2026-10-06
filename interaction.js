@@ -128,11 +128,6 @@ function closeGallery(destination){
   workAnchor=null;
   workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
 
-  // INTRO / ABOUT need the light/dark header cut to follow their REAL moving
-  // edge immediately. The old galleryProgress fade made the colour mask lag.
-  const galleryToLight=destination===0||destination===1;
-  if(galleryToLight)document.body.classList.add('gallery-to-light');
-
   window.beginDeckTransition?.();
   projectRequest++;
   closeDetail();
@@ -150,7 +145,7 @@ function closeGallery(destination){
   document.dispatchEvent(new Event('gallery-mode-change'));
 
   closingTimer=setTimeout(()=>{
-   document.body.classList.remove('gallery-closing','gallery-to-light');
+   document.body.classList.remove('gallery-closing');
    galleryReturning=false;
    workSurface.scrollTop=savedWorkScroll;
    workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
@@ -215,6 +210,70 @@ function measureHeaderGeometry(){
  workSpineWidth=panels[2].querySelector('.spine')?.getBoundingClientRect().width||0;
 }
 measureHeaderGeometry();
+
+// V51: temporary visual copies of INTRO / ABOUT / WORK spines.
+// They exist ONLY during Gallery -> CONTACTS. This avoids changing the global
+// stacking order: normally PANXRT stays above rails, but during this one move
+// the returning rails can pass in front of PANXRT and the body-level submenu.
+const transitionRailLayer=document.createElement('div');
+transitionRailLayer.className='transition-rail-layer';
+transitionRailLayer.hidden=true;
+document.body.append(transitionRailLayer);
+
+let transitionRailClones=null;
+function ensureTransitionRailClones(){
+ if(transitionRailClones)return transitionRailClones;
+ const source=[
+  panels[0].querySelector('.spine'),
+  panels[1].querySelector('.spine'),
+  panels[2].querySelector('.spine')
+ ];
+ transitionRailClones=source.map((original,index)=>{
+  const clone=original.cloneNode(true);
+  clone.classList.add('transition-rail-clone','transition-rail-'+index);
+  clone.removeAttribute('data-go');
+  clone.removeAttribute('tabindex');
+  clone.disabled=true;
+  clone.inert=true;
+  clone.setAttribute('aria-hidden','true');
+
+  // A body-level clone no longer inherits --bg/--fg from its panel.
+  // Copy the already approved rendered rail appearance once.
+  const cs=getComputedStyle(original);
+  clone.style.setProperty('background',cs.background,'important');
+  clone.style.setProperty('background-color',cs.backgroundColor,'important');
+  clone.style.setProperty('color',cs.color,'important');
+  clone.style.setProperty('border-radius',cs.borderRadius,'important');
+  clone.style.setProperty('box-shadow',cs.boxShadow,'important');
+  transitionRailLayer.append(clone);
+  return clone;
+ });
+ return transitionRailClones;
+}
+
+function syncTransitionRails(introEdge,aboutEdge,workEdge,viewport){
+ const active=document.body.classList.contains('gallery-to-contacts');
+ if(!active){
+  transitionRailLayer.hidden=true;
+  return;
+ }
+ const clones=ensureTransitionRailClones();
+ transitionRailLayer.hidden=false;
+
+ const railWidth=rail();
+ const positions=[
+  introEdge-railWidth,
+  aboutEdge-railWidth,
+  workEdge-workSpineWidth
+ ];
+
+ clones.forEach((clone,index)=>{
+  const left=Math.max(-railWidth,Math.min(viewport,positions[index]));
+  clone.style.setProperty('left',left+'px','important');
+  clone.style.setProperty('width',(index===2?workSpineWidth:railWidth)+'px','important');
+ });
+}
+
 function rail(){const n=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--rail'));return Number.isFinite(n)?n:0;}
 function visualGalleryState(){return document.body.classList.contains('gallery-mode');}
 function desiredMenuShift(page=Number(document.body.dataset.page||0),gallery=visualGalleryState()){return gallery?0:Math.min(page,2)*rail();}
@@ -225,23 +284,6 @@ function clipHeader(header,leftEdge,rightEdge,viewport=document.documentElement.
  target.style.clip=`rect(0px, ${right}px, 9999px, ${left}px)`;
  const hidden=right-left<.5;header.style.visibility=hidden?'hidden':'visible';header.inert=hidden;header.setAttribute('aria-hidden',String(hidden));
 }
-
-let submenuOverlayCached=null;
-function syncSubmenuBounds(leftEdge,rightEdge){
- const overlay=submenuOverlayCached||document.querySelector('.submenu-overlay');
- if(!overlay)return;
- submenuOverlayCached=overlay;
- const viewport=document.documentElement.clientWidth;
- const left=Math.max(0,Math.min(viewport,leftEdge));
- const right=Math.max(left,Math.min(viewport,rightEdge));
-
- // Direct physical bounds, written in the SAME paintMenu call as the panel/header
- // geometry. This prevents the body-level backdrop layer from visually lagging
- // behind the returning INTRO / ABOUT rails.
- overlay.style.setProperty('left',left+'px','important');
- overlay.style.setProperty('width',(right-left)+'px','important');
-}
-
 function paintMenu(state=null,contactProgress=null){
  const viewport=document.documentElement.clientWidth;
  const x=state?.x||panels.map(position);
@@ -261,10 +303,10 @@ function paintMenu(state=null,contactProgress=null){
  // the physical panel geometry, so it moves smoothly with the rails.
  menuMask.style.setProperty('--filter-left',foldedLightEnd+'px');
  document.documentElement.style.setProperty('--filter-left',foldedLightEnd+'px');
- // When leaving the gallery for INTRO / ABOUT, the colour boundary must be
- // attached to the physical returning panel edge. Multiplying by
- // (1-galleryProgress) made the black/white header mask arrive visibly late.
- const galleryToLight=document.body.classList.contains('gallery-to-light');
+ // Gallery -> INTRO / ABOUT: bind the black/white menu cut directly to the
+ // physical returning panel edge. The old galleryProgress multiplication made
+ // the colour boundary visibly trail behind the page.
+ const galleryToLight=document.body.classList.contains('gallery-closing')&&(page===0||page===1);
  const lightEnd=galleryToLight?foldedLightEnd:foldedLightEnd*(1-galleryProgress);
  let cp=contactProgress;
  if(cp==null)cp=page===3?1:0;
@@ -276,25 +318,16 @@ function paintMenu(state=null,contactProgress=null){
   viewport,
   workEdge-workSpineWidth*(1-galleryProgress)
  ));
- // Body-level submenu keeps its working frosted-glass architecture,
- // but its RIGHT edge follows the physical LEFT edge of the WORK spine.
+
+ // The approved V45 submenu bounds stay untouched. During Gallery -> CONTACTS
+ // the temporary rail copies are positioned from these exact moving edges and
+ // paint ABOVE the fixed header/submenu, so nothing can visually leak over them.
  document.documentElement.style.setProperty('--filter-right',workSpineLeft+'px');
- syncSubmenuBounds(foldedLightEnd,workSpineLeft);
+ syncTransitionRails(introEdge,aboutEdge,workEdge,viewport);
  menuMask.style.width=workSpineLeft+'px';
  const visibleRight=workSpineLeft;
- const galleryToContacts=document.body.classList.contains('gallery-to-contacts');
- if(galleryToContacts){
-  // During Gallery -> CONTACTS the returning INTRO/ABOUT rails are the
-  // physical top layer on the left. Hide BOTH header copies underneath that
-  // moving rail area, while keeping the dark gallery header visible to the
-  // right. This affects only this transition; normal pages keep PANXRT above
-  // their folded side buttons exactly as before.
-  clipHeader(menu,foldedLightEnd,foldedLightEnd,viewport);
-  clipHeader(darkMenu,foldedLightEnd,visibleRight,viewport);
- }else{
-  clipHeader(menu,0,Math.min(lightEnd,visibleRight),viewport);
-  clipHeader(darkMenu,lightEnd,visibleRight,viewport);
- }
+ clipHeader(menu,0,Math.min(lightEnd,visibleRight),viewport);
+ clipHeader(darkMenu,lightEnd,visibleRight,viewport);
  // Matte belongs to WORK: its RIGHT edge follows WORK itself, never the
  // CONTACTS text mask. Because this layer sits in the deck below ABOUT, the
  // small overlap is genuinely underneath ABOUT rather than on top of it.
