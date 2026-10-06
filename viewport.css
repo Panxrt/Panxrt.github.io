@@ -1616,3 +1616,61 @@ body:not(.gallery-mode):not(.gallery-closing) .header-contact-mask #menu-dark .s
     transition:none;
   }
 }
+
+
+/* ==========================================================
+   V35 — ONLY SUBMENU: stronger frosted glass + horizontal scroll
+   Everything outside the submenu is inherited from V34 unchanged.
+   ========================================================== */
+
+/* Stronger true frosted-glass surface.
+   Lower fill opacity + stronger blur keeps the cards visible as colour/forms,
+   but removes their sharp detail. */
+.header-contact-mask #menu-dark .submenu-glass{
+  background:rgba(24,24,24,.42)!important;
+  backdrop-filter:blur(28px) saturate(130%)!important;
+  -webkit-backdrop-filter:blur(28px) saturate(130%)!important;
+  border-top:1px solid rgba(250,244,230,.07)!important;
+  border-bottom:1px solid rgba(250,244,230,.08)!important;
+}
+
+/* Keep filter labels clearly readable over the glass. */
+.header-contact-mask #menu-dark .submenu-controls button{
+  color:var(--paper)!important;
+  opacity:.78!important;
+}
+
+.header-contact-mask #menu-dark .submenu-controls button[aria-pressed="true"],
+.header-contact-mask #menu-dark .submenu-controls button:hover{
+  opacity:1!important;
+}
+
+/* MOBILE / NARROW VIEWPORTS:
+   the submenu remains one row and can be swiped horizontally.
+   Buttons never shrink, so future categories can simply continue to the right. */
+@media(max-width:700px){
+  .header-contact-mask #menu-dark .submenu-controls{
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-x;
+    scrollbar-width:none;
+
+    justify-content:flex-start!important;
+    white-space:nowrap!important;
+
+    /* Small extra end space so the final item is not glued to the edge. */
+    padding-right:calc(var(--menu-inset) + 14px)!important;
+  }
+
+  .header-contact-mask #menu-dark .submenu-controls::-webkit-scrollbar{
+    display:none;
+    width:0;
+    height:0;
+  }
+
+  .header-contact-mask #menu-dark .submenu-controls button{
+    flex:0 0 auto!important;
+  }
+}
