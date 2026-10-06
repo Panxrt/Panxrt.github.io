@@ -186,29 +186,24 @@
      const isCase=!!video.closest('.project-view');
      const card=video.closest('.gallery-card');
 
-     // V52:
-     // Opening/closing the gallery and changing deck pages must NOT freeze the
-     // visible motion work. During ANY visual transition we use the browser-
-     // viewport observer as the source of truth. Only videos that actually leave
-     // the screen are paused. Native gallery scrolling still pauses playback.
+     // V53:
+     // OPEN/BACK, page transitions and filter state changes never pause a video
+     // merely because a class changed. Playback follows real screen visibility.
+     // Direct geometry is a fallback for the first frame before IntersectionObserver
+     // has delivered its next callback, eliminating the short action pause.
      const transitionPlayback=deckMoving||isGalleryTransitioning();
-     const movementBusy=galleryScrolling;
-
-     const visibleNow=transitionPlayback
-       ? !!viewportVisible.get(video)
-       : (window.portfolioGalleryOpen
-          ? !!visible.get(video)
-          : (workActive&&workSettled&&inWorkViewport(video)));
+     const screenVisible=!!viewportVisible.get(video)||inWorkViewport(video);
+     const visibleNow=screenVisible;
 
      const workPlayback=!isCase&&(
-       (workActive&&(window.portfolioGalleryOpen||workSettled))||
+       window.portfolioGalleryOpen||
+       workActive||
        transitionPlayback
      );
 
      const allowed=
        !window.portfolioMediaOpen&&
        !document.hidden&&
-       !movementBusy&&
        visibleNow&&
        !card?.hidden&&
        (inCase?isCase:workPlayback);
@@ -232,7 +227,7 @@
    clearTimeout(scrollStopTimer);
    scrollStopTimer=setTimeout(()=>{
      galleryScrolling=false;
-     schedule();       // resume all videos that are actually visible
+     schedule();       // resume every video that is actually visible
      scheduleWarm(70); // warm nearby media after motion has stopped
    },150);
  },{passive:true});

@@ -1960,79 +1960,53 @@ body.gallery-mode.gallery-to-contacts .panel.about.passed{
 
 
 /* ==========================================================
-   V51 — Gallery -> CONTACTS temporary rail overlay ONLY
+   V53 — SINGLE-SOURCE TRANSITIONS
+   Real panels + real spines only. No copies, no handoff layer.
    ========================================================== */
 
-/* This layer exists only to reproduce the three physical side buttons above
-   fixed header/submenu during Gallery -> CONTACTS. It does NOT change the
-   normal stacking order of the real deck or PANXRT. */
-.transition-rail-layer{
-  position:fixed!important;
-  inset:0!important;
-  z-index:101!important; /* header 100, submenu 99 */
-  overflow:hidden!important;
-  pointer-events:none!important;
+/* INTRO and ABOUT leave full-gallery position using their original physical
+   panels and arrive at the normal CONTACTS rail stack in one continuous move. */
+body.gallery-mode.gallery-to-contacts .panel.intro.passed,
+body.gallery-mode.gallery-to-contacts .panel.about.passed{
+  transform:translate3d(calc(-100% + (var(--i) + 1)*var(--rail)),0,0)!important;
 }
-.transition-rail-layer[hidden]{
-  display:none!important;
-}
-.transition-rail-clone{
-  position:fixed!important;
-  top:0!important;
-  bottom:0!important;
-  right:auto!important;
-  height:100vh!important;
-  height:100dvh!important;
-  margin:0!important;
+
+/* WORK's REAL spine stays attached to the WORK panel for the whole transition.
+   It starts just outside the viewport, enters with WORK, arrives once, and stays.
+   No transform transition of its own = no second departure/return. */
+body.gallery-mode.gallery-to-contacts .work .spine,
+body.gallery-to-contacts .work .spine{
   transform:none!important;
   opacity:1!important;
-  visibility:visible!important;
-  pointer-events:none!important;
   transition:none!important;
-  box-sizing:border-box!important;
 }
 
-/* Hide the real rail buttons only during this one transition so the temporary
-   copies are the single visible source. The actual panels keep moving exactly
-   as in V46/V47. */
-body.gallery-to-contacts .panel.intro .spine,
-body.gallery-to-contacts .panel.about .spine,
-body.gallery-to-contacts .panel.work .spine{
-  opacity:0!important;
+/* One real rounded panel is used throughout, so the rail corner radius cannot
+   disappear between gallery and CONTACTS states. */
+body.gallery-to-contacts .panel.intro,
+body.gallery-to-contacts .panel.about,
+body.gallery-to-contacts .panel.work,
+body.gallery-to-contacts .panel.intro.passed,
+body.gallery-to-contacts .panel.about.passed,
+body.gallery-to-contacts .panel.work.passed{
+  border-radius:0 20px 20px 0!important;
+  overflow:hidden!important;
 }
 
-/* Keep the approved body-level submenu implementation and force its own box to
-   paint-clip while the temporary rails pass over it. */
+@media(max-width:700px){
+  body.gallery-to-contacts .panel.intro,
+  body.gallery-to-contacts .panel.about,
+  body.gallery-to-contacts .panel.work,
+  body.gallery-to-contacts .panel.intro.passed,
+  body.gallery-to-contacts .panel.about.passed,
+  body.gallery-to-contacts .panel.work.passed{
+    border-radius:0 13px 13px 0!important;
+  }
+}
+
+/* The approved V36 submenu remains body-level for real backdrop blur, but its
+   actual painted box is cut to the same physical ABOUT/WORK edges every frame. */
 body.gallery-to-contacts .submenu-overlay{
   overflow:hidden!important;
   contain:paint;
-}
-
-
-/* ==========================================================
-   V52 — transition stability only
-   ========================================================== */
-
-/* Temporary rail shutters must be the top painted layer ONLY for the
-   Gallery -> CONTACTS move. They are pointer-inert and cover only rail widths. */
-.transition-rail-layer{
-  z-index:1000!important;
-  isolation:isolate!important;
-}
-.transition-rail-clone{
-  background-clip:padding-box!important;
-  opacity:1!important;
-}
-
-/* Handoff state:
-   gallery-mode has already been removed, but the real rails stay invisible for
-   two paint frames while their final transforms settle underneath the clones. */
-body.gallery-contact-handoff .panel.intro .spine,
-body.gallery-contact-handoff .panel.about .spine,
-body.gallery-contact-handoff .panel.work .spine{
-  opacity:0!important;
-  transition:none!important;
-}
-body.gallery-contact-handoff .panel.work .spine{
-  transform:none!important;
 }
