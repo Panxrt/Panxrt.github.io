@@ -13,56 +13,10 @@
   const show=e=>{if(video.controls)return;e.preventDefault();e.stopPropagation();video.controls=true;};
   video.addEventListener('click',show);return ()=>video.removeEventListener('click',show);
  }
- async function upgradeViewerImage(media,token){
-  if(media.tagName!=='IMG')return;
-  const full=media.dataset.fullSrc;
-  if(!full||full===media.getAttribute('src'))return;
-
-  const hi=new Image();
-  hi.decoding='async';
-  hi.src=full;
-
-  try{
-   await hi.decode();
-  }catch{
-   await new Promise(resolve=>{
-    if(hi.complete){resolve();return;}
-    hi.addEventListener('load',resolve,{once:true});
-    hi.addEventListener('error',resolve,{once:true});
-   });
-  }
-
-  if(!state||token!==generation||state.media!==media||!frame)return;
-  if(!hi.naturalWidth)return;
-
-  hi.alt='';
-  hi.className='viewer-hires-swap';
-  hi.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;pointer-events:none;z-index:2;';
-  frame.append(hi);
-
-  if(reduced()){
-   hi.style.opacity='1';
-  }else{
-   const fade=hi.animate([{opacity:0},{opacity:1}],{duration:220,easing:'ease-out',fill:'forwards'});
-   await fade.finished.catch(()=>{});
-  }
-
-  if(!state||token!==generation||state.media!==media)return;
-  media.removeAttribute('srcset');
-  media.removeAttribute('sizes');
-  media.src=full;
-  hi.remove();
- }
  function finish(){
   if(!state)return;const old=state;state=null;generation++;
   animation?.cancel();animation=null;caseObserver?.disconnect();caseObserver=null;sheet?.remove();sheet=null;viewer.classList.remove('has-case');
-  old.cleanup?.();old.media.style.cssText=old.style;old.media.controls=old.controls;
-  if(old.media.tagName==='VIDEO'){
-   old.media.muted=true;
-  }else if(old.previewSrc){
-   old.media.src=old.previewSrc;
-   if(old.previewSrcset){old.media.srcset=old.previewSrcset;old.media.sizes='(max-width:700px) 100vw, 60vw';}
-  }
+  old.cleanup?.();old.media.style.cssText=old.style;old.media.controls=old.controls;if(old.media.tagName==='VIDEO')old.media.muted=true;
   old.placeholder.replaceWith(old.media);frame?.remove();frame=null;
   document.body.classList.remove('media-open');closeDetail();old.surface.scrollTop=old.scroll;
   old.button?.focus({preventScroll:true});window.portfolioMediaOpen=false;document.dispatchEvent(new Event('media-mode-change'));
@@ -110,7 +64,7 @@
   if(state||viewer.open)return false;const media=card.querySelector('img,video');if(!media)return false;
   const sourceRect=media.getBoundingClientRect(),surface=document.querySelector('.work .surface'),token=++generation,ru=window.portfolioLanguage?.()==='ru';
   const placeholder=document.createElement('span');placeholder.className='media-origin-placeholder';
-  state={workId:work?.id,media,placeholder,style:media.style.cssText,controls:media.controls,surface,scroll:surface.scrollTop,button:card.querySelector('button'),previewSrc:media.dataset.previewSrc||media.getAttribute('src'),previewSrcset:media.dataset.previewSrcset||media.getAttribute('srcset')||''};
+  state={workId:work?.id,media,placeholder,style:media.style.cssText,controls:media.controls,surface,scroll:surface.scrollTop,button:card.querySelector('button')};
   media.replaceWith(placeholder);frame=document.createElement('div');frame.className='viewer-media-frame';frame.append(media);stage.append(frame);
   media.style.cssText='width:100%;height:100%;object-fit:cover;object-position:center;transform:none;scale:1;max-width:none;max-height:none;';
   if(media.tagName==='VIDEO'){state.cleanup=mobileControls(media);media.muted=false;media.playsInline=true;media.loop=true;}
@@ -136,7 +90,6 @@
    shade.animate([{opacity:0},{opacity:1}],{duration:560});description.animate([{opacity:0},{opacity:1}],{duration:340,delay:160,fill:'backwards'});
   }
   back.focus({preventScroll:true});document.dispatchEvent(new Event('media-mode-change'));if(media.tagName==='VIDEO')media.play().catch(()=>{});
-  else upgradeViewerImage(media,token);
   if(hasCase){const ready=animation?animation.finished.catch(()=>{}):Promise.resolve();ready.then(()=>dockCase(token));}
   return true;
  };

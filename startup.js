@@ -147,7 +147,7 @@
    }
 
    loader.remove();
-   setTimeout(()=>root.classList.remove('site-ui-reveal'),1500);
+   setTimeout(()=>root.classList.remove('site-ui-reveal'),1400);
 
    for(const type of ['wheel','touchstart','touchmove','keydown']){
      window.removeEventListener(type,block,true);

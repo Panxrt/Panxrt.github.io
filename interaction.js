@@ -91,8 +91,33 @@ function closeGallery(destination){
  if(galleryReturning||galleryAnimating||!window.portfolioGalleryOpen)return;
  if(projectView)closeProject();
 
- // Navigating to another deck section keeps the established V18 behavior.
- // The staged controller below is specifically for the BACK -> WORK transition.
+ // CONTACTS from an open gallery: keep the expanded WORK gallery painted
+ // while the whole WORK panel slides away. Collapsing the gallery at the same
+ // moment as the deck transition caused the split/broken frame seen in V40.
+ if(destination===3&&destination!==originState.index){
+  galleryReturning=true;galleryAnimating=true;
+  const savedWorkScroll=workSurface.scrollTop;workAnchor=null;
+  workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
+  projectRequest++;closeDetail();
+  document.body.classList.add('gallery-transitioning','gallery-closing');
+  window.portfolioGalleryOpen=false;
+  document.querySelectorAll('.gallery-close').forEach(b=>{b.inert=true;b.setAttribute('aria-hidden','true');});
+  window.beginDeckTransition?.();
+  go(destination);
+  window.endDeckTransition?.();
+  document.dispatchEvent(new Event('gallery-mode-change'));
+  const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();
+  const duration=(reduced.matches?0:(parseFloat(raw)||0)*(raw.endsWith('ms')?1:1000));
+  closingTimer=setTimeout(()=>{
+   document.body.classList.remove('gallery-mode','gallery-closing','gallery-transitioning');
+   galleryReturning=false;galleryAnimating=false;
+   workSurface.scrollTop=savedWorkScroll;workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
+   window.syncMenu?.();
+  },duration+80);
+  return;
+ }
+
+ // Other gallery -> section navigation keeps the established behavior.
  if(destination!==undefined&&destination!==originState.index){
   galleryReturning=true;
   const savedWorkScroll=workSurface.scrollTop;

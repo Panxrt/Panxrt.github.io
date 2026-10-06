@@ -1,5 +1,5 @@
 {
-  "revision": 117,
+  "revision": 118,
   "brands": [
     {
       "id": "sber",
@@ -61,9 +61,7 @@
       "showFullProject": false,
       "categoryIds": [
         "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
-      ],
-      "previewSrc": "/previews/84c6fc71-0fc2-40c6-9c1b-f60d9d982524-800.webp",
-      "previewSrc2x": "/previews/84c6fc71-0fc2-40c6-9c1b-f60d9d982524-1600.webp"
+      ]
     },
     {
       "id": "01",
@@ -105,9 +103,7 @@
       "showFullProject": false,
       "categoryIds": [
         "5d1f5a1f-c432-4b12-a062-ba7ddda3f24e"
-      ],
-      "previewSrc": "/previews/90b10be6-7f19-40c2-8e45-d690c0b5af70-800.webp",
-      "previewSrc2x": "/previews/90b10be6-7f19-40c2-8e45-d690c0b5af70-1600.webp"
+      ]
     },
     {
       "id": "02",
@@ -205,9 +201,7 @@
       "categoryIds": [
         "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
       ],
-      "showFullProject": false,
-      "previewSrc": "/previews/7c121f46-63ee-4b37-933f-d76312be4913-800.webp",
-      "previewSrc2x": "/previews/7c121f46-63ee-4b37-933f-d76312be4913-1600.webp"
+      "showFullProject": false
     },
     {
       "id": "4bd29bde-a412-4f7f-96e0-e7b3939ef660",
@@ -490,9 +484,7 @@
       "caseLayout": "flow",
       "categoryIds": [
         "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
-      ],
-      "previewSrc": "/previews/4f3e56ce-4f26-4c89-b46f-73b5666f4182-800.webp",
-      "previewSrc2x": "/previews/4f3e56ce-4f26-4c89-b46f-73b5666f4182-1600.webp"
+      ]
     },
     {
       "id": "9b469384-8b95-46c8-b25d-65e5b9cb2d81",
@@ -630,9 +622,7 @@
       ],
       "categoryIds": [
         "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
-      ],
-      "previewSrc": "/previews/9731a2f2-7c8c-4c7d-96ee-705ac5f0e6e3-800.webp",
-      "previewSrc2x": "/previews/9731a2f2-7c8c-4c7d-96ee-705ac5f0e6e3-1600.webp"
+      ]
     },
     {
       "id": "e41e7318-a963-4769-9a1a-501b748efa26",
@@ -703,9 +693,7 @@
       ],
       "categoryIds": [
         "5d1f5a1f-c432-4b12-a062-ba7ddda3f24e"
-      ],
-      "previewSrc": "/previews/f06bc29c-1201-43e8-ac54-825e18458e9f-800.webp",
-      "previewSrc2x": "/previews/f06bc29c-1201-43e8-ac54-825e18458e9f-1600.webp"
+      ]
     },
     {
       "id": "aab2f96f-ef78-4934-ad2b-cf47e3ca5af9",
@@ -777,9 +765,7 @@
       ],
       "categoryIds": [
         "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
-      ],
-      "previewSrc": "/previews/a626549e-1893-44e6-ac03-db36dd6a59dd-800.webp",
-      "previewSrc2x": "/previews/a626549e-1893-44e6-ac03-db36dd6a59dd-1600.webp"
+      ]
     },
     {
       "id": "10",
@@ -872,9 +858,7 @@
             "h": 1698.428053204353
           }
         }
-      ],
-      "previewSrc": "/previews/f0330a0d-cd9c-4e65-a1de-8e4f42d7a141-800.webp",
-      "previewSrc2x": "/previews/f0330a0d-cd9c-4e65-a1de-8e4f42d7a141-1600.webp"
+      ]
     },
     {
       "id": "5c37130d-a520-437f-9c8a-6d0e2aba8b1b",
@@ -921,9 +905,7 @@
       "categoryIds": [
         "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
       ],
-      "showFullProject": false,
-      "previewSrc": "/previews/630fd970-5547-4b26-b17a-d4de25daa3c9-800.webp",
-      "previewSrc2x": "/previews/630fd970-5547-4b26-b17a-d4de25daa3c9-1600.webp"
+      "showFullProject": false
     },
     {
       "id": "534ada47-1a20-4527-b452-64e054e61291",
@@ -1008,9 +990,7 @@
       "showFullProject": false,
       "categoryIds": [
         "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
-      ],
-      "previewSrc": "/previews/f1430357-5dd3-4901-ae17-862f086b0dba-800.webp",
-      "previewSrc2x": "/previews/f1430357-5dd3-4901-ae17-862f086b0dba-1600.webp"
+      ]
     },
     {
       "id": "f3361faa-0f80-4fb5-a93d-98ecc4b2ec54",
@@ -1033,9 +1013,7 @@
       "showFullProject": false,
       "categoryIds": [
         "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
-      ],
-      "previewSrc": "/previews/c0d9cb40-4243-4755-876c-2750b95f90a4-800.webp",
-      "previewSrc2x": "/previews/c0d9cb40-4243-4755-876c-2750b95f90a4-1600.webp"
+      ]
     },
     {
       "id": "b0312d3b-3097-49cd-ae98-0f35c4db5129",
@@ -1058,9 +1036,7 @@
       "showFullProject": false,
       "categoryIds": [
         "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
-      ],
-      "previewSrc": "/previews/a0ac9d82-631e-4635-acc8-ea9ae0de5b2f-800.webp",
-      "previewSrc2x": "/previews/a0ac9d82-631e-4635-acc8-ea9ae0de5b2f-1600.webp"
+      ]
     },
     {
       "id": "27b8d8a5-1c4e-4cdd-b5d0-c40fd5a4509c",
@@ -1080,9 +1056,7 @@
       "showFullProject": false,
       "categoryIds": [
         "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
-      ],
-      "previewSrc": "/previews/c4b0d20c-814b-45dc-8588-e47206f9b568-800.webp",
-      "previewSrc2x": "/previews/c4b0d20c-814b-45dc-8588-e47206f9b568-1600.webp"
+      ]
     },
     {
       "id": "10b459c1-0193-42de-8c5e-241ae23acd6a",
@@ -1102,9 +1076,7 @@
       "showFullProject": false,
       "categoryIds": [
         "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
-      ],
-      "previewSrc": "/previews/8d28f0a9-8961-45b9-b1e1-433af45f3c80-800.webp",
-      "previewSrc2x": "/previews/8d28f0a9-8961-45b9-b1e1-433af45f3c80-1600.webp"
+      ]
     },
     {
       "id": "77384f4f-480f-44c9-99c1-183d15b9b5b5",
@@ -1127,9 +1099,7 @@
       "showFullProject": false,
       "categoryIds": [
         "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
-      ],
-      "previewSrc": "/previews/08382a21-6e83-4666-b0d1-177151500286-800.webp",
-      "previewSrc2x": "/previews/08382a21-6e83-4666-b0d1-177151500286-1600.webp"
+      ]
     },
     {
       "id": "fa7b89f2-51b9-46f6-a743-9e0e32297d00",
@@ -1149,9 +1119,7 @@
       "showFullProject": false,
       "categoryIds": [
         "c7dfeef3-62cf-4287-a7cd-bcee78ea2227"
-      ],
-      "previewSrc": "/previews/97fc45d5-de12-4760-a7b8-2c21ba463214-800.webp",
-      "previewSrc2x": "/previews/97fc45d5-de12-4760-a7b8-2c21ba463214-1600.webp"
+      ]
     },
     {
       "id": "7a752caf-9aea-4790-9b73-14898c0b1c82",
@@ -1198,9 +1166,7 @@
       "showFullProject": false,
       "categoryIds": [
         "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
-      ],
-      "previewSrc": "/previews/845cfd0a-8c4c-4f6e-913a-678085f8b93b-800.webp",
-      "previewSrc2x": "/previews/845cfd0a-8c4c-4f6e-913a-678085f8b93b-1600.webp"
+      ]
     },
     {
       "id": "62418a92-ecef-4b92-9734-63822e177401",
@@ -1244,9 +1210,7 @@
       "categoryIds": [
         "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
       ],
-      "showFullProject": false,
-      "previewSrc": "/previews/fd6e62cc-1496-4f6f-ab23-5160a9ba04c1-800.webp",
-      "previewSrc2x": "/previews/fd6e62cc-1496-4f6f-ab23-5160a9ba04c1-1600.webp"
+      "showFullProject": false
     },
     {
       "id": "fc4c1ac4-365e-4835-872d-6d309423202c",
@@ -1293,9 +1257,7 @@
             "h": 1546.4661654135339
           }
         }
-      ],
-      "previewSrc": "/previews/1a4c5664-b4ad-4e52-b53c-ba755cb4e19a-800.webp",
-      "previewSrc2x": "/previews/1a4c5664-b4ad-4e52-b53c-ba755cb4e19a-1600.webp"
+      ]
     },
     {
       "id": "650447f5-fabd-4b7a-b98f-158c6bfc5cfe",
@@ -1339,9 +1301,7 @@
             "h": 705.4721549636804
           }
         }
-      ],
-      "previewSrc": "/previews/185612f9-4677-4b68-98dd-5de5de1e0ba4-800.webp",
-      "previewSrc2x": "/previews/185612f9-4677-4b68-98dd-5de5de1e0ba4-1600.webp"
+      ]
     },
     {
       "id": "d3b6dff2-230f-4cdd-8708-5c043471da12",
@@ -1382,9 +1342,7 @@
       "showFullProject": false,
       "categoryIds": [
         "41d541f5-6f1d-49a5-a68f-5d7feaddfd24"
-      ],
-      "previewSrc": "/previews/73541f0a-c5a5-4d3d-b2a9-ed22e941b636-800.webp",
-      "previewSrc2x": "/previews/73541f0a-c5a5-4d3d-b2a9-ed22e941b636-1600.webp"
+      ]
     }
   ],
   "galleryLayout": {

@@ -1,0 +1,22 @@
+V42 — PREVIEWS RESTORED TO ORIGINAL SOURCES
+BASE: V41
+
+ONLY progressive media previews were reverted.
+
+- Gallery images now use item.src directly again.
+- Gallery videos now use item.src directly again.
+- No previewSrc / previewSrc2x mappings remain in content.json.
+- No preview -> original quality swap remains in media-viewer.js.
+- 35 preview mappings removed.
+- 35 generated pv-* derivative files removed.
+
+PRESERVED FROM V41:
+- smooth intro menu + brand ribbon reveal
+- WORK preview video playback logic
+- CONTACTS transition fix from open gallery
+- V39 bottom gradient entry fix
+- submenu glass / mobile filter scroll
+- gallery performance logic
+- all visual layout/styles
+
+Original media files in your repo remain the source of truth.

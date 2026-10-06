@@ -1,21 +1,13 @@
 'use strict';
 window.portfolioData=null;
 function mediaNode(item){
- const video=item.mediaType==='video',node=document.createElement(video?'video':'img');
- const preview=item.previewSrc||item.src;
- node.src=preview;
- node.dataset.fullSrc=item.src||preview;
- node.dataset.previewSrc=preview;
+ const node=document.createElement(item.mediaType==='video'?'video':'img');
+ node.src=item.src;
  MosaicLayout.styleMedia(node,item);
- if(video){
-  node.muted=true;node.defaultMuted=true;node.loop=true;node.autoplay=false;node.playsInline=true;node.preload='none';
+ if(node.tagName==='VIDEO'){
+  node.muted=true;node.defaultMuted=true;node.loop=true;node.autoplay=false;node.playsInline=true;node.preload='metadata';
  }else{
   node.alt='';node.loading='lazy';node.decoding='async';
-  if(item.previewSrc2x){
-   node.srcset=`${item.previewSrc} 800w, ${item.previewSrc2x} 1600w`;
-   node.sizes='(max-width:700px) 100vw, 60vw';
-   node.dataset.previewSrcset=node.srcset;
-  }
  }
  return node;
 }

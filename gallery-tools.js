@@ -20,28 +20,18 @@
 
  let galleryScrolling=false,scrollStopTimer=0;
  let pending=0;
- let workPreviewReady=false,workPreviewTimer=0,lastWorkActive=document.body.dataset.page==='2';
-
- function deckDurationMs(){
-  const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();
-  const n=parseFloat(raw)||0;
-  return n*(raw.endsWith('ms')?1:1000);
- }
-
- function armWorkPreview(){
-  clearTimeout(workPreviewTimer);
-  workPreviewReady=false;
-  schedule();
+ let workSettled=false,workSettleTimer=0,lastWorkPage=document.body.dataset.page==='2';
+ function deckDuration(){const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();const n=parseFloat(raw)||0;return n*(raw.endsWith('ms')?1:1000);}
+ function armWorkPlayback(){
+  clearTimeout(workSettleTimer);workSettled=false;schedule();
   if(document.body.dataset.page!=='2')return;
-  workPreviewTimer=setTimeout(()=>{
-   if(document.body.dataset.page==='2'){
-    workPreviewReady=true;
-    schedule();
-    scheduleWarm(40);
-   }
-  },Math.max(120,deckDurationMs()+70));
+  workSettleTimer=setTimeout(()=>{if(document.body.dataset.page==='2'){workSettled=true;scan();schedule();scheduleWarm(40);}},Math.max(160,deckDuration()+80));
  }
-
+ function inWorkViewport(video){
+  const r=video.getBoundingClientRect(),s=gallerySurface?.getBoundingClientRect();
+  const top=Math.max(0,s?.top||0),bottom=Math.min(innerHeight,s?.bottom||innerHeight);
+  return r.bottom>top&&r.top<bottom&&r.right>0&&r.left<innerWidth;
+ }
  const visible=new Map();
  const warmQueue=new Set();
  let warmTimer=0,warmIdle=0;
@@ -169,16 +159,14 @@
      // Gallery videos do not start/resume while the scroll or the gallery/page
      // transition is active. This keeps the compositor free for movement.
      const movementBusy=galleryScrolling||isGalleryTransitioning();
-     // Preview videos are allowed on the normal WORK page too, but only after
-     // the page transition has settled. IntersectionObserver still limits this
-     // to videos actually visible in the WORK viewport.
-     const workPlayback=workActive&&!isCase&&(window.portfolioGalleryOpen||workPreviewReady);
+     const visibleNow=window.portfolioGalleryOpen?visible.get(video):(workActive&&workSettled&&inWorkViewport(video));
+     const workPlayback=workActive&&!isCase&&(window.portfolioGalleryOpen||workSettled);
 
      const allowed=
        !window.portfolioMediaOpen&&
        !document.hidden&&
        !movementBusy&&
-       visible.get(video)&&
+       visibleNow&&
        !card?.hidden&&
        (inCase?isCase:workPlayback)&&
        playing<cap;
@@ -212,12 +200,10 @@
  new MutationObserver(schedule).observe(document.body,{attributes:true,attributeFilter:['data-page','class']});
  new MutationObserver(()=>{
    const now=document.body.dataset.page==='2';
-   if(now===lastWorkActive)return;
-   lastWorkActive=now;
-   armWorkPreview();
+   if(now===lastWorkPage)return;
+   lastWorkPage=now;armWorkPlayback();
  }).observe(document.body,{attributes:true,attributeFilter:['data-page']});
-
- document.addEventListener('portfolio-startup-complete',armWorkPreview);
+ document.addEventListener('portfolio-startup-complete',armWorkPlayback);
 
  for(const name of ['visibilitychange','portfolio-content','gallery-mode-change','project-mode-change','gallery-filter-change','media-mode-change']){
    document.addEventListener(name,()=>{
@@ -234,5 +220,5 @@
 
  scan();
  scheduleWarm(250);
- if(!document.documentElement.classList.contains('site-booting')&&document.body.dataset.page==='2')armWorkPreview();
+ if(document.body.dataset.page==='2')armWorkPlayback();
 })();
