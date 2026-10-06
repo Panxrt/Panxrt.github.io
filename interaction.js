@@ -107,16 +107,30 @@ function closeGallery(destination){
   // INTRO/ABOUT folded rails to travel back in during the SAME move to CONTACTS.
   // WORK/gallery geometry stays untouched until the transition is finished.
   document.body.classList.add('gallery-to-contacts');
+  // Paint the temporary rail layer in the current gallery position before the
+  // first movement frame. This prevents a one-frame PANXRT/submenu leak.
+  window.syncMenu?.();
   go(destination);
   window.endDeckTransition?.();
   document.dispatchEvent(new Event('gallery-mode-change'));
   const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();
   const duration=(reduced.matches?0:(parseFloat(raw)||0)*(raw.endsWith('ms')?1:1000));
   closingTimer=setTimeout(()=>{
+   // Keep the temporary rail copies visible while the REAL rails are silently
+   // snapped into their final non-gallery geometry underneath them.
+   document.body.classList.add('gallery-contact-handoff');
    document.body.classList.remove('gallery-mode','gallery-closing','gallery-transitioning','gallery-to-contacts');
-   galleryReturning=false;galleryAnimating=false;
-   workSurface.scrollTop=savedWorkScroll;workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
+   workSurface.scrollTop=savedWorkScroll;
+   workSurface.style.setProperty('--work-scroll',savedWorkScroll+'px');
    window.syncMenu?.();
+
+   // Two paint frames guarantee that .gallery-mode's WORK-spine translateX(100%)
+   // is gone before the real spine becomes visible. No second movement/bounce.
+   requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    document.body.classList.remove('gallery-contact-handoff');
+    galleryReturning=false;galleryAnimating=false;
+    window.syncMenu?.();
+   }));
   },duration+80);
   return;
  }
@@ -238,13 +252,20 @@ function ensureTransitionRailClones(){
   clone.setAttribute('aria-hidden','true');
 
   // A body-level clone no longer inherits --bg/--fg from its panel.
-  // Copy the already approved rendered rail appearance once.
+  // The previous build copied the spine shorthand itself, which can resolve
+  // transparently in the body stacking context. Copy the owning PANEL surface
+  // explicitly so the temporary rail is fully opaque and really covers
+  // PANXRT + the body-level submenu while it passes in front of them.
   const cs=getComputedStyle(original);
-  clone.style.setProperty('background',cs.background,'important');
-  clone.style.setProperty('background-color',cs.backgroundColor,'important');
+  const panelStyle=getComputedStyle(panels[index]);
+  clone.style.setProperty('background',panelStyle.background,'important');
+  clone.style.setProperty('background-color',panelStyle.backgroundColor,'important');
+  clone.style.setProperty('background-image',panelStyle.backgroundImage,'important');
   clone.style.setProperty('color',cs.color,'important');
   clone.style.setProperty('border-radius',cs.borderRadius,'important');
+  clone.style.setProperty('border-left',cs.borderLeft,'important');
   clone.style.setProperty('box-shadow',cs.boxShadow,'important');
+  clone.style.setProperty('opacity','1','important');
   transitionRailLayer.append(clone);
   return clone;
  });
@@ -252,7 +273,9 @@ function ensureTransitionRailClones(){
 }
 
 function syncTransitionRails(introEdge,aboutEdge,workEdge,viewport){
- const active=document.body.classList.contains('gallery-to-contacts');
+ const active=
+  document.body.classList.contains('gallery-to-contacts')||
+  document.body.classList.contains('gallery-contact-handoff');
  if(!active){
   transitionRailLayer.hidden=true;
   return;

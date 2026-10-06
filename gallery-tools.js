@@ -169,7 +169,6 @@
    pending=0;
    const inCase=!!document.querySelector('.project-view');
    const workActive=document.body.dataset.page==='2';
-   let playing=0;
 
    const deckMoving=document.body.classList.contains('deck-motion-active');
 
@@ -187,19 +186,15 @@
      const isCase=!!video.closest('.project-view');
      const card=video.closest('.gallery-card');
 
-     // V47:
-     // - scrolling still pauses gallery videos;
-     // - gallery OPEN/BACK choreography still pauses them to protect that effect;
-     // - normal PAGE sliding keeps only videos that are actually inside the
-     //   browser viewport running;
-     // - Gallery -> CONTACTS is the one gallery-closing state that is also a
-     //   page slide, so viewport-visible videos keep playing there too.
-     const leavingGalleryToContacts=document.body.classList.contains('gallery-to-contacts');
-     const internalGalleryMotion=isGalleryTransitioning()&&!leavingGalleryToContacts;
-     const deckViewportPlayback=deckMoving&&!internalGalleryMotion;
-     const movementBusy=galleryScrolling||internalGalleryMotion;
+     // V52:
+     // Opening/closing the gallery and changing deck pages must NOT freeze the
+     // visible motion work. During ANY visual transition we use the browser-
+     // viewport observer as the source of truth. Only videos that actually leave
+     // the screen are paused. Native gallery scrolling still pauses playback.
+     const transitionPlayback=deckMoving||isGalleryTransitioning();
+     const movementBusy=galleryScrolling;
 
-     const visibleNow=deckViewportPlayback
+     const visibleNow=transitionPlayback
        ? !!viewportVisible.get(video)
        : (window.portfolioGalleryOpen
           ? !!visible.get(video)
@@ -207,7 +202,7 @@
 
      const workPlayback=!isCase&&(
        (workActive&&(window.portfolioGalleryOpen||workSettled))||
-       deckViewportPlayback
+       transitionPlayback
      );
 
      const allowed=
@@ -219,7 +214,6 @@
        (inCase?isCase:workPlayback);
 
      if(allowed){
-       playing++;
        if(video.paused)video.play().catch(()=>{});
      }else if(!video.paused){
        video.pause();
@@ -238,7 +232,7 @@
    clearTimeout(scrollStopTimer);
    scrollStopTimer=setTimeout(()=>{
      galleryScrolling=false;
-     schedule();       // resume only the nearest 1/2 visible videos
+     schedule();       // resume all videos that are actually visible
      scheduleWarm(70); // warm nearby media after motion has stopped
    },150);
  },{passive:true});

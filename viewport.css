@@ -2007,3 +2007,32 @@ body.gallery-to-contacts .submenu-overlay{
   overflow:hidden!important;
   contain:paint;
 }
+
+
+/* ==========================================================
+   V52 — transition stability only
+   ========================================================== */
+
+/* Temporary rail shutters must be the top painted layer ONLY for the
+   Gallery -> CONTACTS move. They are pointer-inert and cover only rail widths. */
+.transition-rail-layer{
+  z-index:1000!important;
+  isolation:isolate!important;
+}
+.transition-rail-clone{
+  background-clip:padding-box!important;
+  opacity:1!important;
+}
+
+/* Handoff state:
+   gallery-mode has already been removed, but the real rails stay invisible for
+   two paint frames while their final transforms settle underneath the clones. */
+body.gallery-contact-handoff .panel.intro .spine,
+body.gallery-contact-handoff .panel.about .spine,
+body.gallery-contact-handoff .panel.work .spine{
+  opacity:0!important;
+  transition:none!important;
+}
+body.gallery-contact-handoff .panel.work .spine{
+  transform:none!important;
+}

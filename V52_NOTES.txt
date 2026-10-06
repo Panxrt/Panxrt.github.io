@@ -1,0 +1,27 @@
+V52 — BASE V51, targeted regression fixes only.
+
+FIXED:
+1) Gallery -> CONTACTS rail coverage:
+   - temporary INTRO/ABOUT/WORK rail copies now take the owning panel's actual
+     opaque background instead of the spine shorthand
+   - rail layer is painted before movement begins
+   - temporary rails remain above PANXRT/submenu only for this transition
+
+2) WORK rail bounce:
+   - at the end of Gallery -> CONTACTS, temporary rails remain for two paint frames
+   - real WORK rail settles into its final transform invisibly underneath
+   - then temporary copies disappear and the real rails appear already stationary
+
+3) Videos:
+   - gallery OPEN/BACK and page transitions no longer pause visible videos
+   - during transitions visibility is determined by the native viewport observer
+   - videos pause when they actually leave the viewport
+   - native gallery scrolling still pauses them
+   - no simultaneous-video cap
+
+PRESERVED:
+- V45/V46 page motion
+- filter scroll-to-top
+- Gallery -> INTRO/ABOUT colour-mask sync
+- V36 submenu glass
+- grid/matte/card/gradient styling
