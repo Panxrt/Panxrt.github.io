@@ -1,0 +1,25 @@
+V30 — rebuilt from V28.
+
+Root cause of V29:
+- interaction.js runs before gallery-tools.js.
+- gallery-tools.js creates .filter-reveal / .gallery-filters later.
+- Therefore V29 tried to wrap an element that did not exist yet.
+- .filter-tray was never created, so the visible behavior could not change.
+
+V30 fix:
+- .filter-tray is created directly in gallery-tools.js at the same moment
+  the filter submenu is created.
+- .filter-reveal stays fixed as a 50px clipping window.
+- .filter-tray contains BOTH glass and controls and is the only thing moving.
+- Closed WORK: tray is exactly -50px and hidden by the fixed window.
+- Gallery open: tray slides to 0.
+- BACK: tray slides back to -50px.
+
+NOT TOUCHED:
+- V28 PANXRT/menu clipping logic
+- main WORK header/matte
+- filter size/alignment/type
+- gallery/grid/cards/crop/hover
+- bottom blur/gradient
+- startup/loading
+- cases/media

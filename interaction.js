@@ -9,18 +9,6 @@ for(const header of [menu,darkMenu]){
 }
 // A single return control sits outside the section/header clipping layers.
 for(const header of [menu,darkMenu])header.querySelector('.gallery-close')?.remove();
-// Keep the filter mask stationary and move one inner tray (glass + controls).
-for(const header of [menu,darkMenu]){
- const reveal=header.querySelector('.filter-reveal');
- const filters=reveal?.querySelector('.gallery-filters');
- if(reveal&&filters&&!reveal.querySelector('.filter-tray')){
-  const tray=document.createElement('div');
-  tray.className='filter-tray';
-  filters.before(tray);
-  tray.append(filters);
- }
-}
-
 const galleryBack=document.createElement('button');galleryBack.className='gallery-close gallery-back-floating';galleryBack.type='button';galleryBack.textContent='BACK';galleryBack.inert=true;galleryBack.setAttribute('aria-hidden','true');galleryBack.setAttribute('aria-label','Back to Work');document.body.append(galleryBack);
 const toTop=document.createElement('button');toTop.className='project-to-top';toTop.type='button';toTop.setAttribute('aria-label','Back to top of case');toTop.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>';document.body.append(toTop);
 toTop.onclick=()=>projectView?.scrollTo({top:0,behavior:reduced.matches?'auto':'smooth'});
