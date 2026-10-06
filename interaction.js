@@ -37,51 +37,16 @@ const workSurface=surfaces[2];
 let workAnchor=null;
 function syncWorkAnchor(){workSurface.style.setProperty('--work-scroll',workSurface.scrollTop+'px');}
 let workScrollFrame=0;
-workSurface.addEventListener('scroll',()=>{if(workScrollFrame)return;workScrollFrame=requestAnimationFrame(()=>{workScrollFrame=0;workSurface.style.setProperty('--work-scroll',workSurface.scrollTop+'px');});},{passive:true});
-
-/* V37: very light inertia for coarse desktop mouse-wheel input only.
-   High-resolution trackpads and touch remain fully native. */
-let galleryWheelFrame=0,galleryWheelTarget=0,galleryWheelActive=false;
-function stopGalleryWheel(){
- if(galleryWheelFrame)cancelAnimationFrame(galleryWheelFrame);
- galleryWheelFrame=0;galleryWheelActive=false;galleryWheelTarget=workSurface.scrollTop;
-}
-function animateGalleryWheel(){
- const current=workSurface.scrollTop,diff=galleryWheelTarget-current;
- if(Math.abs(diff)<.45){
-  workSurface.scrollTop=galleryWheelTarget;
-  galleryWheelFrame=0;galleryWheelActive=false;
-  return;
- }
- workSurface.scrollTop=current+diff*.24;
- galleryWheelFrame=requestAnimationFrame(animateGalleryWheel);
-}
-workSurface.addEventListener('wheel',event=>{
- if(!window.portfolioGalleryOpen||projectView||event.ctrlKey||reduced.matches)return;
- if(Math.abs(event.deltaX)>Math.abs(event.deltaY))return;
-
- const mode=event.deltaMode===1?16:event.deltaMode===2?workSurface.clientHeight:1;
- const delta=event.deltaY*mode;
-
- // Small pixel deltas are almost always a touchpad/high-resolution gesture:
- // leave those native so trackpad scrolling does not become sticky.
- if(event.deltaMode===0&&Math.abs(delta)<32){
-  if(!galleryWheelActive)galleryWheelTarget=workSurface.scrollTop;
-  return;
- }
-
- event.preventDefault();
- const max=Math.max(0,workSurface.scrollHeight-workSurface.clientHeight);
- if(!galleryWheelActive)galleryWheelTarget=workSurface.scrollTop;
-
- // Preserve input strength: a harder wheel turn travels farther, only the
- // acceleration/deceleration is softened.
- galleryWheelTarget=Math.max(0,Math.min(max,galleryWheelTarget+delta*.90));
- galleryWheelActive=true;
- if(!galleryWheelFrame)galleryWheelFrame=requestAnimationFrame(animateGalleryWheel);
-},{passive:false});
-
-workSurface.addEventListener('touchstart',stopGalleryWheel,{passive:true});
+workSurface.addEventListener('scroll',()=>{
+ // In the expanded gallery the preview overlays are invisible, so updating a
+ // CSS custom property on every scroll frame only forces unnecessary style work.
+ if(window.portfolioGalleryOpen)return;
+ if(workScrollFrame)return;
+ workScrollFrame=requestAnimationFrame(()=>{
+  workScrollFrame=0;
+  workSurface.style.setProperty('--work-scroll',workSurface.scrollTop+'px');
+ });
+},{passive:true});
 
 darkMenu.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('click',()=>navigate(Number(button.dataset.go))));
 menu.addEventListener('click',event=>{const button=event.target.closest('[data-go]');if(button&&window.portfolioGalleryOpen){event.stopImmediatePropagation();navigate(Number(button.dataset.go));}},true);
@@ -282,59 +247,39 @@ function contactProgress(fromPage,toPage,k,fromGallery,toGallery){
 }
 function setMotion(state,cp){panels.forEach((panel,i)=>panel.style.transform=`translate3d(${state.x[i]}px,0,0)`);paintMenu(state,cp);}
 function makeDeckEase(){const values=getComputedStyle(document.documentElement).getPropertyValue('--ease').match(/[.\d]+/g)?.map(Number)||[.22,.61,.36,1];const [x1,y1,x2,y2]=values;const curve=(v,a,b)=>3*(1-v)*(1-v)*v*a+3*(1-v)*v*v*b+v*v*v;return function deckEase(t){let low=0,high=1;for(let i=0;i<16;i++){const middle=(low+high)/2;if(curve(middle,x1,x2)<t)low=middle;else high=middle;}return curve((low+high)/2,y1,y2);};}
-function unlockDeckMotion(){
- requestAnimationFrame(()=>document.documentElement.classList.remove('deck-motion-lock'));
-}
-window.beginDeckTransition=function(){
- if(motionDepth++>0)return;
- cancelAnimationFrame(motionFrame);motionFrame=0;
- // The JS compositor is the sole owner of panel transforms during a deck move.
- // Prevent the CSS transition from lagging one frame behind each JS update.
- document.documentElement.classList.add('deck-motion-lock');
- motionFrom=snapshot();motionFromPage=motionFrom.page;motionFromGallery=motionFrom.gallery;
-};
+window.beginDeckTransition=function(){if(motionDepth++>0)return;cancelAnimationFrame(motionFrame);motionFrom=snapshot();motionFromPage=motionFrom.page;motionFromGallery=motionFrom.gallery;};
 window.endDeckTransition=function(){
- if(--motionDepth>0)return;motionDepth=0;
- if(!motionFrom){document.documentElement.classList.remove('deck-motion-lock');return;}
+ if(--motionDepth>0)return;motionDepth=0;if(!motionFrom)return;
  const from=motionFrom;motionFrom=null;
-
- // With CSS panel transitions locked, removing the temporary transform reveals
- // the exact final class-based geometry immediately, which is safe to sample.
  panels.forEach(p=>p.style.removeProperty('transform'));
  const to=snapshot();
  const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim(),duration=(reduced.matches||window.portfolioRestoring)?0:parseFloat(raw)*(raw.endsWith('ms')?1:1000);
-
- if(!duration){
-  setMotion(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));
-  panels.forEach(p=>p.style.removeProperty('transform'));
-  paintMenu(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));
-  unlockDeckMotion();
-  return;
- }
-
+ if(!duration){setMotion(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));panels.forEach(p=>p.style.removeProperty('transform'));return;}
  const started=performance.now(),deckEase=makeDeckEase();
  setMotion(from,contactProgress(from.page,to.page,0,from.gallery,to.gallery));
-
  function tick(now){
   const t=Math.min(1,(now-started)/duration),k=deckEase(t);
   const state={x:from.x.map((x,i)=>x+(to.x[i]-x)*k),page:to.page,gallery:to.gallery,galleryProgress:from.galleryProgress+(to.galleryProgress-from.galleryProgress)*k,shift:from.shift+(to.shift-from.shift)*k};
   setMotion(state,contactProgress(from.page,to.page,k,from.gallery,to.gallery));
-
   if(t<1){
    motionFrame=requestAnimationFrame(tick);
   }else{
-   motionFrame=0;
-   // Land on the exact CSS end state while transitions are still locked.
-   panels.forEach(p=>p.style.removeProperty('transform'));
-   syncWorkAnchor();
-   paintMenu(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));
-   unlockDeckMotion();
+   // Keep the exact final transform painted for one complete frame before
+   // returning ownership to the class-based final state. This removes the
+   // tiny end-of-transition snap without changing the trajectory/easing.
+   setMotion(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));
+   motionFrame=requestAnimationFrame(()=>{
+    motionFrame=0;
+    panels.forEach(p=>p.style.removeProperty('transform'));
+    syncWorkAnchor();
+    paintMenu(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));
+   });
   }
  }
  motionFrame=requestAnimationFrame(tick);
 };
 window.syncMenu=()=>paintMenu();
-function resizeDeck(){cancelAnimationFrame(motionFrame);motionFrame=0;motionDepth=0;motionFrom=null;panels.forEach(p=>p.style.removeProperty('transform'));document.documentElement.classList.remove('deck-motion-lock');measureHeaderGeometry();paintMenu();}
+function resizeDeck(){cancelAnimationFrame(motionFrame);motionFrame=0;panels.forEach(p=>p.style.removeProperty('transform'));measureHeaderGeometry();paintMenu();}
 window.addEventListener('resize',resizeDeck,{passive:true});window.addEventListener('pageshow',paintMenu);document.addEventListener('visibilitychange',paintMenu);window.visualViewport?.addEventListener('resize',resizeDeck,{passive:true});paintMenu();
 
 const returnScroll=sessionStorage.getItem('panxrt-gallery-return');

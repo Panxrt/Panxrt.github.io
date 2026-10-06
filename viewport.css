@@ -1877,11 +1877,41 @@ body:not(.gallery-mode):not(.gallery-closing) .submenu-overlay .submenu-sheet{
 
 
 /* ==========================================================
-   V37 — MOTION PERFORMANCE ONLY
-   During the existing JS deck tween, do not let the original CSS transform
-   transition interpolate the same property a second time.
-   No geometry, easing, colors, blur, sizes, or layout are changed.
+   V38 — PERFORMANCE/SMOOTHNESS ONLY
+   BASELINE: V36 visual reference.
+   No colors, card sizes, submenu glass, typography or page design changed.
    ========================================================== */
-.deck-motion-lock .deck .panel{
-  transition:transform 0s linear!important;
+
+/* GALLERY: one intrinsic 50px geometry in preview / open / closing.
+   This removes the hidden 14px layout jump that happened on every gallery open. */
+.work .gallery-entry,
+.gallery-mode .work .gallery-entry,
+.gallery-closing .work .gallery-entry{
+  padding-top:calc(var(--header) + 50px)!important;
+}
+
+.work .gallery-entry,
+.gallery-closing .work .gallery-entry{
+  transform:translate3d(0,-50px,0)!important;
+}
+
+.gallery-mode .work .gallery-entry{
+  transform:translate3d(0,0,0)!important;
+}
+
+/* Preserve the exact on-screen position of preview overlays after changing
+   the intrinsic compensation from 64px to 50px. */
+body:not(.gallery-mode) .work .gallery-entry:before,
+body:not(.gallery-mode) .work .gallery-entry:after{
+  top:calc(var(--work-scroll,0px) + 50px)!important;
+}
+
+body:not(.gallery-mode) .work .gallery-launch{
+  top:calc(var(--work-scroll,0px) + 56dvh + 50px)!important;
+}
+
+/* The deck already owns one-finger gestures. Keep them off browser scrolling
+   without a blocking touchmove listener on the main thread. */
+.deck{
+  touch-action:pinch-zoom!important;
 }

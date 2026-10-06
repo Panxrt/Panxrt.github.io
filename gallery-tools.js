@@ -14,57 +14,191 @@
  function render(){const data=window.portfolioData;if(!data)return;if(category!=='all'&&!data.categories?.some(c=>c.id===category))category='all';filters.replaceChildren();const label=document.createElement('span');label.className='filter-label';label.textContent=window.portfolioLanguage?.()==='ru'?'ФИЛЬТРЫ':'FILTERS';filters.append(label);for(const c of [{id:'all',name:'ALL'},...(data.categories||[])]){const b=document.createElement('button');b.textContent=c.name;b.type='button';b.setAttribute('aria-pressed',String(category===c.id));b.onclick=()=>{category=c.id;render();};filters.append(b);}labels();applyFilter();}
  document.addEventListener('portfolio-content',render);document.addEventListener('portfolio-language',labels);if(window.portfolioData)render();
 
- // Predictive media loading. This does not change layout, filters, hover, blur,
- // animation timing or media styling. It only changes WHEN files are requested.
+ // Performance-safe media loading.
+ // Scroll itself stays 100% native: no synthetic scrollTop animation.
  const gallerySurface=document.querySelector('.work .surface');
- let warmFrame=0;
- function warmNearbyMedia(){
-   warmFrame=0;
-   const cards=[...grid.querySelectorAll('.gallery-card:not([hidden])')];
-   const top=gallerySurface?.scrollTop||0;
-   const height=gallerySurface?.clientHeight||window.innerHeight;
-   const preloadEdge=top+height+Math.max(1200,height*1.5);
-   for(let i=0;i<cards.length;i++){
-     const card=cards[i],media=card.querySelector('img,video');
+
+ let galleryScrolling=false,scrollStopTimer=0;
+ let pending=0;
+ const visible=new Map();
+ const warmQueue=new Set();
+ let warmTimer=0,warmIdle=0;
+
+ function isGalleryTransitioning(){
+   return document.body.classList.contains('gallery-transitioning');
+ }
+
+ function queueWarm(card){
+   if(card)warmQueue.add(card);
+ }
+
+ function processWarmQueue(){
+   warmIdle=0;
+   if(galleryScrolling||isGalleryTransitioning()){
+     scheduleWarm(180);
+     return;
+   }
+
+   const cards=[...warmQueue];
+   warmQueue.clear();
+
+   for(const card of cards){
+     if(!card.isConnected||card.hidden)continue;
+     const media=card.querySelector('img,video');
      if(!media)continue;
-     const near=i<10||card.offsetTop<preloadEdge;
-     if(!near)continue;
+
      if(media.tagName==='IMG'){
        if(media.loading!=='eager')media.loading='eager';
-       if(i<4)media.fetchPriority='high';
        if(media.complete)media.decode?.().catch(()=>{});
        else if(!media.dataset.decodeQueued){
          media.dataset.decodeQueued='1';
          media.addEventListener('load',()=>media.decode?.().catch(()=>{}),{once:true});
        }
      }else{
-       // First rows are allowed to download ahead of time; deeper videos are
-       // upgraded from metadata/none only shortly before the user reaches them.
-       const desired=i<5?'auto':'metadata';
-       if(media.preload!==desired){
-         media.preload=desired;
-         try{media.load();}catch{}
-       }
+       // Do not force large video downloads while the user is moving.
+       // Metadata is enough for nearby cards; play() can request the actual
+       // stream after scrolling/transitioning has stopped.
+       if(media.preload!=='metadata')media.preload='metadata';
      }
    }
  }
- function scheduleWarm(){if(!warmFrame)warmFrame=requestAnimationFrame(warmNearbyMedia);}
- gallerySurface?.addEventListener('scroll',scheduleWarm,{passive:true});
- document.addEventListener('portfolio-content',scheduleWarm);
- document.addEventListener('gallery-filter-change',scheduleWarm);
- document.addEventListener('gallery-mode-change',scheduleWarm);
- document.addEventListener('portfolio-startup-complete',scheduleWarm);
- window.addEventListener('resize',scheduleWarm,{passive:true});
- if('requestIdleCallback' in window)requestIdleCallback(scheduleWarm,{timeout:1200});
- else setTimeout(scheduleWarm,350);
 
- // Decode and play only visible video, prioritising the selected work.
- const visible=new Map();let pending=0;
- const observer=new IntersectionObserver(entries=>{for(const e of entries)visible.set(e.target,e.isIntersecting&&e.intersectionRatio>.05);schedule();},{threshold:[0,.05,.25]});
- function scan(){for(const video of document.querySelectorAll('.gallery-card video,.project-view video'))if(!visible.has(video)){video.autoplay=false;video.removeAttribute('autoplay');video.loop=true;if(!video.preload)video.preload='none';visible.set(video,false);observer.observe(video);}for(const video of visible.keys())if(!video.isConnected){observer.unobserve(video);video.pause();visible.delete(video);}schedule();scheduleWarm();}
- function schedule(){if(!pending)pending=requestAnimationFrame(update);}
- function update(){pending=0;const inCase=!!document.querySelector('.project-view'),workActive=document.body.dataset.page==='2',cap=matchMedia('(max-width:700px)').matches?2:4;let playing=0;const videos=[...visible.keys()].sort((a,b)=>Number(!!b.closest('.selected'))-Number(!!a.closest('.selected')));for(const video of videos){if(video.closest('.media-viewer'))continue;const isCase=!!video.closest('.project-view'),card=video.closest('.gallery-card'),allowed=!window.portfolioMediaOpen&&!document.hidden&&visible.get(video)&&!card?.hidden&&(inCase?isCase:workActive&&!isCase)&&playing<cap;if(allowed){playing++;if(video.paused)video.play().catch(()=>{});}else if(!video.paused)video.pause();}}
- new MutationObserver(scan).observe(document.body,{childList:true,subtree:true});new MutationObserver(schedule).observe(document.body,{attributes:true,attributeFilter:['data-page','class']});
- for(const name of ['visibilitychange','portfolio-content','gallery-mode-change','project-mode-change','gallery-filter-change','media-mode-change'])document.addEventListener(name,scan);
- grid.addEventListener('click',schedule);scan();
+ function scheduleWarm(delay=90){
+   clearTimeout(warmTimer);
+   warmTimer=setTimeout(()=>{
+     if('requestIdleCallback' in window){
+       if(warmIdle)cancelIdleCallback(warmIdle);
+       warmIdle=requestIdleCallback(processWarmQueue,{timeout:700});
+     }else{
+       processWarmQueue();
+     }
+   },delay);
+ }
+
+ const warmObserver=new IntersectionObserver(entries=>{
+   for(const e of entries){
+     if(e.isIntersecting)queueWarm(e.target);
+   }
+   if(warmQueue.size)scheduleWarm(galleryScrolling?180:90);
+ },{
+   root:gallerySurface,
+   rootMargin:'1100px 0px 1100px 0px',
+   threshold:0
+ });
+
+ function observeWarmTargets(){
+   for(const card of grid.querySelectorAll('.gallery-card')){
+     if(card.dataset.warmObserved)continue;
+     card.dataset.warmObserved='1';
+     warmObserver.observe(card);
+   }
+ }
+
+ const observer=new IntersectionObserver(entries=>{
+   for(const e of entries)visible.set(e.target,e.isIntersecting&&e.intersectionRatio>.05);
+   schedule();
+ },{root:gallerySurface,threshold:[0,.05,.25]});
+
+ function scan(){
+   observeWarmTargets();
+
+   for(const video of document.querySelectorAll('.gallery-card video,.project-view video')){
+     if(visible.has(video))continue;
+     video.autoplay=false;
+     video.removeAttribute('autoplay');
+     video.loop=true;
+     if(!video.preload)video.preload='none';
+     visible.set(video,false);
+     observer.observe(video);
+   }
+
+   for(const video of [...visible.keys()]){
+     if(video.isConnected)continue;
+     observer.unobserve(video);
+     video.pause();
+     visible.delete(video);
+   }
+
+   schedule();
+ }
+
+ function schedule(){
+   if(!pending)pending=requestAnimationFrame(update);
+ }
+
+ function update(){
+   pending=0;
+   const inCase=!!document.querySelector('.project-view');
+   const workActive=document.body.dataset.page==='2';
+   const mobile=matchMedia('(max-width:700px)').matches;
+   const cap=mobile?1:2;
+   let playing=0;
+
+   const videos=[...visible.keys()].sort(
+     (a,b)=>Number(!!b.closest('.selected'))-Number(!!a.closest('.selected'))
+   );
+
+   for(const video of videos){
+     if(video.closest('.media-viewer'))continue;
+
+     const isCase=!!video.closest('.project-view');
+     const card=video.closest('.gallery-card');
+
+     // Gallery videos do not start/resume while the scroll or the gallery/page
+     // transition is active. This keeps the compositor free for movement.
+     const movementBusy=galleryScrolling||isGalleryTransitioning();
+     const galleryPlayback=window.portfolioGalleryOpen&&workActive&&!isCase;
+
+     const allowed=
+       !window.portfolioMediaOpen&&
+       !document.hidden&&
+       !movementBusy&&
+       visible.get(video)&&
+       !card?.hidden&&
+       (inCase?isCase:galleryPlayback)&&
+       playing<cap;
+
+     if(allowed){
+       playing++;
+       if(video.paused)video.play().catch(()=>{});
+     }else if(!video.paused){
+       video.pause();
+     }
+   }
+ }
+
+ gallerySurface?.addEventListener('scroll',()=>{
+   if(!window.portfolioGalleryOpen)return;
+
+   if(!galleryScrolling){
+     galleryScrolling=true;
+     schedule(); // pause running gallery videos once, immediately
+   }
+
+   clearTimeout(scrollStopTimer);
+   scrollStopTimer=setTimeout(()=>{
+     galleryScrolling=false;
+     schedule();       // resume only the nearest 1/2 visible videos
+     scheduleWarm(70); // warm nearby media after motion has stopped
+   },150);
+ },{passive:true});
+
+ new MutationObserver(scan).observe(document.body,{childList:true,subtree:true});
+ new MutationObserver(schedule).observe(document.body,{attributes:true,attributeFilter:['data-page','class']});
+
+ for(const name of ['visibilitychange','portfolio-content','gallery-mode-change','project-mode-change','gallery-filter-change','media-mode-change']){
+   document.addEventListener(name,()=>{
+     scan();
+     // gallery-mode-change fires at the START of the transition; delay warming
+     // until the 820ms visual motion has finished.
+     if(name==='gallery-mode-change')scheduleWarm(900);
+     else scheduleWarm(90);
+   });
+ }
+
+ grid.addEventListener('click',schedule);
+ window.addEventListener('resize',()=>scheduleWarm(120),{passive:true});
+
+ scan();
+ scheduleWarm(250);
 })();

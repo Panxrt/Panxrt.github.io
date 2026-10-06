@@ -71,12 +71,6 @@ touchDeck.addEventListener('touchstart',event=>{
  if(window.portfolioGalleryOpen||event.touches.length!==1||Date.now()<lockedUntil)return;
  const t=event.touches[0];touchStart={x:t.clientX,y:t.clientY,id:t.identifier};
 },{passive:true});
-touchDeck.addEventListener('touchmove',event=>{
- if(window.portfolioGalleryOpen)return;
- if(event.touches.length!==1){touchStart=null;return;}
- // The deck owns one-finger gestures; gallery scrolling remains browser-native.
- if(event.cancelable)event.preventDefault();
-},{passive:false});
 touchDeck.addEventListener('touchend',event=>{
  if(window.portfolioGalleryOpen||!touchStart)return;
  const start=touchStart;touchStart=null;
