@@ -1,0 +1,20 @@
+V54 — BASE: V53
+
+ONLY NEW FIX:
+Gallery -> CONTACTS matte/header glass is now clipped to the exact same
+physical moving window as the rest of the transition:
+- left edge = after INTRO/ABOUT returning rails
+- right edge = before real WORK spine
+
+This prevents the matte/frosted menu strip from painting over side buttons.
+
+PRESERVED FROM V53:
+- no cloned rails
+- single real WORK spine
+- rail rounding
+- PANXRT/submenu physical clipping
+- header/page sync
+- no action-based video pauses
+- all visible videos may play
+- offscreen videos pause
+- filter change scrolls gallery to top

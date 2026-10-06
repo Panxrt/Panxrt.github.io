@@ -2010,3 +2010,16 @@ body.gallery-to-contacts .submenu-overlay{
   overflow:hidden!important;
   contain:paint;
 }
+
+
+/* ==========================================================
+   V54 — Gallery -> CONTACTS matte follows the real rail window
+   ========================================================== */
+
+/* The backdrop itself is still the approved WORK matte. During this one move
+   its clip is updated from interaction.js using the exact same moving edges as
+   PANXRT, submenu and WORK spine. Keep the layer paint-contained so blur cannot
+   bleed beyond that clip while rails pass in front. */
+body.gallery-to-contacts .work-menu-backdrop{
+  contain:paint;
+}

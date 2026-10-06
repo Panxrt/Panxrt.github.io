@@ -288,12 +288,25 @@ function paintMenu(state=null,contactProgress=null){
  const headerLeft=galleryToContacts?foldedLightEnd:0;
  clipHeader(menu,headerLeft,Math.min(lightEnd,visibleRight),viewport);
  clipHeader(darkMenu,Math.max(headerLeft,lightEnd),visibleRight,viewport);
- // Matte belongs to WORK: its RIGHT edge follows WORK itself, never the
- // CONTACTS text mask. Because this layer sits in the deck below ABOUT, the
- // small overlap is genuinely underneath ABOUT rather than on top of it.
+ // Matte belongs to WORK.
+ // Normally preserve the established V53/V18 matte geometry.
+ // ONLY during Gallery -> CONTACTS, force matte/header glass to use the exact
+ // same physical window as PANXRT/menu/submenu:
+ //   left  = after the returning INTRO/ABOUT rail stack
+ //   right = before the real WORK spine
+ // This prevents the frosted strip from painting over any side button.
  const overlap=1*(1-galleryProgress);
- const bgLeft=Math.max(0,lightEnd-overlap);
- const matteRight=Math.max(0,Math.min(viewport,workEdge));
+ const normalBgLeft=Math.max(0,lightEnd-overlap);
+ const normalMatteRight=Math.max(0,Math.min(viewport,workEdge));
+
+ const bgLeft=galleryToContacts
+  ? foldedLightEnd
+  : normalBgLeft;
+
+ const matteRight=galleryToContacts
+  ? workSpineLeft
+  : normalMatteRight;
+
  const bgRight=Math.max(bgLeft,matteRight);
  const rightInset=Math.max(0,viewport-bgRight);
  workMenuBackdrop.style.clipPath=`inset(0 ${rightInset}px 0 ${bgLeft}px)`;
