@@ -1,154 +1,80 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
-  <title>PANXRT — Admin</title>
-  <link rel="icon" href="../favicon.svg">
-  <link rel="stylesheet" href="../cms.css">
-  <link rel="stylesheet" href="./admin.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>PANXRT — Admin</title>
+<link rel="icon" href="../favicon.svg">
+<link rel="stylesheet" href="./admin.css">
 </head>
 <body>
-  <header class="topbar">
-    <div>
-      <strong class="brand">PANXRT / ADMIN</strong>
-      <span class="safe">DEV PREVIEW · основной сайт не меняется</span>
+<header class="topbar">
+  <div><strong class="brand">PANXRT / ADMIN</strong><span class="safe">DEV PREVIEW · основной сайт не меняется</span></div>
+  <div class="top-actions">
+    <button id="resetBtn" class="ghost">Сбросить черновик</button>
+    <button id="exportBtn" class="ghost">Скачать JSON</button>
+    <button id="publishBtn" class="primary" disabled title="Подключим безопасную публикацию следующим этапом">PUBLISH — позже</button>
+  </div>
+</header>
+
+<div class="tabsbar">
+  <button class="tab is-active" data-tab="works">WORK / MOSAIC</button>
+  <button class="tab" data-tab="brands">BRANDS</button>
+</div>
+
+<main class="app">
+  <section id="worksWorkspace" class="workspace">
+    <div class="workspace-head">
+      <div><h1>Точная мозаика сайта</h1><p>Это реальный рендерер WORK из текущего сайта. Перетаскивание меняет тот же порядок <code>works</code>.</p></div>
+      <div class="preview-switch"><label for="preview-size">Preview</label><select id="preview-size"><option value="1200">Desktop</option><option value="900">Tablet</option><option value="390">Mobile</option></select></div>
     </div>
-    <div class="top-actions">
-      <button id="resetBtn" class="ghost">Сбросить черновик</button>
-      <button id="exportBtn" class="ghost">Скачать JSON</button>
-      <button id="publishBtn" class="primary" disabled>PUBLISH — позже</button>
+    <div class="mosaic-help"><span>⋮⋮ перетаскивай плитки прямо здесь</span><span>клик по плитке — настройки справа</span></div>
+    <div id="frameViewport" class="frame-viewport">
+      <div id="frameScaler" class="frame-scaler">
+        <iframe id="mosaicFrame" src="./mosaic-frame.html" title="Точная мозаика сайта"></iframe>
+      </div>
     </div>
-  </header>
+  </section>
 
-  <main class="app">
-    <aside class="sidebar">
-      <div class="tabs">
-        <button class="tab is-active" data-tab="works">Работы</button>
-        <button class="tab" data-tab="brands">Бренды</button>
+  <section id="brandsWorkspace" class="brands-workspace" hidden>
+    <div class="brands-list-head"><h1>Бренды</h1><button id="addBrandBtn" class="mini">+ бренд</button></div>
+    <div id="brandList" class="brand-list"></div>
+  </section>
+
+  <aside class="inspector">
+    <div id="emptyInspector" class="empty-inspector">Кликни по плитке в мозаике.</div>
+    <form id="workEditor" class="editor" hidden>
+      <div class="editor-head"><div><small>PROJECT</small><h2 id="editorTitle">—</h2></div><button type="button" id="deleteWorkBtn" class="danger">Удалить</button></div>
+      <label>Название<input id="titleInput" type="text"></label>
+      <label>Описание<textarea id="descriptionInput" rows="4"></textarea></label>
+      <label>Файл / URL<input id="srcInput" type="text" spellcheck="false"></label>
+      <div class="two">
+        <label>Тип медиа<select id="mediaTypeInput"><option value="image">image</option><option value="video">video</option></select></label>
+        <label>Fit<select id="mediaFitInput"><option value="cover">cover</option><option value="contain">contain</option></select></label>
       </div>
+      <fieldset class="size-panel">
+        <legend>Размер в мозаике</legend>
+        <label>Ширина <strong id="cardWValue">—</strong><input id="cardWInput" type="range" min="40" max="1100" step="5"></label>
+        <label>Высота <strong id="cardHValue">—</strong><input id="cardHInput" type="range" min="40" max="1100" step="5"></label>
+        <button type="button" id="resetSizeBtn" class="ghost small-button">Сбросить размер</button>
+      </fieldset>
+      <label class="checkline"><input id="fullProjectInput" type="checkbox"><span>Показывать Full Project</span></label>
+      <fieldset><legend>Категории</legend><div id="categoryChecks" class="checks"></div></fieldset>
+      <div class="notice">Сейчас это безопасный черновик. Следующий этап — кнопка PUBLISH, которая будет записывать этот же порядок в <code>content.json</code> на сайте.</div>
+    </form>
 
-      <section id="worksPanel">
-        <div class="section-head">
-          <span>Проекты <b id="workCount"></b></span>
-          <button id="addWorkBtn" class="mini">+ проект</button>
-        </div>
-        <div id="workList" class="list"></div>
-      </section>
+    <form id="brandEditor" class="editor" hidden>
+      <div class="editor-head"><div><small>BRAND</small><h2 id="brandEditorTitle">—</h2></div><button type="button" id="deleteBrandBtn" class="danger">Удалить</button></div>
+      <label>Название<input id="brandNameInput" type="text"></label>
+      <label>Файл / URL<input id="brandSrcInput" type="text"></label>
+      <div class="brand-preview"><img id="brandPreviewImage" alt=""></div>
+    </form>
+  </aside>
+</main>
 
-      <section id="brandsPanel" hidden>
-        <div class="section-head">
-          <span>Бренды <b id="brandCount"></b></span>
-          <button id="addBrandBtn" class="mini">+ бренд</button>
-        </div>
-        <div id="brandList" class="list"></div>
-      </section>
-    </aside>
-
-    <section class="workspace">
-      <div class="workspace-head">
-        <div>
-          <h1>Мозаика WORK</h1>
-          <p>Это тот же алгоритм раскладки, что используется на сайте. Перетаскивай плитки прямо в мозаике.</p>
-        </div>
-        <div class="preview-switch">
-          <label for="preview-size">Preview</label>
-          <select id="preview-size">
-            <option value="desktop">Desktop</option>
-            <option value="tablet">Tablet</option>
-            <option value="mobile">Mobile</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="mosaic-help">
-        <span><i class="dot active-dot"></i> выбранная плитка</span>
-        <span>⋮⋮ перетаскивание меняет порядок</span>
-        <span>размер выбранной плитки — справа</span>
-      </div>
-
-      <div id="previewShell" class="preview-shell desktop">
-        <div class="work admin-work">
-          <div class="gallery-entry">
-            <div id="galleryPreview" class="gallery-grid gallery-preview" aria-label="Предпросмотр галереи"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <aside class="inspector">
-      <div id="emptyInspector" class="empty-inspector">Выбери проект или бренд.</div>
-
-      <form id="workEditor" class="editor" hidden>
-        <div class="editor-head">
-          <div><small>PROJECT</small><h2 id="editorTitle">—</h2></div>
-          <button type="button" id="deleteWorkBtn" class="danger">Удалить</button>
-        </div>
-
-        <label>Название
-          <input id="titleInput" type="text">
-        </label>
-
-        <label>Описание
-          <textarea id="descriptionInput" rows="4"></textarea>
-        </label>
-
-        <label>Файл / URL
-          <input id="srcInput" type="text" spellcheck="false">
-        </label>
-
-        <div class="two">
-          <label>Тип медиа
-            <select id="mediaTypeInput"><option value="image">image</option><option value="video">video</option></select>
-          </label>
-          <label>Fit
-            <select id="mediaFitInput"><option value="cover">cover</option><option value="contain">contain</option></select>
-          </label>
-        </div>
-
-        <fieldset class="size-panel">
-          <legend>Размер плитки в мозаике</legend>
-          <label>Ширина <strong id="cardWValue">—</strong>
-            <input id="cardWInput" type="range" min="80" max="1000" step="5">
-          </label>
-          <label>Высота <strong id="cardHValue">—</strong>
-            <input id="cardHInput" type="range" min="80" max="1000" step="5">
-          </label>
-          <button type="button" id="resetSizeBtn" class="ghost small-button">Сбросить размер к исходному</button>
-          <p>Эти параметры влияют именно на ту же раскладку, которую видит посетитель сайта.</p>
-        </fieldset>
-
-        <label class="checkline">
-          <input id="fullProjectInput" type="checkbox">
-          <span>Показывать Full Project</span>
-        </label>
-
-        <fieldset>
-          <legend>Категории</legend>
-          <div id="categoryChecks" class="checks"></div>
-        </fieldset>
-
-        <div class="notice">
-          Содержимое Full Project не затрагивается. <code>blocks</code>, <code>frame</code>,
-          <code>caseLayout</code> и другие существующие поля сохраняются.
-        </div>
-      </form>
-
-      <form id="brandEditor" class="editor" hidden>
-        <div class="editor-head">
-          <div><small>BRAND</small><h2 id="brandEditorTitle">—</h2></div>
-          <button type="button" id="deleteBrandBtn" class="danger">Удалить</button>
-        </div>
-        <label>Название<input id="brandNameInput" type="text"></label>
-        <label>Файл / URL логотипа<input id="brandSrcInput" type="text" spellcheck="false"></label>
-        <div class="brand-preview"><img id="brandPreviewImage" alt=""></div>
-      </form>
-    </aside>
-  </main>
-
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="../mosaic-layout.js"></script>
-  <script src="./admin.js"></script>
+<button id="addWorkBtn" class="floating-add">+ PROJECT</button>
+<div id="toast" class="toast"></div>
+<script src="./admin.js"></script>
 </body>
 </html>
