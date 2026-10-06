@@ -1,0 +1,20 @@
+V44 — built from V42, NOT from broken V43.
+
+Why V43 snapped:
+- viewport.css already contained a legacy:
+  .deck .panel { transition-property:none!important; }
+- V43 removed the JS panel animation but forgot that CSS transitions were still
+  explicitly disabled, so panels jumped immediately to their final state.
+
+V44:
+1. Restores CSS transform transition explicitly at the end of viewport.css:
+   transform var(--duration) var(--ease)
+2. Removes per-frame JS panel transform writes.
+3. Corrects target math to the real final interaction.css rule:
+   -width + (panelIndex + 1) * rail
+4. Header masks are mirrored from the same easing without DOM reads every frame.
+5. Submenu remains body-level for correct frosted glass.
+6. Submenu right boundary is the physical LEFT edge of the visible WORK spine.
+7. Grain pauses only while deck motion is active.
+
+Everything else is V42.

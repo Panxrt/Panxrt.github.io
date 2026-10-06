@@ -219,7 +219,7 @@ function paintMenu(state=null,contactProgress=null){
  const viewport=document.documentElement.clientWidth;
  const x=state?.x||panels.map(position);
  const page=state?.page??Number(document.body.dataset.page||0);
- const gallery=state?.gallery??document.body.classList.contains('gallery-mode');
+ const gallery=state?.gallery??window.portfolioGalleryOpen;
  const galleryProgress=Math.max(0,Math.min(1,state?.galleryProgress??(gallery?1:0)));
  const shift=state?.shift??desiredMenuShift(page,gallery);
  menuMask.style.setProperty('--menu-shift',shift+'px');
@@ -245,10 +245,10 @@ function paintMenu(state=null,contactProgress=null){
   viewport,
   workEdge-workSpineWidth*(1-galleryProgress)
  ));
- // Body-level filter submenu must end EXACTLY at the LEFT edge of the
- // physical WORK spine. It keeps its glass outside the header clip tree,
- // but now receives the same real moving boundary as WORK.
- document.documentElement.style.setProperty('--filter-right',workSpineLeft+'px');
+ // Physical LEFT edge of the visible WORK spine.
+ // The body-level submenu is clipped to this exact edge.
+ const submenuRight=Math.max(foldedLightEnd,workSpineLeft);
+ document.documentElement.style.setProperty('--filter-right',submenuRight+'px');
  menuMask.style.width=workSpineLeft+'px';
  const visibleRight=workSpineLeft;
  clipHeader(menu,0,Math.min(lightEnd,visibleRight),viewport);
@@ -266,11 +266,9 @@ function paintMenu(state=null,contactProgress=null){
 }
 
 // ------------------------------------------------------------
-// V43 compositor: PANELS ARE CSS-DRIVEN ONLY.
-// The original .panel / .panel.passed / .gallery-mode transforms and
-// var(--duration)/var(--ease) remain the sole owner of page movement.
-// JS only mirrors that same mathematical progress into the small header masks.
-// This removes the old CSS-transition + JS-transform fight on every frame.
+// V44 — CSS owns panel transforms; JS mirrors ONLY header-mask geometry.
+// This preserves the exact visual .panel/.panel.passed/.gallery-mode rules,
+// but removes the old per-frame panel.style.transform writes.
 // ------------------------------------------------------------
 let motionFrame=0,motionDepth=0,motionFrom=null;
 let panelWidths=[];
@@ -279,24 +277,15 @@ function measurePanelWidths(){
  panelWidths=panels.map(panel=>panel.getBoundingClientRect().width);
 }
 
-function visualGalleryState(){
+function visualGallery(){
  return document.body.classList.contains('gallery-mode');
 }
 
-function targetPanelX(index,page=Number(document.body.dataset.page||0),gallery=visualGalleryState()){
- const width=panelWidths[index]||panels[index].getBoundingClientRect().width;
- // In expanded gallery INTRO / ABOUT move completely off-screen.
- if(gallery&&(index===0||index===1))return -width;
- // Normal deck folding leaves one rail visible.
- if(index<page)return -width+rail();
- return 0;
-}
-
-function targetSnapshot(){
+function snapshotLive(){
  const page=Number(document.body.dataset.page||0);
- const gallery=visualGalleryState();
+ const gallery=visualGallery();
  return {
-  x:panels.map((_,i)=>targetPanelX(i,page,gallery)),
+  x:panels.map(position),
   page,
   gallery,
   galleryProgress:gallery?1:0,
@@ -304,12 +293,27 @@ function targetSnapshot(){
  };
 }
 
-function liveSnapshot(){
+function finalPanelX(index,page,gallery){
+ const width=panelWidths[index]||panels[index].getBoundingClientRect().width;
+
+ // Existing interaction.css rule:
+ // .gallery-mode .panel.intro/.about { transform: translate3d(-100%,0,0) }
+ if(gallery&&(index===0||index===1))return -width;
+
+ // Existing final interaction.css rule:
+ // .panel.passed {
+ //   transform: translate3d(calc(-100% + (var(--i) + 1)*var(--rail)),0,0)
+ // }
+ if(index<page)return -width+(index+1)*rail();
+
+ return 0;
+}
+
+function snapshotTarget(){
  const page=Number(document.body.dataset.page||0);
- const gallery=visualGalleryState();
+ const gallery=visualGallery();
  return {
-  // One DOM read per panel ONLY when a transition begins, never each frame.
-  x:panels.map(position),
+  x:panels.map((_,i)=>finalPanelX(i,page,gallery)),
   page,
   gallery,
   galleryProgress:gallery?1:0,
@@ -325,9 +329,10 @@ function contactProgress(fromPage,toPage,k){
 
 function makeDeckEase(){
  const values=getComputedStyle(document.documentElement)
-  .getPropertyValue('--ease').match(/[.\d]+/g)?.map(Number)||[.22,.61,.36,1];
+  .getPropertyValue('--ease').match(/[.\d]+/g)?.map(Number)||[.76,0,.24,1];
  const [x1,y1,x2,y2]=values;
  const curve=(v,a,b)=>3*(1-v)*(1-v)*v*a+3*(1-v)*v*v*b+v*v*v;
+
  return function deckEase(t){
   let low=0,high=1;
   for(let i=0;i<14;i++){
@@ -338,7 +343,7 @@ function makeDeckEase(){
  };
 }
 
-function paintInterpolated(from,to,k){
+function paintTween(from,to,k){
  const state={
   x:from.x.map((x,i)=>x+(to.x[i]-x)*k),
   page:to.page,
@@ -355,13 +360,16 @@ window.beginDeckTransition=function(){
  if(motionDepth++>0)return;
  cancelAnimationFrame(motionFrame);
  motionFrame=0;
- motionFrom=liveSnapshot();
+
+ // Read actual panel positions once, before classes change.
+ motionFrom=snapshotLive();
  document.documentElement.classList.add('deck-motion-active');
 };
 
 window.endDeckTransition=function(){
  if(--motionDepth>0)return;
  motionDepth=0;
+
  if(!motionFrom){
   document.documentElement.classList.remove('deck-motion-active');
   return;
@@ -369,7 +377,7 @@ window.endDeckTransition=function(){
 
  const from=motionFrom;
  motionFrom=null;
- const to=targetSnapshot();
+ const to=snapshotTarget();
 
  const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();
  const duration=(reduced.matches||window.portfolioRestoring)
@@ -384,15 +392,15 @@ window.endDeckTransition=function(){
  }
 
  const started=performance.now();
- const deckEase=makeDeckEase();
+ const ease=makeDeckEase();
 
- // Header begins from the exact currently painted panel geometry.
- paintInterpolated(from,to,0);
+ // Panels themselves are already animating through their CSS transform.
+ // Only the fixed header/submenu masks are mirrored here.
+ paintTween(from,to,0);
 
  function tick(now){
   const t=Math.min(1,(now-started)/duration);
-  const k=deckEase(t);
-  paintInterpolated(from,to,k);
+  paintTween(from,to,ease(t));
 
   if(t<1){
    motionFrame=requestAnimationFrame(tick);
@@ -407,9 +415,12 @@ window.endDeckTransition=function(){
  motionFrame=requestAnimationFrame(tick);
 };
 
+measurePanelWidths();
+
 window.syncMenu=()=>paintMenu();
 function resizeDeck(){
- cancelAnimationFrame(motionFrame);motionFrame=0;motionDepth=0;motionFrom=null;
+ cancelAnimationFrame(motionFrame);
+ motionFrame=0;motionDepth=0;motionFrom=null;
  document.documentElement.classList.remove('deck-motion-active');
  measureHeaderGeometry();measurePanelWidths();paintMenu();
 }

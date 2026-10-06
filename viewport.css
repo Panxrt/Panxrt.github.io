@@ -1937,23 +1937,34 @@ body:not(.gallery-mode) .work .gallery-launch{
 
 
 /* ==========================================================
-   V43 — ONLY SUBMENU RIGHT CLIP + DECK COMPOSITOR SUPPORT
+   V44 — DECK TRANSITION RESTORE + SUBMENU PHYSICAL CLIP
    ========================================================== */
 
-/* The body-level glass submenu keeps the architecture that made blur work,
-   but its visible window is now bounded on BOTH sides:
-   left  -> returning INTRO/ABOUT edge
-   right -> LEFT edge of the physical WORK spine.
-   The inner sheet remains viewport-anchored, so text does not shift. */
-.submenu-overlay{
-  left:var(--filter-left,0px)!important;
-  right:calc(100vw - var(--filter-right,100vw))!important;
-  width:auto!important;
-}
-
-/* Keep panels promoted while CSS performs the only page transform animation. */
+/* IMPORTANT:
+   An old compatibility rule earlier in this file says:
+       .deck .panel { transition-property:none!important; }
+   That rule existed because the old JS compositor moved every panel itself.
+   V44 removes that JS movement, so we MUST explicitly re-enable the original
+   transform transition here. Same duration + same easing as the site already uses. */
 .deck .panel{
-  transform-style:preserve-3d;
+  transition:transform var(--duration) var(--ease)!important;
+  will-change:transform;
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
+}
+
+/* The submenu's glass stays body-level (so backdrop-filter keeps working),
+   but its clipping window now has two physical boundaries:
+   left  = moving INTRO/ABOUT boundary
+   right = LEFT edge of the visible WORK spine. */
+.submenu-overlay{
+  left:var(--filter-left,0px)!important;
+  right:auto!important;
+  width:max(0px,calc(var(--filter-right,100vw) - var(--filter-left,0px)))!important;
+}
+
+/* Decorative grain is visually unchanged, only frozen while full-screen
+   panels are travelling. */
+.deck-motion-active .deck .panel::before{
+  animation-play-state:paused!important;
 }
