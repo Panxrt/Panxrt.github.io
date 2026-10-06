@@ -1,0 +1,20 @@
+V58 — BASE: V57
+
+ONLY CHANGE:
+Restored the approved V36 frosted-glass appearance for the Gallery filter bar.
+
+Implementation:
+- filter text/buttons remain inside #menu-dark exactly as V57
+- V57 masks, page transitions, PANXRT behavior, rails, WORK movement and BACK
+  behavior are untouched
+- a visual-only body-level underlay renders the real backdrop blur, because
+  nested backdrop-filter inside the header compositor could not see the real
+  Gallery backdrop
+- underlay uses the existing V57 --filter-left / --filter-right physical bounds,
+  so it never paints over INTRO / ABOUT / WORK side buttons
+- underlay has no controls and no event handling
+- nested ineffective glass tint is made transparent to avoid double-darkening
+
+Glass recipe restored exactly:
+background: rgba(24,24,24,.42)
+backdrop-filter: blur(28px) saturate(130%)
