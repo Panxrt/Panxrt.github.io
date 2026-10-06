@@ -1424,147 +1424,195 @@ body:not(.gallery-mode) .header-contact-mask #menu-dark .gallery-filters{
 
 
 /* ==========================================================
-   V33 — SUBMENU REBUILT AS ONE PHYSICAL OBJECT
-   Base: V28 (V26 visuals + WORK-spine/PANXRT clip fix)
-
-   filter-reveal  = stationary 50px mask BELOW the main header
-   gallery-filters = the ONLY moving object; it owns BOTH glass + text
+   V34 — CLEAN SUBMENU REBUILD
+   Brand-new class names deliberately isolate this submenu from
+   every legacy .filter-reveal / .gallery-filters rule.
    ========================================================== */
 
-/* 1) STATIONARY MASK.
-   It never moves above the main menu and has NO visual background of its own. */
-.header-contact-mask #menu-dark .filter-reveal{
-  position:absolute!important;
-  left:0!important;
-  top:var(--header)!important;
-  width:100vw!important;
-  height:50px!important;
-  overflow:hidden!important;
+/* STATIONARY MASK:
+   begins strictly BELOW the main menu and never moves.
+   Anything travelling upward is physically clipped here. */
+.header-contact-mask #menu-dark .submenu-mask{
+  position:absolute;
+  left:0;
+  top:var(--header);
+  width:100vw;
+  height:50px;
+  overflow:hidden;
+  pointer-events:none;
+  z-index:1;
 
-  transform:none!important;
-  visibility:visible!important;
-  pointer-events:none!important;
+  /* Follow the real moving INTRO/ABOUT edge just like the earlier
+     accepted tray behavior, without drawing over the side rails. */
+  clip-path:inset(0 0 0 var(--filter-left,0px));
+  -webkit-clip-path:inset(0 0 0 var(--filter-left,0px));
 
-  background:transparent!important;
-  backdrop-filter:none!important;
-  -webkit-backdrop-filter:none!important;
-  box-shadow:none!important;
-  border:0!important;
-  outline:0!important;
-
-  transition:none!important;
-  will-change:auto!important;
-  contain:none!important;
+  background:transparent;
+  border:0;
+  outline:0;
+  box-shadow:none;
 }
 
-/* Kill every legacy/pseudo glass layer.
-   There must be exactly ONE glass surface: .gallery-filters itself. */
-.header-contact-mask #menu-dark .filter-reveal::before,
-.header-contact-mask #menu-dark .filter-reveal::after{
-  content:none!important;
-  display:none!important;
-}
-
-/* 2) ONE MOVING SUBMENU = GLASS + FILTER TEXT.
-   Closed state is exactly one tray-height above the mask, therefore fully hidden. */
-.header-contact-mask #menu-dark .gallery-filters{
-  position:absolute!important;
-  left:0!important;
-  right:0!important;
-  top:0!important;
-  width:100vw!important;
-  height:50px!important;
-  min-height:50px!important;
-  box-sizing:border-box!important;
-
-  display:flex!important;
-  align-items:center!important;
-  justify-content:flex-start!important;
-  padding:0 var(--menu-inset)!important;
-  gap:6px!important;
-  margin:0!important;
-  white-space:nowrap!important;
-  overflow:hidden!important;
-
-  /* The accepted V25/V26 frosted-glass recipe,
-     now placed on the SAME element as the filter text. */
-  background:rgba(24,24,24,.58)!important;
-  backdrop-filter:blur(20px) saturate(125%)!important;
-  -webkit-backdrop-filter:blur(20px) saturate(125%)!important;
-
-  border:0!important;
-  outline:0!important;
-  box-shadow:none!important;
-
-  transform:translate3d(0,-50px,0)!important;
-  opacity:1!important;
-  visibility:hidden!important;
-  pointer-events:none!important;
-
-  z-index:1!important;
-  will-change:transform;
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
+/* MOVING SHEET:
+   this is the ONE object that enters/leaves.
+   No transform is used; top animates from -50px to 0 so the
+   backdrop-filter child stays reliable in Chrome. */
+.header-contact-mask #menu-dark .submenu-sheet{
+  position:absolute;
+  left:0;
+  top:-50px;
+  width:100%;
+  height:50px;
+  box-sizing:border-box;
+  overflow:hidden;
+  pointer-events:none;
+  visibility:hidden;
 
   transition:
-    transform .84s cubic-bezier(.22,.61,.36,1),
-    visibility 0s .84s!important;
+    top .82s cubic-bezier(.22,.61,.36,1),
+    visibility 0s .82s;
 }
 
-/* OPEN: the complete glass panel + its text slides DOWN from under the main menu. */
-.gallery-opening.gallery-mode .header-contact-mask #menu-dark .gallery-filters,
-.gallery-mode:not(.gallery-closing) .header-contact-mask #menu-dark .gallery-filters{
-  transform:translate3d(0,0,0)!important;
-  opacity:1!important;
-  visibility:visible!important;
-  pointer-events:auto!important;
+/* FROSTED GLASS:
+   separate visual layer INSIDE the same moving sheet.
+   It never animates independently from the text. */
+.header-contact-mask #menu-dark .submenu-glass{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+
+  background:rgba(24,24,24,.58);
+  backdrop-filter:blur(20px) saturate(125%);
+  -webkit-backdrop-filter:blur(20px) saturate(125%);
+
+  border:0;
+  outline:0;
+  box-shadow:none;
+}
+
+/* FILTER TEXT/CONTROLS:
+   fixed inside the same moving sheet, above the glass. */
+.header-contact-mask #menu-dark .submenu-controls{
+  position:absolute;
+  inset:0;
+  z-index:1;
+
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:6px;
+
+  width:100%;
+  height:50px;
+  min-height:50px;
+  box-sizing:border-box;
+  margin:0;
+  padding:0 var(--menu-inset);
+
+  overflow:hidden;
+  white-space:nowrap;
+
+  background:transparent;
+  border:0;
+  outline:0;
+  box-shadow:none;
+  pointer-events:inherit;
+}
+
+.header-contact-mask #menu-dark .submenu-controls .filter-label{
+  display:none;
+}
+
+.header-contact-mask #menu-dark .submenu-controls button{
+  flex:0 0 auto;
+  height:30px;
+  min-width:0;
+  margin:0;
+  padding:6px 13px;
+  box-sizing:border-box;
+
+  border:1px solid transparent;
+  border-radius:15px;
+  background:transparent;
+  color:var(--paper);
+
+  font-family:inherit;
+  font-size:11px;
+  font-weight:700;
+  line-height:16px;
+  letter-spacing:.035em;
+
+  opacity:.62;
+  box-shadow:none;
+  transition:
+    background .2s,
+    border-color .2s,
+    opacity .2s;
+}
+
+.header-contact-mask #menu-dark .submenu-controls button[aria-pressed="true"]{
+  border-color:#FAF4E65c;
+  background:#FAF4E608;
+  opacity:1;
+}
+
+.header-contact-mask #menu-dark .submenu-controls button:hover{
+  background:#FAF4E614;
+  border-color:#FAF4E633;
+  opacity:1;
+}
+
+/* OPEN:
+   the whole sheet — glass AND text — comes down together
+   from behind the stationary mask under the main menu. */
+.gallery-opening.gallery-mode .header-contact-mask #menu-dark .submenu-sheet,
+.gallery-mode:not(.gallery-closing):not(.project-mode) .header-contact-mask #menu-dark .submenu-sheet{
+  top:0;
+  visibility:visible;
+  pointer-events:auto;
 
   transition:
-    transform .84s cubic-bezier(.22,.61,.36,1) .05s,
-    visibility 0s!important;
+    top .82s cubic-bezier(.22,.61,.36,1) .05s,
+    visibility 0s;
 }
 
-/* BACK: the exact same object slides UP behind the fixed mask.
-   It remains visible until the transform is completely finished. */
-.gallery-closing .header-contact-mask #menu-dark .gallery-filters{
-  transform:translate3d(0,-50px,0)!important;
-  opacity:1!important;
-  visibility:visible!important;
-  pointer-events:none!important;
+/* BACK:
+   same sheet moves upward as one piece and remains rendered
+   until it is completely clipped by the mask. */
+.gallery-closing .header-contact-mask #menu-dark .submenu-sheet,
+body.project-mode .header-contact-mask #menu-dark .submenu-sheet{
+  top:-50px;
+  visibility:visible;
+  pointer-events:none;
 
   transition:
-    transform .84s cubic-bezier(.22,.61,.36,1),
-    visibility 0s .84s!important;
+    top .82s cubic-bezier(.22,.61,.36,1),
+    visibility 0s .82s;
 }
 
-/* Compact V26 controls are preserved. */
-#menu-dark .gallery-filters button,
-#menu-dark .gallery-filters button[aria-pressed=true],
-#menu-dark .gallery-filters button:last-child{
-  height:30px!important;
-  min-width:0!important;
-  margin:0!important;
-  padding:6px 13px!important;
-  border-radius:15px!important;
-  font-size:11px!important;
-  line-height:16px!important;
-  letter-spacing:.035em!important;
+/* Closed normal WORK state: fully hidden above the 50px mask. */
+body:not(.gallery-mode):not(.gallery-closing) .header-contact-mask #menu-dark .submenu-sheet{
+  top:-50px;
+  visibility:hidden;
+  pointer-events:none;
 }
 
-/* Keep the gallery offset matched to the 50px tray. */
+/* Keep the accepted V26 50px gallery offset. */
 .gallery-mode .work .gallery-entry{
   padding-top:calc(var(--header) + 50px)!important;
 }
 
 @media(max-width:700px){
-  .header-contact-mask #menu-dark .gallery-filters{
-    padding-left:var(--menu-inset)!important;
-    padding-right:var(--menu-inset)!important;
+  .header-contact-mask #menu-dark .submenu-controls{
+    padding-left:var(--menu-inset);
+    padding-right:var(--menu-inset);
+    gap:4px;
   }
 }
 
 @media(prefers-reduced-motion:reduce){
-  .header-contact-mask #menu-dark .gallery-filters{
-    transition:none!important;
+  .header-contact-mask #menu-dark .submenu-sheet{
+    transition:none;
   }
 }

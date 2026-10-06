@@ -10,7 +10,7 @@ function placeDetail(){
  const width=Math.min(320,viewWidth-32);
  detail.style.width=width+'px';
  let side='bottom',left=Math.max(16,Math.min(r.left,viewWidth-width-16)),top=r.bottom-galleryOrigin()+margin;
- const safeTop=Math.max(document.getElementById('menu-dark')?.getBoundingClientRect().bottom||76,document.querySelector('.gallery-filters')?.getBoundingClientRect().bottom||0)+14;
+ const safeTop=Math.max(document.getElementById('menu-dark')?.getBoundingClientRect().bottom||76,document.querySelector('.submenu-controls')?.getBoundingClientRect().bottom||0)+14;
  if(viewWidth>700&&r.top>=safeTop){
   if(viewWidth-r.right>=width+margin+16){side='right';left=r.right+margin;top=r.top-galleryOrigin();}
   else if(r.left>=width+margin+16){side='left';left=r.left-width-margin;top=r.top-galleryOrigin();}
