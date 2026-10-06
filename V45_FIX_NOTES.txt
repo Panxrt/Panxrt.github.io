@@ -1,0 +1,27 @@
+V45 — conservative rebuild DIRECTLY FROM V42.
+V43 and V44 are discarded.
+
+PAGE MOTION:
+- Keeps V42's proven JS-driven transition and exact measured start/end geometry.
+- Keeps the same duration and easing.
+- Instead of writing transform to all 4 panels every frame, only panels whose X
+  position actually changes are updated.
+- Decorative grain pauses only during motion.
+- Visible WORK preview videos also pause while a deck transition is active.
+
+SUBMENU -> CONTACTS:
+- Gallery state for mask math now follows the actual painted .gallery-mode class,
+  not portfolioGalleryOpen.
+- This matters because Gallery -> CONTACTS intentionally sets
+  portfolioGalleryOpen=false while the gallery is still visibly on screen.
+- --filter-right is the physical LEFT edge of the visible WORK spine.
+- The body-level submenu is clipped between --filter-left and --filter-right.
+
+NOT TOUCHED:
+- V42 visual design
+- V42 submenu glass recipe / animation
+- V42 grid/cards/crops
+- V42 startup/menu/brand fade
+- V42 video policy except pausing during deck motion
+- V39 bottom gradient fix
+- CONTACTS design/content

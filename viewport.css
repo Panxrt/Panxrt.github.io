@@ -1937,34 +1937,11 @@ body:not(.gallery-mode) .work .gallery-launch{
 
 
 /* ==========================================================
-   V44 — DECK TRANSITION RESTORE + SUBMENU PHYSICAL CLIP
+   V45 — SUBMENU PHYSICAL WORK-SPINE CLIP ONLY
+   Keep V42/V36 glass architecture untouched.
    ========================================================== */
-
-/* IMPORTANT:
-   An old compatibility rule earlier in this file says:
-       .deck .panel { transition-property:none!important; }
-   That rule existed because the old JS compositor moved every panel itself.
-   V44 removes that JS movement, so we MUST explicitly re-enable the original
-   transform transition here. Same duration + same easing as the site already uses. */
-.deck .panel{
-  transition:transform var(--duration) var(--ease)!important;
-  will-change:transform;
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
-}
-
-/* The submenu's glass stays body-level (so backdrop-filter keeps working),
-   but its clipping window now has two physical boundaries:
-   left  = moving INTRO/ABOUT boundary
-   right = LEFT edge of the visible WORK spine. */
 .submenu-overlay{
   left:var(--filter-left,0px)!important;
   right:auto!important;
   width:max(0px,calc(var(--filter-right,100vw) - var(--filter-left,0px)))!important;
-}
-
-/* Decorative grain is visually unchanged, only frozen while full-screen
-   panels are travelling. */
-.deck-motion-active .deck .panel::before{
-  animation-play-state:paused!important;
 }

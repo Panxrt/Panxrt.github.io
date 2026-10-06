@@ -207,7 +207,8 @@ function measureHeaderGeometry(){
 }
 measureHeaderGeometry();
 function rail(){const n=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--rail'));return Number.isFinite(n)?n:0;}
-function desiredMenuShift(page=Number(document.body.dataset.page||0),gallery=window.portfolioGalleryOpen){return gallery?0:Math.min(page,2)*rail();}
+function visualGalleryState(){return document.body.classList.contains('gallery-mode');}
+function desiredMenuShift(page=Number(document.body.dataset.page||0),gallery=visualGalleryState()){return gallery?0:Math.min(page,2)*rail();}
 function clipHeader(header,leftEdge,rightEdge,viewport=document.documentElement.clientWidth){
  const target=header.parentElement?.classList.contains('menu-clip')?header.parentElement:header;
  const left=Math.max(0,Math.min(viewport,leftEdge));
@@ -219,7 +220,7 @@ function paintMenu(state=null,contactProgress=null){
  const viewport=document.documentElement.clientWidth;
  const x=state?.x||panels.map(position);
  const page=state?.page??Number(document.body.dataset.page||0);
- const gallery=state?.gallery??window.portfolioGalleryOpen;
+ const gallery=state?.gallery??visualGalleryState();
  const galleryProgress=Math.max(0,Math.min(1,state?.galleryProgress??(gallery?1:0)));
  const shift=state?.shift??desiredMenuShift(page,gallery);
  menuMask.style.setProperty('--menu-shift',shift+'px');
@@ -245,10 +246,9 @@ function paintMenu(state=null,contactProgress=null){
   viewport,
   workEdge-workSpineWidth*(1-galleryProgress)
  ));
- // Physical LEFT edge of the visible WORK spine.
- // The body-level submenu is clipped to this exact edge.
- const submenuRight=Math.max(foldedLightEnd,workSpineLeft);
- document.documentElement.style.setProperty('--filter-right',submenuRight+'px');
+ // Body-level submenu keeps its working frosted-glass architecture,
+ // but its RIGHT edge follows the physical LEFT edge of the WORK spine.
+ document.documentElement.style.setProperty('--filter-right',workSpineLeft+'px');
  menuMask.style.width=workSpineLeft+'px';
  const visibleRight=workSpineLeft;
  clipHeader(menu,0,Math.min(lightEnd,visibleRight),viewport);
@@ -265,164 +265,121 @@ function paintMenu(state=null,contactProgress=null){
  workMenuBackdrop.style.webkitClipPath=`inset(0 ${rightInset}px 0 ${bgLeft}px)`;
 }
 
-// ------------------------------------------------------------
-// V44 — CSS owns panel transforms; JS mirrors ONLY header-mask geometry.
-// This preserves the exact visual .panel/.panel.passed/.gallery-mode rules,
-// but removes the old per-frame panel.style.transform writes.
-// ------------------------------------------------------------
-let motionFrame=0,motionDepth=0,motionFrom=null;
-let panelWidths=[];
+// Panel movement keeps the original V42 geometry and JS tween.
+// V45 only avoids writing transforms to panels whose X position does not change.
+let motionFrame=0,motionDepth=0,motionFrom=null,motionFromPage=0,motionFromGallery=false;
+let motionIndices=[];
 
-function measurePanelWidths(){
- panelWidths=panels.map(panel=>panel.getBoundingClientRect().width);
+function snapshot(){
+ const page=Number(document.body.dataset.page||0),gallery=visualGalleryState();
+ return {x:panels.map(position),page,gallery,galleryProgress:gallery?1:0,shift:desiredMenuShift(page,gallery)};
 }
-
-function visualGallery(){
- return document.body.classList.contains('gallery-mode');
-}
-
-function snapshotLive(){
- const page=Number(document.body.dataset.page||0);
- const gallery=visualGallery();
- return {
-  x:panels.map(position),
-  page,
-  gallery,
-  galleryProgress:gallery?1:0,
-  shift:desiredMenuShift(page,gallery)
- };
-}
-
-function finalPanelX(index,page,gallery){
- const width=panelWidths[index]||panels[index].getBoundingClientRect().width;
-
- // Existing interaction.css rule:
- // .gallery-mode .panel.intro/.about { transform: translate3d(-100%,0,0) }
- if(gallery&&(index===0||index===1))return -width;
-
- // Existing final interaction.css rule:
- // .panel.passed {
- //   transform: translate3d(calc(-100% + (var(--i) + 1)*var(--rail)),0,0)
- // }
- if(index<page)return -width+(index+1)*rail();
-
- return 0;
-}
-
-function snapshotTarget(){
- const page=Number(document.body.dataset.page||0);
- const gallery=visualGallery();
- return {
-  x:panels.map((_,i)=>finalPanelX(i,page,gallery)),
-  page,
-  gallery,
-  galleryProgress:gallery?1:0,
-  shift:desiredMenuShift(page,gallery)
- };
-}
-
-function contactProgress(fromPage,toPage,k){
+function contactProgress(fromPage,toPage,k,fromGallery,toGallery){
  if(fromPage===3&&toPage!==3)return 1-k;
  if(fromPage!==3&&toPage===3)return k;
  return toPage===3?1:0;
 }
-
+function setMotion(state,cp){
+ for(const i of motionIndices){
+  panels[i].style.transform=`translate3d(${state.x[i]}px,0,0)`;
+ }
+ paintMenu(state,cp);
+}
 function makeDeckEase(){
- const values=getComputedStyle(document.documentElement)
-  .getPropertyValue('--ease').match(/[.\d]+/g)?.map(Number)||[.76,0,.24,1];
+ const values=getComputedStyle(document.documentElement).getPropertyValue('--ease').match(/[.\d]+/g)?.map(Number)||[.22,.61,.36,1];
  const [x1,y1,x2,y2]=values;
  const curve=(v,a,b)=>3*(1-v)*(1-v)*v*a+3*(1-v)*v*v*b+v*v*v;
-
  return function deckEase(t){
   let low=0,high=1;
-  for(let i=0;i<14;i++){
+  for(let i=0;i<16;i++){
    const middle=(low+high)/2;
    if(curve(middle,x1,x2)<t)low=middle;else high=middle;
   }
   return curve((low+high)/2,y1,y2);
  };
 }
-
-function paintTween(from,to,k){
- const state={
-  x:from.x.map((x,i)=>x+(to.x[i]-x)*k),
-  page:to.page,
-  gallery:to.gallery,
-  galleryProgress:from.galleryProgress+(to.galleryProgress-from.galleryProgress)*k,
-  shift:from.shift+(to.shift-from.shift)*k
- };
- paintMenu(state,contactProgress(from.page,to.page,k));
-}
-
-measurePanelWidths();
-
 window.beginDeckTransition=function(){
  if(motionDepth++>0)return;
  cancelAnimationFrame(motionFrame);
  motionFrame=0;
-
- // Read actual panel positions once, before classes change.
- motionFrom=snapshotLive();
- document.documentElement.classList.add('deck-motion-active');
+ motionFrom=snapshot();
+ motionFromPage=motionFrom.page;
+ motionFromGallery=motionFrom.gallery;
+ document.body.classList.add('deck-motion-active');
 };
-
 window.endDeckTransition=function(){
  if(--motionDepth>0)return;
  motionDepth=0;
-
  if(!motionFrom){
-  document.documentElement.classList.remove('deck-motion-active');
+  document.body.classList.remove('deck-motion-active');
   return;
  }
 
  const from=motionFrom;
  motionFrom=null;
- const to=snapshotTarget();
+
+ // Exactly as V42: temporarily reveal the class-based final state and measure it.
+ panels.forEach(p=>p.style.removeProperty('transform'));
+ const to=snapshot();
+
+ // Only panels whose X actually changes are touched during the rAF loop.
+ motionIndices=from.x
+  .map((x,i)=>Math.abs(to.x[i]-x)>.25?i:-1)
+  .filter(i=>i>=0);
 
  const raw=getComputedStyle(document.documentElement).getPropertyValue('--duration').trim();
  const duration=(reduced.matches||window.portfolioRestoring)
   ?0
-  :(parseFloat(raw)||0)*(raw.endsWith('ms')?1:1000);
+  :parseFloat(raw)*(raw.endsWith('ms')?1:1000);
 
  if(!duration){
-  paintMenu(to,contactProgress(from.page,to.page,1));
-  document.documentElement.classList.remove('deck-motion-active');
-  syncWorkAnchor();
+  setMotion(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));
+  for(const i of motionIndices)panels[i].style.removeProperty('transform');
+  paintMenu(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));
+  motionIndices=[];
+  document.body.classList.remove('deck-motion-active');
   return;
  }
 
- const started=performance.now();
- const ease=makeDeckEase();
-
- // Panels themselves are already animating through their CSS transform.
- // Only the fixed header/submenu masks are mirrored here.
- paintTween(from,to,0);
+ const started=performance.now(),deckEase=makeDeckEase();
+ setMotion(from,contactProgress(from.page,to.page,0,from.gallery,to.gallery));
 
  function tick(now){
-  const t=Math.min(1,(now-started)/duration);
-  paintTween(from,to,ease(t));
+  const t=Math.min(1,(now-started)/duration),k=deckEase(t);
+  const state={
+   x:from.x.map((x,i)=>x+(to.x[i]-x)*k),
+   page:to.page,
+   gallery:to.gallery,
+   galleryProgress:from.galleryProgress+(to.galleryProgress-from.galleryProgress)*k,
+   shift:from.shift+(to.shift-from.shift)*k
+  };
+
+  setMotion(state,contactProgress(from.page,to.page,k,from.gallery,to.gallery));
 
   if(t<1){
    motionFrame=requestAnimationFrame(tick);
   }else{
-   motionFrame=0;
-   paintMenu(to,contactProgress(from.page,to.page,1));
-   syncWorkAnchor();
-   document.documentElement.classList.remove('deck-motion-active');
+   // Keep V38/V42's one-frame exact landing, but only for moving panels.
+   setMotion(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));
+   motionFrame=requestAnimationFrame(()=>{
+    motionFrame=0;
+    for(const i of motionIndices)panels[i].style.removeProperty('transform');
+    motionIndices=[];
+    syncWorkAnchor();
+    paintMenu(to,contactProgress(from.page,to.page,1,from.gallery,to.gallery));
+    document.body.classList.remove('deck-motion-active');
+   });
   }
  }
-
  motionFrame=requestAnimationFrame(tick);
 };
-
-measurePanelWidths();
-
 window.syncMenu=()=>paintMenu();
 function resizeDeck(){
- cancelAnimationFrame(motionFrame);
- motionFrame=0;motionDepth=0;motionFrom=null;
- document.documentElement.classList.remove('deck-motion-active');
- measureHeaderGeometry();measurePanelWidths();paintMenu();
+ cancelAnimationFrame(motionFrame);motionFrame=0;motionDepth=0;motionFrom=null;
+ panels.forEach(p=>p.style.removeProperty('transform'));
+ motionIndices=[];
+ document.body.classList.remove('deck-motion-active');
+ measureHeaderGeometry();paintMenu();
 }
 window.addEventListener('resize',resizeDeck,{passive:true});window.addEventListener('pageshow',paintMenu);document.addEventListener('visibilitychange',paintMenu);window.visualViewport?.addEventListener('resize',resizeDeck,{passive:true});paintMenu();
 

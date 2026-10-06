@@ -158,7 +158,7 @@
 
      // Gallery videos do not start/resume while the scroll or the gallery/page
      // transition is active. This keeps the compositor free for movement.
-     const movementBusy=galleryScrolling||isGalleryTransitioning();
+     const movementBusy=galleryScrolling||isGalleryTransitioning()||document.body.classList.contains('deck-motion-active');
      const visibleNow=window.portfolioGalleryOpen?visible.get(video):(workActive&&workSettled&&inWorkViewport(video));
      const workPlayback=workActive&&!isCase&&(window.portfolioGalleryOpen||workSettled);
 
