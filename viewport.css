@@ -1874,3 +1874,14 @@ body:not(.gallery-mode):not(.gallery-closing) .submenu-overlay .submenu-sheet{
     transition:none!important;
   }
 }
+
+
+/* ==========================================================
+   V37 — MOTION PERFORMANCE ONLY
+   During the existing JS deck tween, do not let the original CSS transform
+   transition interpolate the same property a second time.
+   No geometry, easing, colors, blur, sizes, or layout are changed.
+   ========================================================== */
+.deck-motion-lock .deck .panel{
+  transition:transform 0s linear!important;
+}

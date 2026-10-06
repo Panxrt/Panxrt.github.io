@@ -39,27 +39,57 @@
  async function reveal(){
    if(done)return;done=true;clearTimeout(window.bootDeadline);
    const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-   // Slightly longer branded intro gives the browser time to prepare WORK,
-   // but it still has a hard cap and never waits for the whole portfolio.
+   // Keep the established V36 startup duration.
    await wait(Math.max(0,(reduced?0:1250)-(performance.now()-started)));
    if(window.portfolioRestore)await window.portfolioRestore;
-   const target=document.querySelector('#menu .wordmark'),from=word.getBoundingClientRect(),to=target?.getBoundingClientRect();
+
    root.classList.add('site-arriving');root.classList.remove('site-booting');
    loader.style.display='flex';loader.style.pointerEvents='none';loader.style.background='transparent';
-   if(!reduced)loader.animate([{backgroundColor:'#FAF4E6'},{backgroundColor:'transparent'}],{duration:800,easing:'cubic-bezier(.22,.61,.36,1)'});
-   if(!reduced&&to){
-     word.style.cssText+=';position:fixed;left:'+from.left+'px;top:'+from.top+'px;width:'+from.width+'px;height:'+from.height+'px';
+
+   // Let the final header geometry settle BEFORE measuring the destination.
+   // This removes the tiny correction/jump that used to happen near the end.
+   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+
+   const target=document.querySelector('#menu .wordmark');
+   const from=word.getBoundingClientRect(),to=target?.getBoundingClientRect();
+
+   if(!reduced)loader.animate(
+     [{backgroundColor:'#FAF4E6'},{backgroundColor:'transparent'}],
+     {duration:800,easing:'cubic-bezier(.22,.61,.36,1)',fill:'forwards'}
+   );
+
+   let targetFade=null;
+   if(!reduced&&to&&target){
+     word.style.cssText+=';position:fixed;left:'+from.left+'px;top:'+from.top+'px;width:'+from.width+'px;height:'+from.height+'px;will-change:transform,opacity;backface-visibility:hidden;transform-origin:0 0';
+     const dx=to.left-from.left,dy=to.top-from.top,sx=to.width/from.width,sy=to.height/from.height;
+
+     // Cross-fade only at the very end: the moving loader word and the real
+     // menu word occupy the same geometry, so there is no visible swap/blink.
+     targetFade=target.animate(
+       [{opacity:0},{opacity:1}],
+       {duration:160,delay:660,easing:'ease-out',fill:'forwards'}
+     );
      const motion=word.animate(
-       [{transform:'translate(0,0) scale(1,1)',opacity:1},{transform:`translate(${to.left-from.left}px,${to.top-from.top}px) scale(${to.width/from.width},${to.height/from.height})`,opacity:1}],
+       [
+         {transform:'translate3d(0,0,0) scale(1,1)',opacity:1,offset:0},
+         {transform:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`,opacity:1,offset:.80},
+         {transform:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`,opacity:0,offset:1}
+       ],
        {duration:820,easing:'cubic-bezier(.22,.61,.36,1)',fill:'forwards'}
      );
-     await motion.finished.catch(()=>{});
+     await Promise.all([
+       motion.finished.catch(()=>{}),
+       targetFade.finished.catch(()=>{})
+     ]);
    }
-   loader.remove();
-   // Give the compositor one clean frame with the final header geometry before
-   // the section reveal animations resume.
-   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+
+   // Reveal the real header first while its opacity animation is held at 1,
+   // then remove the loader. This prevents the one-frame flash seen in V36.
    root.classList.remove('site-arriving');
+   await new Promise(resolve=>requestAnimationFrame(resolve));
+   loader.remove();
+   targetFade?.cancel();
+
    for(const type of ['wheel','touchstart','touchmove','keydown'])window.removeEventListener(type,block,true);
    document.dispatchEvent(new Event('portfolio-startup-complete'));
  }

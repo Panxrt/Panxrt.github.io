@@ -29,3 +29,14 @@
 .site-arriving .surface.reveal :is(h1,h2,.edition,.skills,.about-lead,.tool-panel,.contact-list){
   animation-play-state:paused!important;
 }
+
+
+/* ==========================================================
+   V37 — STARTUP HANDOFF SMOOTHNESS ONLY
+   Keep the real PANXRT rendered during the handoff at opacity 0 so
+   Web Animations can cross-fade into it without a visibility flash.
+   ========================================================== */
+.site-arriving .header-contact-mask .wordmark{
+  visibility:visible!important;
+  opacity:0;
+}

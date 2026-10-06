@@ -1,0 +1,34 @@
+V37 — SMOOTHNESS ONLY
+BASELINE: V36 (locked visual reference)
+
+CHANGES ONLY:
+
+1) Gallery desktop mouse-wheel smoothing
+- Only coarse wheel input is intercepted.
+- Trackpad/high-resolution pixel deltas remain native.
+- Touch/mobile remain native.
+- Wheel strength is preserved: larger delta => farther target scroll.
+- Added mild rAF inertia (.24 follow, .90 distance factor).
+
+2) Startup PANXRT handoff
+- Final header geometry is measured after two settled frames.
+- Moving loader PANXRT uses translate3d/will-change.
+- Last 160ms cross-fades loader word into the real menu word.
+- Real word is revealed before loader removal, removing the one-frame blink.
+- Visual timing/layout is unchanged.
+
+3) Deck/page transition end-frame stutter
+- Existing JS tween is now the sole owner of panel transform during motion.
+- CSS panel transform transition is temporarily disabled only while JS animates.
+- Inline transform is removed at the exact final state before CSS transition is re-enabled.
+- Existing duration/easing/geometry remain unchanged.
+
+NOT TOUCHED:
+- V36 submenu architecture, frosted glass, mobile horizontal filter scroll
+- menu sizes/positions
+- PANXRT normal navigation behavior
+- WORK matte
+- WORK/CONTACTS geometry
+- gallery grid/cards/crop/hover
+- bottom gradient/blur
+- cases/media content
