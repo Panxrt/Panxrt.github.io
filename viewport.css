@@ -2328,5 +2328,5 @@ body:not(.gallery-mode):not(.gallery-closing) .submenu-blur-underlay{
 /* DESKTOP ABOUT SPACING — lift the lead copy away from the toolkit.
    Mobile layout is intentionally unchanged. */
 @media(min-width:701px){
-  .about-intro{transform:translateY(-24px)}
+  .about-intro{transform:translateY(-32px)}
 }
