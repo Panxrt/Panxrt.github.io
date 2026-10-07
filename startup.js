@@ -59,19 +59,32 @@
      : document.querySelector('#menu .wordmark');
    const from=word.getBoundingClientRect();
 
-   // CONTACTS has a rotated final wordmark. Measure its layout box without the
-   // rotation so the moving clone can finish on the exact real text geometry.
+   // CONTACTS has its own reveal animation (including translateY). On reload that
+   // animation used to leak into the measurement and made the real H2 appear to
+   // drop after the moving PANXRT was removed. Freeze the real target in its exact
+   // final visual state BEFORE measuring anything.
    let to=target?.getBoundingClientRect();
    let targetTransform='none';
    let targetTransformOrigin='0 0';
    if(contactLanding&&target){
-     const beforeInlineTransform=target.style.transform;
-     const targetStyle=getComputedStyle(target);
-     targetTransform=targetStyle.transform;
-     targetTransformOrigin=targetStyle.transformOrigin;
-     target.style.transform='none';
+     target.style.setProperty('animation','none','important');
+     target.style.setProperty('transition','none','important');
+     target.style.setProperty('opacity','0','important');
+     target.style.setProperty('visibility','hidden','important');
+
+     // First establish the exact final transform and origin.
+     target.style.setProperty('transform','rotate(-6deg)','important');
+     const stableStyle=getComputedStyle(target);
+     targetTransform=stableStyle.transform;
+     targetTransformOrigin=stableStyle.transformOrigin;
+
+     // Then measure the same line box without rotation. This is the coordinate
+     // system used by the fixed handoff clone.
+     target.style.setProperty('transform','none','important');
      to=target.getBoundingClientRect();
-     target.style.transform=beforeInlineTransform;
+
+     // Restore the real target's final transform while it remains invisible.
+     target.style.setProperty('transform','rotate(-6deg)','important');
    }
 
    let handoff=null;
@@ -168,9 +181,19 @@
 
      // Reveal the real target underneath the already aligned moving copy.
      // Two paint frames avoid the tiny post-handoff jump seen on CONTACTS.
-     if(contactLanding)root.classList.add('contact-startup-landed');
+     if(contactLanding){
+       root.classList.add('contact-startup-landed');
+       target.style.setProperty('animation','none','important');
+       target.style.setProperty('transition','none','important');
+       target.style.setProperty('transform','rotate(-6deg)','important');
+       target.style.setProperty('opacity','1','important');
+       target.style.setProperty('visibility','visible','important');
+     }
      root.classList.add('site-ui-reveal');
      root.classList.remove('site-arriving');
+
+     // Swap on the next painted frame only after the real CONTACTS wordmark is
+     // already locked to the exact final transform.
      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
      handoff.remove();
    }else{
