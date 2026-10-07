@@ -68,3 +68,15 @@
   visibility:hidden!important;
   animation-play-state:paused!important;
 }
+
+
+/* CONTACT DIRECT-RELOAD TARGET LOCK
+   The real wordmark is fully controlled by startup.js during the handoff.
+   Prevent any legacy reveal keyframe from adding a post-handoff Y offset. */
+html.contact-startup-landed body[data-page='3'] .contact .surface.reveal #contact-title{
+  animation:none!important;
+  transition:none!important;
+  transform:rotate(-6deg)!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
