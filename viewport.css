@@ -2330,3 +2330,19 @@ body:not(.gallery-mode):not(.gallery-closing) .submenu-blur-underlay{
 @media(min-width:701px){
   .about-intro{transform:translateY(-32px)}
 }
+
+
+/* ABOUT SPECIALTIES — solid brand underline on desktop. */
+@media(min-width:701px){
+  .about-lead{
+    line-height:1.36;
+  }
+  .about .specialties{
+    text-decoration:none!important;
+    color:var(--ink)!important;
+    border-bottom:2px solid var(--purple);
+    padding-bottom:.025em;
+    box-decoration-break:clone;
+    -webkit-box-decoration-break:clone;
+  }
+}
