@@ -52,9 +52,28 @@
    // Wait until the REAL final header has settled, then measure it.
    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
 
-   const target=document.querySelector('#menu .wordmark');
+   // On a reload of CONTACTS, the loader PANXRT lands directly in the large
+   // contact artwork instead of visiting the now-hidden header wordmark first.
+   const contactLanding=document.body.dataset.page==='3';
+   const target=contactLanding
+     ? document.querySelector('.contact-art #contact-title')
+     : document.querySelector('#menu .wordmark');
    const from=word.getBoundingClientRect();
-   const to=target?.getBoundingClientRect();
+
+   // CONTACTS has a rotated final wordmark. Measure its layout box without the
+   // rotation so the moving clone can finish on the exact real text geometry.
+   let to=target?.getBoundingClientRect();
+   let targetTransform='none';
+   let targetTransformOrigin='0 0';
+   if(contactLanding&&target){
+     const beforeInlineTransform=target.style.transform;
+     const targetStyle=getComputedStyle(target);
+     targetTransform=targetStyle.transform;
+     targetTransformOrigin=targetStyle.transformOrigin;
+     target.style.transform='none';
+     to=target.getBoundingClientRect();
+     target.style.transform=beforeInlineTransform;
+   }
 
    if(!reduced){
      loader.animate(
@@ -67,8 +86,9 @@
 
    if(!reduced&&target&&to){
      const cs=getComputedStyle(target);
+     const loaderColor=getComputedStyle(word).color;
 
-     // Use the real menu wordmark's typography for the moving handoff.
+     // Use the real destination wordmark's typography for the moving handoff.
      // At the end it is pixel-aligned with the actual target.
      handoff=document.createElement('div');
      handoff.textContent=target.textContent;
@@ -97,7 +117,7 @@
        display:'flex',
        alignItems:'center',
        justifyContent:'flex-start',
-       transformOrigin:'0 0',
+       transformOrigin:contactLanding?targetTransformOrigin:'0 0',
        willChange:'transform,opacity',
        backfaceVisibility:'hidden'
      });
@@ -125,18 +145,32 @@
 
      await Promise.all([swapIn.finished.catch(()=>{}),swapOut.finished.catch(()=>{})]);
 
+     const motionFrames=contactLanding
+       ? [
+           {
+             transform:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`,
+             color:loaderColor
+           },
+           {
+             transform:targetTransform==='none'?'translate3d(0,0,0) scale(1,1)':targetTransform,
+             color:cs.color
+           }
+         ]
+       : [
+           {transform:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`},
+           {transform:'translate3d(0,0,0) scale(1,1)'}
+         ];
+
      const motion=handoff.animate(
-       [
-         {transform:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`},
-         {transform:'translate3d(0,0,0) scale(1,1)'}
-       ],
-       {duration:760,easing:'cubic-bezier(.22,.61,.36,1)',fill:'forwards'}
+       motionFrames,
+       {duration:contactLanding?900:760,easing:'cubic-bezier(.22,.61,.36,1)',fill:'forwards'}
      );
 
      await motion.finished.catch(()=>{});
 
      // Reveal the real target UNDER an identical, already aligned copy.
      // Remove the copy one frame later: there is no visible replacement flash.
+     if(contactLanding)root.classList.add('contact-startup-landed');
      root.classList.add('site-ui-reveal');
      root.classList.remove('site-arriving');
      await new Promise(resolve=>requestAnimationFrame(resolve));
