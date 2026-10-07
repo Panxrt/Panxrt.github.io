@@ -2302,8 +2302,8 @@ body:not(.gallery-mode):not(.gallery-closing) .submenu-blur-underlay{
   content:''!important;
   display:block!important;
   position:absolute!important;
-  left:0!important;
-  right:0!important;
+  left:13px!important;
+  right:13px!important;
   bottom:5px!important;
   height:1px!important;
   background:currentColor!important;
