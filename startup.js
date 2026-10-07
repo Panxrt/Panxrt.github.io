@@ -107,9 +107,10 @@
        lineHeight:cs.lineHeight,
        letterSpacing:cs.letterSpacing,
        whiteSpace:'nowrap',
-       display:'flex',
-       alignItems:'center',
-       justifyContent:'flex-start',
+       display:contactLanding?cs.display:'flex',
+       alignItems:contactLanding?'normal':'center',
+       justifyContent:contactLanding?'normal':'flex-start',
+       textAlign:cs.textAlign,
        transformOrigin:contactLanding?targetTransformOrigin:'0 0',
        willChange:'transform,opacity',
        backfaceVisibility:'hidden'
