@@ -2260,3 +2260,28 @@ body:not(.gallery-mode):not(.gallery-closing) .submenu-blur-underlay{
   background:rgba(250,244,230,.04)!important;
   text-decoration:none!important;
 }
+
+/* ==========================================================
+   FILTER HOVER — SINGLE ANIMATED UNDERLINE FIX
+   Keep the selected filter as capsule-only.
+   Inactive filters use the existing smooth ::after underline from .menu nav button.
+   This removes the extra text-decoration underline that caused the double line.
+   ========================================================== */
+.submenu-overlay .submenu-controls button,
+.header-contact-mask #menu-dark .submenu-controls button{
+  text-decoration:none!important;
+}
+
+/* Selected filter: capsule only, including on hover. */
+.submenu-overlay .submenu-controls button[aria-pressed="true"]::after,
+.header-contact-mask #menu-dark .submenu-controls button[aria-pressed="true"]::after,
+.submenu-overlay .submenu-controls button[aria-pressed="true"]:hover::after,
+.header-contact-mask #menu-dark .submenu-controls button[aria-pressed="true"]:hover::after{
+  transform:scaleX(0)!important;
+}
+
+/* Inactive filter: use only the existing animated underline. */
+.submenu-overlay .submenu-controls button:not([aria-pressed="true"]):hover::after,
+.header-contact-mask #menu-dark .submenu-controls button:not([aria-pressed="true"]):hover::after{
+  transform:scaleX(1)!important;
+}

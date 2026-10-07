@@ -1,0 +1,8 @@
+Based on TEST_CLEAN_V60_FILTER_ACTIVE_HOVER_ONLY.
+
+ONLY CHANGE:
+- removed the extra text-decoration underline on inactive filter hover
+- kept the existing smooth ::after underline animation
+- active filter remains capsule-only, including while hovered
+
+No layout, glass, transitions, gallery grid, video, masks, rails or header behavior changed.
