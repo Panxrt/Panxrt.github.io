@@ -41,3 +41,19 @@
  .site-arriving .header-contact-mask .menu-primary > :not(.identity),.site-arriving #brand-ribbon{opacity:1!important}
  .site-ui-reveal .header-contact-mask .menu-primary > :not(.identity),.site-ui-reveal #brand-ribbon{animation:none!important}
 }
+
+
+/* ==========================================================
+   CONTACT STARTUP LANDING
+   On a direct reload of CONTACTS, the large PANXRT is the loader handoff
+   destination. Keep the real destination absent until the moving word arrives.
+   ========================================================== */
+.site-arriving body[data-page='3'] .contact-art #contact-title{
+  opacity:0!important;
+  visibility:hidden!important;
+}
+.contact-startup-landed body[data-page='3'] .contact-art #contact-title{
+  opacity:1!important;
+  visibility:visible!important;
+  animation:none!important;
+}
