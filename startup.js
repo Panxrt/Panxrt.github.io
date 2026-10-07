@@ -44,12 +44,11 @@
    if(window.portfolioRestore)await window.portfolioRestore;
 
    root.classList.add('site-arriving');
-   root.classList.remove('site-booting');
    loader.style.display='flex';
    loader.style.pointerEvents='none';
-   loader.style.background='transparent';
 
-   // Wait until the REAL final header has settled, then measure it.
+   // Keep the page behind the opaque loader until the destination has settled.
+   // This prevents a one-frame flash between the boot screen and the real page.
    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
 
    // On a reload of CONTACTS, the loader PANXRT lands directly in the large
@@ -75,14 +74,8 @@
      target.style.transform=beforeInlineTransform;
    }
 
-   if(!reduced){
-     loader.animate(
-       [{backgroundColor:'#FAF4E6'},{backgroundColor:'transparent'}],
-       {duration:800,easing:'cubic-bezier(.22,.61,.36,1)',fill:'forwards'}
-     );
-   }
-
    let handoff=null;
+   let backgroundFade=null;
 
    if(!reduced&&target&&to){
      const cs=getComputedStyle(target);
@@ -106,7 +99,7 @@
        padding:'0',
        border:'0',
        background:'transparent',
-       color:cs.color,
+       color:loaderColor,
        fontFamily:cs.fontFamily,
        fontSize:cs.fontSize,
        fontWeight:cs.fontWeight,
@@ -129,57 +122,70 @@
      const sx=from.width/to.width;
      const sy=from.height/to.height;
 
-     // Briefly hand the already-visible loader word to the exact menu-shaped
-     // clone, then move only that clone to the final position.
+     // Briefly hand the already-visible loader word to the exact destination-shaped
+     // clone. Only now expose the real page underneath the still-opaque loader.
      handoff.style.transform=`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`;
      handoff.style.opacity='0';
 
+     root.classList.remove('site-booting');
+
+     backgroundFade=loader.animate(
+       [{backgroundColor:'#FAF4E6'},{backgroundColor:'transparent'}],
+       {duration:900,easing:'cubic-bezier(.22,.61,.36,1)',fill:'forwards'}
+     );
+
      const swapIn=handoff.animate(
        [{opacity:0},{opacity:1}],
-       {duration:90,easing:'ease-out',fill:'forwards'}
+       {duration:100,easing:'ease-out',fill:'forwards'}
      );
      const swapOut=word.animate(
        [{opacity:1},{opacity:0}],
-       {duration:90,easing:'ease-out',fill:'forwards'}
+       {duration:100,easing:'ease-out',fill:'forwards'}
      );
 
      await Promise.all([swapIn.finished.catch(()=>{}),swapOut.finished.catch(()=>{})]);
 
-     const motionFrames=contactLanding
-       ? [
-           {
-             transform:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`,
-             color:loaderColor
-           },
-           {
-             transform:targetTransform==='none'?'translate3d(0,0,0) scale(1,1)':targetTransform,
-             color:cs.color
-           }
-         ]
-       : [
-           {transform:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`},
-           {transform:'translate3d(0,0,0) scale(1,1)'}
-         ];
+     const finalTransform=contactLanding&&targetTransform!=='none'
+       ? targetTransform
+       : 'translate3d(0,0,0) scale(1,1)';
 
      const motion=handoff.animate(
-       motionFrames,
-       {duration:contactLanding?900:760,easing:'cubic-bezier(.22,.61,.36,1)',fill:'forwards'}
+       [
+         {
+           transform:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`,
+           color:loaderColor
+         },
+         {
+           transform:finalTransform,
+           color:cs.color
+         }
+       ],
+       {duration:contactLanding?900:820,easing:'cubic-bezier(.22,.61,.36,1)',fill:'forwards'}
      );
 
      await motion.finished.catch(()=>{});
 
-     // Reveal the real target UNDER an identical, already aligned copy.
-     // Remove the copy one frame later: there is no visible replacement flash.
+     // Reveal the real target underneath the already aligned moving copy.
+     // Two paint frames avoid the tiny post-handoff jump seen on CONTACTS.
      if(contactLanding)root.classList.add('contact-startup-landed');
      root.classList.add('site-ui-reveal');
      root.classList.remove('site-arriving');
-     await new Promise(resolve=>requestAnimationFrame(resolve));
+     await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
      handoff.remove();
    }else{
+     root.classList.remove('site-booting');
      root.classList.add('site-ui-reveal');
      root.classList.remove('site-arriving');
+     if(!reduced){
+       backgroundFade=loader.animate(
+         [{backgroundColor:'#FAF4E6'},{backgroundColor:'transparent'}],
+         {duration:600,easing:'ease',fill:'forwards'}
+       );
+       await backgroundFade.finished.catch(()=>{});
+     }
    }
 
+   if(backgroundFade)await backgroundFade.finished.catch(()=>{});
    loader.remove();
    setTimeout(()=>root.classList.remove('site-ui-reveal'),1400);
 
