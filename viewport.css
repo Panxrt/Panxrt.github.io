@@ -2285,3 +2285,41 @@ body:not(.gallery-mode):not(.gallery-closing) .submenu-blur-underlay{
 .header-contact-mask #menu-dark .submenu-controls button:not([aria-pressed="true"]):hover::after{
   transform:scaleX(1)!important;
 }
+
+
+/* ==========================================================
+   FILTER HOVER — FINAL SINGLE UNDERLINE
+   Inactive filters: one animated ::after line only.
+   Active filter: capsule only.
+   ========================================================== */
+.submenu-overlay .submenu-controls button:not([aria-pressed="true"]):hover,
+.header-contact-mask #menu-dark .submenu-controls button:not([aria-pressed="true"]):hover{
+  text-decoration:none!important;
+}
+
+.submenu-overlay .submenu-controls button:not([aria-pressed="true"])::after,
+.header-contact-mask #menu-dark .submenu-controls button:not([aria-pressed="true"])::after{
+  content:''!important;
+  display:block!important;
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  bottom:5px!important;
+  height:1px!important;
+  background:currentColor!important;
+  transform:scaleX(0)!important;
+  transform-origin:left center!important;
+  transition:transform .25s ease!important;
+  pointer-events:none!important;
+}
+
+.submenu-overlay .submenu-controls button:not([aria-pressed="true"]):hover::after,
+.header-contact-mask #menu-dark .submenu-controls button:not([aria-pressed="true"]):hover::after{
+  transform:scaleX(1)!important;
+}
+
+.submenu-overlay .submenu-controls button[aria-pressed="true"]::after,
+.header-contact-mask #menu-dark .submenu-controls button[aria-pressed="true"]::after{
+  content:none!important;
+  display:none!important;
+}
