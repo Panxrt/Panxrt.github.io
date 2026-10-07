@@ -52,8 +52,19 @@
   opacity:0!important;
   visibility:hidden!important;
 }
-.contact-startup-landed body[data-page='3'] .contact-art #contact-title{
+.contact-startup-landed body[data-page='3'] .contact-art #contact-title,
+.contact-startup-landed body[data-page='3'] .contact .surface.reveal #contact-title{
   opacity:1!important;
   visibility:visible!important;
   animation:none!important;
+  transition:none!important;
+  transform:rotate(-6deg)!important;
+}
+
+
+/* CONTACT TARGET STABILITY — no second reveal/jump after the loader lands. */
+.site-arriving body[data-page='3'] .contact .surface.reveal #contact-title{
+  opacity:0!important;
+  visibility:hidden!important;
+  animation-play-state:paused!important;
 }
