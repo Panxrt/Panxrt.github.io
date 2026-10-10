@@ -49,6 +49,7 @@ function mediaNode(w){
 }
 function post(type,payload={}){parent.postMessage({source:'panxrt-mosaic-frame',type,...payload},location.origin)}
 function render(){
+ window.portfolioData=data;
  grid.replaceChildren();
  for(const w of data.works){
   const card=document.createElement('article');

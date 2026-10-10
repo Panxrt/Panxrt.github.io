@@ -1,0 +1,1 @@
+Legacy source retained for next adapters. Source: old Sites checkout commit b4d91b47e83493983bc4d3698a9724a76bebebdb. NOT loaded or exposed by the test server. Upload code requires old /api/transfers and stats code requires old analytics API; do not claim either is operational. Adapt authentication and storage before enabling. Never point it at production.

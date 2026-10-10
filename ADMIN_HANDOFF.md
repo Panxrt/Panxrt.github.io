@@ -1,3 +1,52 @@
+# Current implementation status — 2026-10-10 (session 1)
+
+**This section supersedes historical status statements below.** Working branch: [`feature/admin-cms-20261010`](https://github.com/Panxrt/Panxrt.github.io/tree/feature/admin-cms-20261010).
+Base main: `db4e6864abcf5b23085702c81df35ea6f5d6127c` (confirmed unchanged before implementation). Initial handoff commit: [`0e713ec`](https://github.com/Panxrt/Panxrt.github.io/commit/0e713ecd307dd6c039c5947f43eec6c88185fcbe).
+Use the branch HEAD/history for the latest implementation commit (a file cannot name its own commit SHA).
+
+## Implemented in the working branch
+
+- [x] Created branch from current main, committed this complete handoff first. No merge/deployment/DNS/media changes.
+- [x] Fixed prototype `floating-add` lookup to existing `addWorkBtn`. Preview iframe now supplies `window.portfolioData` to the shared MosaicLayout renderer.
+- [x] Added dependency-free Node >=22 CMS backend (`cms/server.mjs`, `auth.mjs`, `store.mjs`). This is a local/isolated server adapter, **not a deployed Cloudflare Worker**.
+- [x] GitHub App user-to-server OAuth: state, PKCE, browser binding, owner ID allowlist (156057823), expiring server-side sessions, HttpOnly cookies, Origin + CSRF for writes. Tokens/secrets never sent to the editor or localStorage.
+- [x] Private Git store: remote draft read/save with expected head SHA, non-force Git ref update, version list and restore as a NEW content-only commit; revision increment on saves. Only `content.json` can be written. Public repository `Panxrt/Panxrt.github.io` is explicitly rejected; repository `private:true` checked before operations.
+- [x] TEST publication to `cms-test-published` in the private repository only. Response explicitly says `deployment:false`; no fake Pages deployment success. Authenticated `/preview/` and `/test-preview/` use existing site assets with private JSON. Raw private JSON also requires a session and is no-store.
+- [x] Reused old editor code in `admin-cms/`, not a replacement from scratch: gallery drag/reorder, eight resize handles, proportional/free modes, crop/focal/zoom, native ratio and presets, row count/rowSpan controls; case blocks, free/flow layout, inline text, rotation, rulers/guides, Shift multi-select, ALIGN, order/layers, duplicate/delete, brands/category CRUD/order. **Ported code is not yet visually/browser-validated.**
+- [x] Adapted editor save/load to private CMS. Added Undo/Redo, independent EN/RU editing, draft download for conflict recovery, remote reload, history restore and test publication UI. Legacy case opening no longer automatically converts every layout to free canvas. Added text color/line-height in editor renderer; isolated preview uses this same renderer.
+- [x] Preserved upload/statistics client source in `cms/reference/` for next adapters. These are not loaded/exposed. Direct uploads and analytics are NOT connected; UI says so. No 25 MB media upload limit was introduced. JSON request limit is 4 MiB, unrelated to media.
+- [x] Setup instructions: [`cms/SETUP.md`](https://github.com/Panxrt/Panxrt.github.io/blob/feature/admin-cms-20261010/cms/SETUP.md).
+
+## Verification actually performed
+
+`node --test cms/test/*.test.mjs` — **9 passing tests**. Tests cover OAuth binding/PKCE/owner rejection, private-only storage guards, unsafe URLs/duplicate IDs, normal and simultaneous save conflicts, save→private preview→TEST publication→restore through real local HTTP with mock GitHub transport, session logout/CSRF, prototype renderAll against actual HTML IDs, script parse/control presence, original 35-card packing and multi-row non-overlap, proportional scaling and ALIGN.
+
+This is NOT live OAuth/GitHub integration QA, browser QA, a real remote test deployment, cross-device testing or iOS validation. Do not claim those passed. No browser-control tool was available in the managed environment, so no browser server/installation workaround was used. Public files/media/production main are unchanged except **branch-only** prototype edits; all new implementation is under `cms/` and `admin-cms/`.
+
+## Blocking owner setup (exact instructions in cms/SETUP.md)
+
+1. Create PRIVATE `Panxrt/panxrt-cms-private`, initialize with README and existing `content.json`, then branch `cms-test-published` from that private main. No Pages there. Confidential drafts must never be saved in this public development branch.
+2. Register GitHub App with Contents read/write, only install on that PRIVATE repository, owner account only. Local callback `http://localhost:8787/auth/callback`. Client secret only in server environment, never in chat/files/commits. No App private key required for this user-to-server implementation.
+3. Run Node test server and complete real login/draft/test-publication checks. Before remote hosting select/approve a free provider; adapt the Node HTTP/session layer and verify from Russia. No account, paid service, private repo or App was created by this session.
+
+## Next task and remaining work (do not repeat audit)
+
+**Next: connect the private repo + GitHub App, run real vertical scenario, then browser-QA and repair the ported Gallery/Case editors.** See setup guide. All saved code can be progressed without changing production.
+
+- [ ] Remote test deployment/provider adapter. Memory sessions currently single-process, lost on restart, expire within 1h; refresh and distributed storage are not implemented.
+- [ ] Live auth/private Git read/write, second device, failures/retries, history/publish/restore acceptance.
+- [ ] Browser tests for all eight handles, crop, flow/free case gestures, text, guides/ALIGN, mobile previews, original media and smoothness. The old interaction code may need further compatibility fixes.
+- [ ] Gallery explicit row add/delete/move, per-row card membership, spans beyond current 3, visibility toggle, conflict UI and intentionally separate mobile layout. Current renderer still inherits old silent row fitting; don't call the full desired row editor finished.
+- [ ] Public integration of new text color/line-height and independent language renderer, hidden-work handling and sections. Current isolated preview uses the amended renderer, public renderer untouched.
+- [ ] INTRO/ABOUT/CONTACTS structured editor; full Undo/Redo edge cases/keyboard shortcuts; view zoom; recoverable pending changes across browser crash (currently download + dirty warning, not persistent autosave).
+- [ ] Media adapters, actual resumable uploads/progress/retry, media metadata; preserve both Dropbox URLs. Existing upload code retained for adaptation. No compression/transcoding without approval.
+- [ ] Statistics backend/consent as appropriate/exclude owner; don't store event stream in Git commits.
+- [ ] Production publish + actual Pages deployment verification + restore only after separate authorization. Current backend deliberately cannot write to public repo.
+
+No new private draft content, secrets, or media committed to this public branch. Historic audits and requirements below are preserved in full.
+
+---
+
 # Implementation session — 2026-10-10
 
 Working branch: `feature/admin-cms-20261010`, based on main `db4e6864abcf5b23085702c81df35ea6f5d6127c`. This document is now committed. Historical status statements below describe the state before this session. Production changes and infrastructure deployment are NOT authorized.
