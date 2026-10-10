@@ -1,3 +1,11 @@
+## Setup continuation — 2026-10-10, awaiting browser sign-in
+
+Owner explicitly authorized creating `Panxrt/panxrt-cms-private`, seeding content/test branch, and registering/installing a minimally scoped GitHub App only on that private repo. Server hosting requires a free proposal and separate owner consent before deployment.
+
+Read cms/SETUP.md; working checkout was clean. Connector has file/branch operations but no repository creation/App registration operation. Opened GitHub creation page in cloud browser; it requires sign-in. Secure browserAuth flow started; authentication has not succeeded and user continuation is required. No credentials were returned to the agent, stored in files or committed. No repo/App, secrets, hosting, DNS or media changes were made. No new real CMS integration tests passed in this attempt. Resume the existing browser sign-in via supported secure handoff, verify signed-in Panxrt identity, then create the private repo and proceed with the setup guide. Do not repeat the audit or request passwords in chat.
+
+---
+
 # Current implementation status — 2026-10-10 (session 1)
 
 **This section supersedes historical status statements below.** Working branch: [`feature/admin-cms-20261010`](https://github.com/Panxrt/Panxrt.github.io/tree/feature/admin-cms-20261010).
