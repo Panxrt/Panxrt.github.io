@@ -1,3 +1,17 @@
+# Latest setup checkpoint — 2026-10-11 evening
+
+This section supersedes historical blockers below. Do not repeat the audit.
+- Render Free isolated service is deployed at https://panxrt-cms-test.onrender.com; afternoon browser verification of /admin/ showed the PANXRT CMS test login screen. Nine tests passed in Render build. No live OAuth/write test has passed.
+- GitHub App callback was SAVED successfully as https://panxrt-cms-test.onrender.com/auth/callback (GitHub success alert verified). Earlier localhost/pending-sudo notes below are historical.
+- Evening Render login via previously selected GitHub method succeeded: Environment screen for srv-db5of9nlot8c73flnk6g visible.
+- Saved environment still lacked GITHUB_CLIENT_SECRET. Prepared an UNSAVED empty variable row with that name for owner entry; no secret generated, read, entered, or committed.
+- GitHub credentials settings currently requires renewed Confirm access / Verify via email. Owner must generate client secret and enter it directly into Render, then Save only. Browser safety requires owner handoff for creation/entry/submission of new authentication credentials.
+- Current live /auth/login inspection hit a browser URL-policy protocol block after earlier Render wake-up page; stopped that browser action. Do not misreport this as an application failure or successful login.
+- Next: owner completes secret setup, restart/deploy ONLY isolated Free service, verify actual CMS OAuth then private draft save/reload, preview, test publication and restore. Auto-deploy remains OFF; no production/main/DNS/media changes.
+- Private repository and App installation already exist and were verified. Do not recreate them. No App private key needed for implemented user-to-server flow.
+
+---
+
 ## Setup continuation — 2026-10-10, awaiting browser sign-in
 
 Owner explicitly authorized creating `Panxrt/panxrt-cms-private`, seeding content/test branch, and registering/installing a minimally scoped GitHub App only on that private repo. Server hosting requires a free proposal and separate owner consent before deployment.
