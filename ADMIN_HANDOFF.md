@@ -1,3 +1,11 @@
+## Continuation — 2026-10-11 21:49 Europe/Budapest
+- Owner reported secret entry/save completed. Render Environment left edit mode; secret value was never read. Validity not yet verified.
+- Restarted test service, then manually deployed working branch commit 3c5d435 to apply saved config. Render confirmed Deploy succeeded / Live, duration 47.1s; nine tests passed in build (also nine local tests passed).
+- Public test /admin/ visibly renders PANXRT CMS login screen.
+- Clicking its GitHub login link via browser tooling was blocked by browser URL protocol policy, leaving chrome-error page. Do not bypass via fetch/CDP/alternate execution. Returned only to safe /admin/ for owner manual sign-in handoff.
+- Real OAuth/private save/preview/test publish remain UNVERIFIED. Next: owner manually clicks GitHub login in prepared CMS tab; inspect outcome, then test private content vertical scenario.
+- No production/main/DNS/media changes. Auto deploy off; only isolated Free test service deployed.
+
 # Latest setup checkpoint — 2026-10-11 evening
 
 This section supersedes historical blockers below. Do not repeat the audit.
