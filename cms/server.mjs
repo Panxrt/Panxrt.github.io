@@ -50,5 +50,8 @@ export function createHandler({config,auth=new GithubAuth(config),storeFactory=s
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  const config={origin:process.env.CMS_ORIGIN||'http://localhost:8787',repo:process.env.CMS_PRIVATE_REPO,clientId:process.env.GITHUB_CLIENT_ID,clientSecret:process.env.GITHUB_CLIENT_SECRET,ownerId:'156057823'};
  const origin=new URL(config.origin);if(!['http:','https:'].includes(origin.protocol)||origin.pathname!=='/'||origin.username||origin.password||origin.search||origin.hash|| (origin.protocol==='http:'&&!['localhost','127.0.0.1'].includes(origin.hostname)))throw Error('CMS_ORIGIN: HTTPS или локальный localhost');
- const server=http.createServer(createHandler({config}));server.requestTimeout=30000;server.listen(Number(process.env.PORT)||8787,'127.0.0.1',()=>console.log('Private CMS: '+config.origin+'/admin/ · production writes disabled'));
+ const host=process.env.CMS_BIND_HOST||'127.0.0.1';
+ if(!['127.0.0.1','0.0.0.0'].includes(host))throw Error('CMS_BIND_HOST: 127.0.0.1 или 0.0.0.0');
+ if(host==='0.0.0.0'&&origin.protocol!=='https:')throw Error('Внешний CMS требует HTTPS origin и TLS reverse proxy');
+ const server=http.createServer(createHandler({config}));server.requestTimeout=30000;server.listen(Number(process.env.PORT)||8787,host,()=>console.log('Private CMS: '+config.origin+'/admin/ · production writes disabled'));
 }
