@@ -638,3 +638,10 @@ Next blocking decision: owner consent for FREE isolated server hosting, explicit
 Proposed Render Free Node web service on an onrender.com address, built only from feature/admin-cms-20261010, no custom domain/DNS or production deploy. Prefer public repo URL deployment without granting Render access to private repository; CMS runtime uses its existing restricted App. Git-backed content persists; memory sessions expire on process restart. No payment method or paid add-ons; if card required or charges cannot be excluded, stop.
 Verified official docs 2026-10-11: https://render.com/docs/free and https://render.com/docs/faq. Free service sleeps after 15 min idle, cold start about 1 minute, 750 instance-hours/month. No payment method: exceeding chargeable allowances suspends service instead of charging. This is a test-environment proposal, not an always-on production recommendation. Regional accessibility not yet tested.
 Before deploy adapt listen host from loopback to 0.0.0.0, confirm PORT and Node >=22, HTTPS proxy/origin/cookie settings; store secret only in server environment, not Git/chat/client. Replace local callback with exact approved HTTPS service callback. Then run live acceptance tests and update this handoff.
+
+
+## Render preparation — 2026-10-11 afternoon
+
+Owner approved Render Free without card/paid services. Implemented explicit CMS_BIND_HOST=0.0.0.0 for managed TLS reverse proxy; default remains loopback; external binding rejects HTTP CMS_ORIGIN. Existing host/CSRF/auth guards retained. Updated cms/SETUP.md with concrete service configuration.
+Verified: all 9 local automated tests passed after change. These are not live OAuth tests.
+Blocked on Render sign-in (dashboard.render.com/login). No service created or deployed yet, no client secret generated. Continue from Render login, create Free service from feature/admin-cms-20261010 only, then configure secret/callback and perform live acceptance tests. Existing GitHub App installation already verified; do not recreate repository or App.
