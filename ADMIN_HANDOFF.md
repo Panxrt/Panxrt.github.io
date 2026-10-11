@@ -621,3 +621,20 @@ Next:
 5. Record real results; previous 9 tests remain mock/local tests and must not be described as live end-to-end validation.
 
 Browser sign-in and connector access are independent from CMS OAuth; creating repo via connector does NOT verify CMS login. No repeat audit needed.
+
+
+## Installation verified — 2026-10-11 09:18 Europe/Belgrade
+
+- Owner explicitly confirmed installation at action time.
+- Installed PANXRT CMS Private successfully on Panxrt; GitHub success alert verified.
+- Installation ID: 170184432. Settings: https://github.com/settings/installations/170184432
+- Verified Only select repositories, exactly ONE repository: Panxrt/panxrt-cms-private.
+- Permissions verified: Metadata read, Contents/code read and write. Public code repo NOT selected for write access. GitHub notes public repositories retain standard read-only availability.
+- Installation succeeded without generating a private key, despite the earlier registration notice.
+- Client secret not generated. Live CMS OAuth/save/preview/test-publication remain untested.
+- No production, public main, DNS, media, or hosting changes.
+
+Next blocking decision: owner consent for FREE isolated server hosting, explicitly required by user before deployment.
+Proposed Render Free Node web service on an onrender.com address, built only from feature/admin-cms-20261010, no custom domain/DNS or production deploy. Prefer public repo URL deployment without granting Render access to private repository; CMS runtime uses its existing restricted App. Git-backed content persists; memory sessions expire on process restart. No payment method or paid add-ons; if card required or charges cannot be excluded, stop.
+Verified official docs 2026-10-11: https://render.com/docs/free and https://render.com/docs/faq. Free service sleeps after 15 min idle, cold start about 1 minute, 750 instance-hours/month. No payment method: exceeding chargeable allowances suspends service instead of charging. This is a test-environment proposal, not an always-on production recommendation. Regional accessibility not yet tested.
+Before deploy adapt listen host from loopback to 0.0.0.0, confirm PORT and Node >=22, HTTPS proxy/origin/cookie settings; store secret only in server environment, not Git/chat/client. Replace local callback with exact approved HTTPS service callback. Then run live acceptance tests and update this handoff.
