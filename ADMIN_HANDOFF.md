@@ -598,3 +598,26 @@ EN/RU редактируются независимо. Публичные ани
 **Мой выбор: вариант A — GitHub-first, GitHub App, небольшой бесплатный сервис только для админки, существующий Dropbox и универсальные медиа-ссылки. Без обязательной базы и R2 на старте.**
 
 Перед разработкой нужно согласовать этот вариант и один существенный вопрос: **допустимы ли доступные через GitHub черновики, или они обязательно должны быть конфиденциальными?** До твоего подтверждения ничего не меняю.
+
+## Setup checkpoint — 2026-10-11 (supersedes Oct 10 sign-in blocker)
+
+Completed and verified:
+- Browser signed in as Panxrt; GitHub sudo email verification completed by owner.
+- Created PRIVATE repository Panxrt/panxrt-cms-private (repository ID 1414029862).
+- Seeded content.json unchanged from public main. Private seed commit: 74ca3bbac74c8075379de04876dd69bdb82ecb22.
+- Created private cms-test-published branch at that seed commit. This is storage initialization, NOT a successful CMS publication test.
+- Registered GitHub App PANXRT CMS Private (slug panxrt-cms-private), App ID 5271260, non-secret Client ID Iv23liGqfaWatuLY1X9A.
+- App permissions: repository Contents read/write, mandatory Metadata read-only; all other permissions none. Only this account; webhook disabled; wildcard callback disabled; expiring user tokens enabled.
+- Temporary callback: http://localhost:8787/auth/callback. Homepage https://panxrt.win.
+- Installation form prepared: ONLY Panxrt/panxrt-cms-private selected, not public code repository. Install has NOT been clicked. Browser action-time confirmation is required before granting persistent private repository access.
+- No client secret or private key generated. GitHub registration displayed a private-key prerequisite notice, but installation permissions form was reachable; verify whether final installation actually requires a key. Do not claim a key is universally unnecessary for GitHub registration.
+- No production/main/DNS/media changes; no hosting deployed or paid services connected.
+
+Next:
+1. Obtain action-time confirmation and install App only on selected private repository; verify resulting installation scope.
+2. Securely provision client secret directly into approved server secret storage (never chat, Git, client code). Current backend uses user-to-server OAuth, not installation JWT.
+3. Before remote hosting: propose a verified free option and obtain owner consent; adapt runtime/session storage as needed. Local callback currently does not constitute a reachable deployed CMS.
+4. Configure final origin/callback, then test REAL owner login, private draft save/reload, preview, concurrent-save conflict, restore, and test publication through CMS.
+5. Record real results; previous 9 tests remain mock/local tests and must not be described as live end-to-end validation.
+
+Browser sign-in and connector access are independent from CMS OAuth; creating repo via connector does NOT verify CMS login. No repeat audit needed.
