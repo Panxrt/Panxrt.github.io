@@ -71,3 +71,28 @@ node cms/server.mjs
 - Production publish/Pages verification не реализовывать как обход TEST-only ограничений. Это отдельный согласуемый этап с проверкой deploy и откатом только контента.
 
 GitHub App docs: https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app
+
+
+## Render Free — согласовано 2026-10-11
+
+Приватный репозиторий и App уже созданы; App установлен только на приватный репозиторий (installation 170184432). Верхние шаги 1–2 сохранены как справка, повторять их не нужно.
+
+Изолированный Web Service:
+- Source: public repository URL https://github.com/Panxrt/Panxrt.github.io
+- Branch: feature/admin-cms-20261010 (никогда main)
+- Runtime: Node, Node >=22; Free; без карты и платных дополнений
+- Root directory: корень репозитория (не cms)
+- Build command: node --test cms/test/*.test.mjs
+- Start command: node cms/server.mjs
+- Environment: CMS_BIND_HOST=0.0.0.0, CMS_PRIVATE_REPO=Panxrt/panxrt-cms-private
+- CMS_ORIGIN: точный HTTPS адрес созданного сервиса, без завершающего слеша
+- GITHUB_CLIENT_ID: из существующего PANXRT CMS Private
+- GITHUB_CLIENT_SECRET: только защищённая переменная сервера, ввод владельцем; не чат/коммит.
+- PORT: переменная платформы.
+- Callback App: CMS_ORIGIN + /auth/callback.
+- Один экземпляр сервера. Сессии в памяти: после сна/перезапуска повторный вход; Git-черновики сохраняются.
+- Проверка здоровья: /api/session (не читать/отдавать черновики без сессии).
+- Auto deploy отключить; публикация только ручная в тестовом сервисе.
+- DNS, production, media не изменять.
+
+На момент записи сервис не создан: браузер показывает вход Render. После входа продолжить настройку, затем реальные OAuth/save/preview/publish-test проверки.
