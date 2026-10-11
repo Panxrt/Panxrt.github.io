@@ -645,3 +645,7 @@ Before deploy adapt listen host from loopback to 0.0.0.0, confirm PORT and Node 
 Owner approved Render Free without card/paid services. Implemented explicit CMS_BIND_HOST=0.0.0.0 for managed TLS reverse proxy; default remains loopback; external binding rejects HTTP CMS_ORIGIN. Existing host/CSRF/auth guards retained. Updated cms/SETUP.md with concrete service configuration.
 Verified: all 9 local automated tests passed after change. These are not live OAuth tests.
 Blocked on Render sign-in (dashboard.render.com/login). No service created or deployed yet, no client secret generated. Continue from Render login, create Free service from feature/admin-cms-20261010 only, then configure secret/callback and perform live acceptance tests. Existing GitHub App installation already verified; do not recreate repository or App.
+
+
+### Render login checkpoint
+Owner chose Google in secure browserAuth. Google OAuth destination returned 502 Bad Gateway / connection refused in cloud browser. Fresh Render dashboard verification still shows login, so no authenticated Render session or service exists. This is a network failure, not evidence of bot detection. Do not repeat credentials or assume successful login. Offer user manual Render sign-in/registration in the cloud browser; do not silently switch identity provider. Runtime change and setup instructions are committed (b01b955, 3d3d6bc); 9 local tests passed. Next: authenticated Render dashboard -> Free Web Service from working branch -> secret and callback setup -> live tests.
