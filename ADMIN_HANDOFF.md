@@ -1,3 +1,8 @@
+## Deployment verified — 2026-10-12 21:16 Europe/Belgrade
+- Render successfully deployed 5c183bd (55.2s), only isolated panxrt-cms-test Free service. Re-login after restart succeeded without credential entry.
+- Real browser /test-preview/#work retains its full path during navigation AND reload; restored Tinkoff card is present after reload. Editor again shows private draft loaded. Preview fix is live, not merely committed.
+- All 13 local tests passed. Screenshot captured of authenticated visual gallery. Remaining next task: row membership/resize usability and case editor implicit mutation-on-open; do not repeat OAuth setup. Media upload and analytics still pending. No production change.
+
 ## Live CMS milestone — 2026-10-12 evening Europe/Belgrade
 This supersedes earlier unverified OAuth notes. Do not repeat setup/audit.
 - Owner authorized App. Real browser login succeeded; private editor loaded 35 works.
