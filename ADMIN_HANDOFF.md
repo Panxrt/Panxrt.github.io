@@ -1,3 +1,11 @@
+## Confirmed OAuth blocker — 2026-10-12 15:44 Europe/Belgrade
+- Live /auth/login now renders the new HTML error page, confirming the morning deployment succeeded.
+- Exact live error: server has NO GITHUB_CLIENT_SECRET. Client ID was revealed/verified as the correct non-secret value earlier; secret VALUE never inspected.
+- Earlier key-presence checks did not prove a value was saved. Render masks even empty fields. Do not repeat the mistaken claim that auth is only blocked by Chromium.
+- Morning fixes committed: 0696cd1 reports missing config names, aca7338 HTML errors instead of JSON downloads; 1056341 fixes regression test assertion. Existing 11 tests passed after implementation; targeted missing-secret HTML/no-value-disclosure test passed separately.
+- Need owner to enter actual GitHub App client secret into existing Render GITHUB_CLIENT_SECRET Value, save it, then deploy test branch. Credential provisioning requires owner handoff. Do not generate/read/print secrets, do not duplicate variable keys.
+- After secret is actually provisioned: verify real OAuth, private save/reload/preview/test release. None have passed yet. Production/main/DNS/media remain untouched.
+
 ## Continuation — 2026-10-12 07:37 Europe/Belgrade
 - User withdrew the preceding priority change; resume original CMS setup/integration. Do not treat standalone demo as replacement for private CMS.
 - Preserved interrupted editor work in GitHub branch: c36adbf row height/add/remove settings and focus-stable numeric edits; 209c336 toolbar wrapping; f3d8a26 standalone builder; 63c4e5d two regression tests.
