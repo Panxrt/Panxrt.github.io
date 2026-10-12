@@ -1,3 +1,16 @@
+## Live CMS milestone — 2026-10-12 evening Europe/Belgrade
+This supersedes earlier unverified OAuth notes. Do not repeat setup/audit.
+- Owner authorized App. Real browser login succeeded; private editor loaded 35 works.
+- Through CMS UI changed first work title to a temporary test marker, saved, reloaded and verified persistence; draft preview visibly showed the marker. Published through CMS to private cms-test-published; UI confirmed TEST saved, public site unchanged.
+- Restored original title Tinkoff through CMS save. Evening fresh login loaded restored title; re-published restored draft to TEST successfully. Test marker no longer current in either draft or TEST. History intentionally retains reversible test commits. No media edits.
+- Renewed CMS login automatically through existing GitHub session; no new credentials/permissions needed. Sessions expire after 1h or Render sleep/restart as documented.
+- Found preview bug: root base tag makes renderer fragment-only history update drop /preview/ or /test-preview/; dynamic test-source selection could then use draft. Fixed ONLY admin-cms/preview-bridge.js: preserve preview path for hash history updates and capture snapshot mode at initial load.
+- Commits: 4e1c06b fix; 5c183bd regression test. All 13 local tests pass. Manual deploy of 5c183bd started on existing isolated Render Free service; final live result to be appended.
+- Case editor opens by double-click and gallery return works. Merely opening an uninitialized case currently marks draft dirty (default block creation); discarded via Reload from server. Follow up to avoid implicit mutation on open. Do not claim all editor gestures validated.
+- Local checkout has a pre-existing unrelated modified media file e16e9680-6c6b-4785-bcf6-fa6402f6e2c5.png; not touched, staged, committed, reverted or uploaded. Commit only task-owned files.
+- Next: verify deployed preview paths and TEST snapshot, then practical gallery row/membership/resize and case editor QA. Real history-restore UI and concurrent-tab conflict remain unverified (automated tests pass). Media uploads/analytics remain unconnected. Production publishing still intentionally disabled.
+- Production/public main/DNS/existing media unchanged. Secrets never read or committed.
+
 ## Secret applied — 2026-10-12 15:58 Europe/Budapest
 - Owner entered/saved secret. Manually deployed db2eea7 on isolated Render Free service; UI Deploy succeeded / Live (44.8s).
 - Live /auth/login now redirects successfully to GitHub OAuth authorization screen for PANXRT CMS Private, identity Panxrt, callback https://panxrt-cms-test.onrender.com/auth/callback. Missing-secret blocker RESOLVED. Secret value was not read.
