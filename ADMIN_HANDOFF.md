@@ -1,3 +1,12 @@
+## Continuation — 2026-10-12 07:37 Europe/Belgrade
+- User withdrew the preceding priority change; resume original CMS setup/integration. Do not treat standalone demo as replacement for private CMS.
+- Preserved interrupted editor work in GitHub branch: c36adbf row height/add/remove settings and focus-stable numeric edits; 209c336 toolbar wrapping; f3d8a26 standalone builder; 63c4e5d two regression tests.
+- 11 automated tests pass. Generated standalone HTML is reproducible via node cms/build-editor-demo.mjs; no private content or auth secrets embedded. Not deployed as an unauthenticated route. This is an optional local experiment, not production or completed CMS.
+- Render session re-established with owner's previously selected GitHub login. Verified saved environment KEY NAMES include GITHUB_CLIENT_SECRET plus CMS_BIND_HOST, CMS_PRIVATE_REPO, GITHUB_CLIENT_ID, NODE_VERSION, SKIP_INSTALL_DEPS. Did not read secret value; exited edit form with Cancel, no settings changed.
+- Existing CMS OAuth browser navigation was previously blocked by URL protocol policy; no retries or bypasses performed this session. Live OAuth/save/preview/test publication remain unverified. Need actual non-sensitive error details to identify application vs browser failure; do not claim secrets valid just because key exists.
+- Manually deployed feature branch code 63c4e5d on isolated Render Free service. Render confirmed Deploy succeeded / Live, duration 50.9s, deploy dep-db673eg473hc73dcp630. Production/main/DNS/media untouched.
+- Row UI edits do not add explicit per-row membership or row/card group movement. Those remain pending. Case editor browser QA and remote media upload remain pending.
+
 ## Continuation — 2026-10-11 21:49 Europe/Budapest
 - Owner reported secret entry/save completed. Render Environment left edit mode; secret value was never read. Validity not yet verified.
 - Restarted test service, then manually deployed working branch commit 3c5d435 to apply saved config. Render confirmed Deploy succeeded / Live, duration 47.1s; nine tests passed in build (also nine local tests passed).
