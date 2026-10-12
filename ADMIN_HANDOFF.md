@@ -1,3 +1,10 @@
+## Editor continuation — 2026-10-12 evening
+- Implemented legacy case read-only opening: no automatic conversion or dirty state on open. Explicit "Редактировать блоки кейса" initializes legacy blocks; adding a block also initializes them. Existing block cases remain directly editable. No automatic free-frame repair during opening.
+- Added "Ряд выше" / "Ряд ниже": moves filled row's actual cards together with row count/height, supports undo snapshot. Desktop only to avoid conflating responsive rows with stored row settings. Rejects intersecting multi-row spans with an explanation; arbitrary spanning-row reorder remains pending.
+- Commits f84d498 editor, ec73ae7 three behavioral tests. 16 tests passed before final desktop guard; targeted 3 tests passed after guard. Isolated Render deploy ec73ae7 started; live QA pending below.
+- Do not overclaim no mutation for every existing case: legacy open/navigation covered; renderer's asynchronous native-size adjustment on existing free blocks still needs review.
+- No production/main/DNS/media changes. Existing unrelated local modified PNG deliberately excluded.
+
 ## Deployment verified — 2026-10-12 21:16 Europe/Belgrade
 - Render successfully deployed 5c183bd (55.2s), only isolated panxrt-cms-test Free service. Re-login after restart succeeded without credential entry.
 - Real browser /test-preview/#work retains its full path during navigation AND reload; restored Tinkoff card is present after reload. Editor again shows private draft loaded. Preview fix is live, not merely committed.
