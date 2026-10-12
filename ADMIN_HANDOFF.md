@@ -1,3 +1,11 @@
+## Secret applied — 2026-10-12 15:58 Europe/Budapest
+- Owner entered/saved secret. Manually deployed db2eea7 on isolated Render Free service; UI Deploy succeeded / Live (44.8s).
+- Live /auth/login now redirects successfully to GitHub OAuth authorization screen for PANXRT CMS Private, identity Panxrt, callback https://panxrt-cms-test.onrender.com/auth/callback. Missing-secret blocker RESOLVED. Secret value was not read.
+- Awaiting first user-to-server OAuth consent (Authorize). Page says verify identity, know accessible resources, act on user's behalf. Existing App installation remains restricted to private repo.
+- Browser action-time consent required before granting this authorization; handing visible screen to owner. Do not confuse this with already completed App installation.
+- Token exchange, authenticated CMS loading and private save/preview/test-publish not yet verified. After owner authorizes, inspect callback/CMS and continue actual scenario.
+- Production/main/DNS/media untouched; code and preceding fixes saved.
+
 ## Confirmed OAuth blocker — 2026-10-12 15:44 Europe/Belgrade
 - Live /auth/login now renders the new HTML error page, confirming the morning deployment succeeded.
 - Exact live error: server has NO GITHUB_CLIENT_SECRET. Client ID was revealed/verified as the correct non-secret value earlier; secret VALUE never inspected.
