@@ -44,7 +44,7 @@ export function createHandler({config,auth=new GithubAuth(config),storeFactory=s
    if(/^video\//.test(headers['Content-Type'])){headers['Accept-Ranges']='bytes';if(req.headers.range){const m=/^bytes=(\d+)-(\d*)$/.exec(req.headers.range);if(!m)throw new CmsError('Неверный Range',416);start=Number(m[1]);end=m[2]?Math.min(Number(m[2]),info.size-1):info.size-1;if(start>end||start>=info.size)throw new CmsError('Range вне файла',416);code=206;headers['Content-Range']=`bytes ${start}-${end}/${info.size}`;headers['Content-Length']=end-start+1;}}
    res.writeHead(code,headers);if(req.method==='HEAD'||!info.size)return res.end();const stream=createReadStream(file,{start,end});stream.on('error',()=>res.destroy());res.on('close',()=>stream.destroy());stream.pipe(res);
 
-  }catch(e){json(res,e.status|| (e.code==='ENOENT'?404:500),{error:e.status?e.message:e.code==='ENOENT'?'Файл не найден':'Внутренняя ошибка. Изменения не подтверждены.'});}
+  }catch(e){const status=e.status||(e.code==='ENOENT'?404:500),message=e.status?e.message:e.code==='ENOENT'?'Файл не найден':'Внутренняя ошибка. Изменения не подтверждены.';if(req.url?.startsWith('/auth/')){const safe=String(message).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));res.writeHead(status,{'Content-Type':'text/html; charset=utf-8'});return res.end('<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PANXRT · Вход</title><body><main><h1>Не удалось войти в CMS</h1><p>'+safe+'</p><a href="/admin/">Вернуться ко входу</a></main></body></html>');}json(res,status,{error:message});}
  };
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
