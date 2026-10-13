@@ -763,3 +763,9 @@ Checked: 8 focused editor/navigation tests passed, including exact history resto
 
 ### Deployment and focused browser verification — 2026-10-13
 Deployed 01d53b8 to existing FREE isolated Render test service; Render reports Deploy succeeded / Live, 57.6s. Browser confirms authenticated private editor, statistics tab absent. In a temporary unsaved legacy Tinkoff case conversion: crop 16/9 rendered correctly; Undo reverted to 16/1; Redo restored 16/9. No private content save or test publication was performed for this UI check. Production is untouched. Continue with existing free-case frame stability, row-span transfer UX and media backend; analytics remain excluded.
+
+
+## Case geometry stability — 2026-10-13 afternoon
+Implemented on feature/admin-cms-20261010: loading image/video metadata and rerendering no longer mutates saved free-case frames or shifts neighbouring blocks. Native aspect fit is explicit via media mode/reset button. Numeric width changes preserve frame proportions in native mode; custom crop ratio now updates the free-frame height too. Selecting a gallery card no longer snapshots or clears Redo; history begins only when dragging/resizing actually starts. Removed inspector default writes for rotation/media mode.
+Checks: 10 focused tests passed, including delayed image/video metadata, cached rerender, explicit fit, neighbouring block stability; admin.js syntax checked after selection fix. Code commits 23b61ff, 7087690, 69e8251. Stats remain OUT OF SCOPE. Production/main/DNS/media untouched.
+Next: refine transfers involving spanning cards, then connect media uploads to approved persistent storage; don't repeat auth/audit. Test deployment/browser outcome to be appended.
