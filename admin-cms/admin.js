@@ -52,15 +52,25 @@ function moveCardToRow(id,target){
  if($('preview-size').value!=='desktop'){message('Переключите экран на Desktop для перемещения между рядами.',true);return;}
  const items=$('gallery-canvas')._mosaicItems||[],keys=[...new Set(items.map(p=>p.row))].sort((a,b)=>a-b),source=keys.indexOf(items.find(p=>p.id===id)?.row);
  if(source<0||target<0||target>=keys.length||source===target)return;
- const low=Math.min(source,target),high=Math.max(source,target);
- if(data.works.some(w=>{const start=keys.indexOf(items.find(p=>p.id===w.id)?.row);return start>=0&&(w.rowSpan||1)>1&&start<=high&&start+(w.rowSpan||1)>low;})){message('Сначала уменьшите пересекающие выбранные ряды карточки до одного ряда.',true);return;}
+ const spanning=data.works.some(w=>(w.rowSpan||1)>1);
  const groups=keys.map(key=>items.filter(p=>p.row===key).map(p=>p.id)),rows=currentRows(),settings=keys.map((_,i)=>({...rows[i]||rows.at(-1),count:groups[i].length}));
- snapshot();const map=new Map(data.works.map(w=>[w.id,w]));groups[source]=groups[source].filter(value=>value!==id);groups[target].push(id);
+ const map=new Map(data.works.map(w=>[w.id,w]));groups[source]=groups[source].filter(value=>value!==id);groups[target].push(id);
  settings[source].count=groups[source].length;settings[target].count=groups[target].length;
- if(!groups[source].length){groups.splice(source,1);settings.splice(source,1);if(source<target)target--;}
- const ids=groups.flat(),included=new Set(ids);data.works=[...ids.map(value=>map.get(value)),...data.works.filter(w=>!included.has(w.id))];
+ const held=groups.some((ids,i)=>i<source&&ids.some(value=>i+(map.get(value).rowSpan||1)>source));
+ if(!groups[source].length&&!held){groups.splice(source,1);settings.splice(source,1);if(source<target)target--;}
+ const ids=groups.flat(),included=new Set(ids),candidate=[...ids.map(value=>map.get(value)),...data.works.filter(w=>!included.has(w.id))];
+ if(spanning){
+  for(let row=0;row<settings.length;row++){
+   const active=groups.slice(0,row).reduce((count,ids,start)=>count+ids.filter(value=>start+(map.get(value).rowSpan||1)>row).length,0);
+   settings[row].count=Math.max(1,groups[row].length+active);
+  }
+  const packed=MosaicLayout.packRows(candidate,settings),placed=packed.items.find(p=>p.id===id);
+  if(!placed||placed.row!==target||packed.items.length!==candidate.length){message('В выбранном ряду нет места для этой карточки. Выберите соседний ряд или увеличьте число карточек в ряду.',true);return;}
+ }
+ snapshot();data.works=candidate;
  data.galleryLayout={...data.galleryLayout,mode:'rows',rows:settings};selectedRow=target;selectedId=id;mark();renderGallery();renderInspector();
 }
+
 function renderLayoutControls(){
  let box=$('mosaic-settings');if(!box){box=make('div',undefined,'mosaic-settings');box.id='mosaic-settings';$('gallery-tools').append(box);}box.replaceChildren();
  const rows=currentRows();selectedRow=Math.max(0,Math.min(selectedRow,rows.length-1));const choice={row:selectedRow},value={count:rows[selectedRow].count,height:Math.round(rows[selectedRow].height)};
