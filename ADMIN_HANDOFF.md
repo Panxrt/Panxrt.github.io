@@ -1,3 +1,10 @@
+## Live editor verification — 2026-10-13 07:57 Europe/Belgrade
+- Render deployed 312d1d6 successfully (56.0s), isolated Free service only.
+- Real UI: selected Tinkoff -> "Переместить в ряд" -> row 2; order became Panda Digital, Drutex, Citrus party, AI dream girl, Tinkoff. Undo restored all 35 captions/order exactly. Reloaded remote draft to discard temporary changes; no save/publish occurred in this session.
+- Screenshot confirms new row movement buttons and per-card row selector. Legacy read-only case open also passed earlier today. 17 automated tests pass.
+- UI follow-up: remote reload clears dirty state but Save/Undo button enablement may remain stale; row toolbar selection also persists independently of selected card. Correct these as part of editor polish. Existing free-case async media geometry changes and spanning-card transfers remain next substantive tasks.
+- Everything written for this task committed. Two unrelated local PNG modifications retained untouched. Production unchanged.
+
 ## Gallery row membership — 2026-10-13 morning Europe/Belgrade
 - Browser confirmed previous editor deployment works: legacy Tinkoff case opens with status still "Приватный черновик открыт"; returning works. "Ряд ниже" moved entire first row after second; Undo restored every caption/order exactly. Discarded temporary UI changes with remote reload; no private save/publish in this QA.
 - Implemented per-card "Переместить в ряд" dropdown, using actual rendered membership. Transfers card to target row, updates both counts, removes empty source row settings, retains all works and row geometry. Desktop mode only; intersecting spans reject with clear feedback rather than damaging layout. Arbitrary multi-row-spanning transfers remain pending.
