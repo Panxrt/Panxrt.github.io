@@ -73,3 +73,12 @@ test('spanning cards transfer between rows without losing spans or overlapping n
   for(let i=0;i<result.items.length;i++)for(let j=i+1;j<result.items.length;j++){const a=result.items[i],b=result.items[j];assert.ok(a.row+a.rows<=b.row||b.row+b.rows<=a.row||a.x+a.w<=b.x||b.x+b.w<=a.x,'overlap after transfer');}
  }
 });
+
+test('a spanning transfer with no target space leaves content and history untouched',()=>{
+ const source=code.slice(code.indexOf('function moveCardToRow('),code.indexOf('function renderLayoutControls(){'));
+ const data={works:[{id:'a',rowSpan:3},{id:'b'},{id:'c'}],galleryLayout:{rows:[{count:2,height:250},{count:2,height:300}]}};
+ const before=JSON.stringify(data);let warning='';
+ const ctx={data,currentRows:()=>data.galleryLayout.rows,$:()=>({value:'desktop',_mosaicItems:[{id:'a',row:1},{id:'b',row:1},{id:'c',row:2}]}),MosaicLayout:{packRows:()=>({items:[{id:'a',row:2}]})},snapshot:()=>assert.fail('rejected move changed history'),message:m=>warning=m};
+ vm.runInNewContext(source+";moveCardToRow('a',1);",ctx);
+ assert.equal(JSON.stringify(data),before);assert.ok(warning.includes('нет места'));
+});
