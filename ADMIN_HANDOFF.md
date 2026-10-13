@@ -779,3 +779,14 @@ Render deployment of c81e751 completed successfully in 55.7s (observed in dashbo
 Implemented validated individual transfers of two/three-row cards via the existing row selector. Removed blanket rejection whenever any span crosses the source/target. Rebuild row counts including active spans; dry-run the existing packRows before changing data. Accept only if all cards remain and selected card lands in target row. On insufficient capacity, leave document/history untouched and show a clear message. Whole-row transfers intersecting spans remain guarded.
 Verified 7 focused navigation tests, including real shared packer with 2-row and 3-row cards, exact target row, preserved span, complete membership and no overlaps. Code commits 94e13f0 and f46e171. No production/main/DNS/media changes.
 Media: inspected current runtime interface; Uploads remains an honest URL-only placeholder. No persistent upload adapter/Dropbox OAuth is configured. Do NOT save files on Render ephemeral disk or claim upload works. Next implement approved Dropbox adapter, then obtain narrow App-folder authorization during actual setup; do not request tokens in chat or connect paid storage. Statistics stay excluded.
+
+
+### Spanning-card transfer deployment verification — 2026-10-13
+- Test Render service deployed commit `4073cbfee659ad3269eae73c27b904badef6f441` successfully (Live).
+- All 8 focused editor-navigation tests passed, including preserved 2/3-row spans, no overlap, and rejection without document/history mutation.
+- Authenticated browser check: selected first gallery card, set height to 2 rows, transferred to row 2; rendered placement retained `--tile-row: 2; --tile-height: 2`.
+- Temporary browser edits were discarded through “Загрузить с сервера”; final status “Открыта удалённая версия”. No draft save or publication during this QA.
+- Editor: https://panxrt-cms-test.onrender.com/admin/
+- Whole-row moves crossing spans remain guarded; individual-card transfer uses existing packer and rejects unsupported target placements safely.
+- Next implementation: persistent media upload adapter with progress/resume and narrow Dropbox App-folder authorization. Uploads remain unconnected; current UI accepts media URLs. Do not claim direct uploads work, and do not store durable media on ephemeral Render disk.
+- Statistics remain excluded. Public main, production, DNS and existing media unchanged.
