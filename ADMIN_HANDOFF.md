@@ -750,3 +750,12 @@ Owner chose Google in secure browserAuth. Google OAuth destination returned 502 
 - Env: CMS_BIND_HOST=0.0.0.0; CMS_PRIVATE_REPO=Panxrt/panxrt-cms-private; nonsecret GITHUB_CLIENT_ID; NODE_VERSION=22; SKIP_INSTALL_DEPS=true.
 - GITHUB_CLIENT_SECRET not configured, so CMS OAuth remains closed. GitHub App callback remains localhost until updated.
 - GitHub settings requires renewed sudo email verification (email triggered). Next verify access, replace callback with https://panxrt-cms-test.onrender.com/auth/callback, provision client secret directly via owner into Render environment (no chat/Git), then live OAuth/save/preview/test-publication checks.
+
+
+## Editor continuation — 2026-10-13
+
+Latest user decision: statistics are OUT OF SCOPE. Do not build or audit analytics. Removed its navigation tab; historical analytics requirements below are superseded.
+
+Implemented: case crop aspect ratio width/height controls for images and video; default media-fit selection; exact Undo/Redo restoration without generating legacy blocks or recalculating saved frames; Ctrl/Cmd+Z, Shift+Z/Y and S outside text inputs; correct disabled controls after server reload/version restore.
+
+Checked: 8 focused editor/navigation tests passed, including exact history restoration and existing row moves. No production/main/DNS/media changes. Test deployment status will be recorded below. Remaining: finish media upload backend, refine row-span transfers, and prevent asynchronous native-size loading from modifying existing free-case frames. Continue practical editor work, not another audit.
