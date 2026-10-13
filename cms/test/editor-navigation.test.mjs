@@ -59,3 +59,17 @@ test('card pointer selection preserves redo and resize snapshots only after move
  callbacks.pointermove(event(30));callbacks.pointermove(event(40));
  assert.equal(snapshots,1);assert.equal(card.cardW,430);assert.equal(changes,2);
 });
+
+test('spanning cards transfer between rows without losing spans or overlapping neighbours',async()=>{
+ const packing={window:{},document:{}};vm.runInNewContext(await readFile(new URL('../../mosaic-layout.js',import.meta.url),'utf8'),packing);
+ const layout=packing.window.MosaicLayout,source=code.slice(code.indexOf('function moveCardToRow('),code.indexOf('function renderLayoutControls(){'));
+ for(const span of [2,3]){
+  const works=Array.from({length:15},(_,i)=>({id:String(i),src:'/asset.png',cardW:300,cardH:300,rowSpan:i===0?span:1}));
+  const rows=Array.from({length:6},()=>({count:3,height:250})),initial=layout.packRows(works,rows);let snapshots=0;
+  const ctx={data:{works,galleryLayout:{rows}},selectedId:null,selectedRow:0,currentRows:()=>rows,$:()=>({value:'desktop',_mosaicItems:initial.items.map(p=>({...p,row:p.row+1}))}),MosaicLayout:layout,snapshot:()=>snapshots++,mark(){},renderGallery(){},renderInspector(){},message:m=>assert.fail(m)};
+  vm.runInNewContext(source+";moveCardToRow('0',1);",ctx);
+  const result=layout.packRows(ctx.data.works,ctx.data.galleryLayout.rows),moved=result.items.find(p=>p.id==='0');
+  assert.equal(moved.row,1);assert.equal(moved.rows,span);assert.equal(snapshots,1);assert.equal(new Set(result.items.map(p=>p.id)).size,works.length);
+  for(let i=0;i<result.items.length;i++)for(let j=i+1;j<result.items.length;j++){const a=result.items[i],b=result.items[j];assert.ok(a.row+a.rows<=b.row||b.row+b.rows<=a.row||a.x+a.w<=b.x||b.x+b.w<=a.x,'overlap after transfer');}
+ }
+});
