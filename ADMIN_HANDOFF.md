@@ -759,3 +759,7 @@ Latest user decision: statistics are OUT OF SCOPE. Do not build or audit analyti
 Implemented: case crop aspect ratio width/height controls for images and video; default media-fit selection; exact Undo/Redo restoration without generating legacy blocks or recalculating saved frames; Ctrl/Cmd+Z, Shift+Z/Y and S outside text inputs; correct disabled controls after server reload/version restore.
 
 Checked: 8 focused editor/navigation tests passed, including exact history restoration and existing row moves. No production/main/DNS/media changes. Test deployment status will be recorded below. Remaining: finish media upload backend, refine row-span transfers, and prevent asynchronous native-size loading from modifying existing free-case frames. Continue practical editor work, not another audit.
+
+
+### Deployment and focused browser verification — 2026-10-13
+Deployed 01d53b8 to existing FREE isolated Render test service; Render reports Deploy succeeded / Live, 57.6s. Browser confirms authenticated private editor, statistics tab absent. In a temporary unsaved legacy Tinkoff case conversion: crop 16/9 rendered correctly; Undo reverted to 16/1; Redo restored 16/9. No private content save or test publication was performed for this UI check. Production is untouched. Continue with existing free-case frame stability, row-span transfer UX and media backend; analytics remain excluded.
