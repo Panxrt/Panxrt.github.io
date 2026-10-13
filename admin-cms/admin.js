@@ -48,6 +48,19 @@ function moveGalleryRow(direction){
  [data.galleryLayout.rows[first],data.galleryLayout.rows[last]]=[data.galleryLayout.rows[last],data.galleryLayout.rows[first]];
  selectedRow=target;mark();renderGallery();renderInspector();
 }
+function moveCardToRow(id,target){
+ if($('preview-size').value!=='desktop'){message('Переключите экран на Desktop для перемещения между рядами.',true);return;}
+ const items=$('gallery-canvas')._mosaicItems||[],keys=[...new Set(items.map(p=>p.row))].sort((a,b)=>a-b),source=keys.indexOf(items.find(p=>p.id===id)?.row);
+ if(source<0||target<0||target>=keys.length||source===target)return;
+ const low=Math.min(source,target),high=Math.max(source,target);
+ if(data.works.some(w=>{const start=keys.indexOf(items.find(p=>p.id===w.id)?.row);return start>=0&&(w.rowSpan||1)>1&&start<=high&&start+(w.rowSpan||1)>low;})){message('Сначала уменьшите пересекающие выбранные ряды карточки до одного ряда.',true);return;}
+ const groups=keys.map(key=>items.filter(p=>p.row===key).map(p=>p.id)),rows=currentRows(),settings=keys.map((_,i)=>({...rows[i]||rows.at(-1),count:groups[i].length}));
+ snapshot();const map=new Map(data.works.map(w=>[w.id,w]));groups[source]=groups[source].filter(value=>value!==id);groups[target].push(id);
+ settings[source].count=groups[source].length;settings[target].count=groups[target].length;
+ if(!groups[source].length){groups.splice(source,1);settings.splice(source,1);if(source<target)target--;}
+ const ids=groups.flat(),included=new Set(ids);data.works=[...ids.map(value=>map.get(value)),...data.works.filter(w=>!included.has(w.id))];
+ data.galleryLayout={...data.galleryLayout,mode:'rows',rows:settings};selectedRow=target;selectedId=id;mark();renderGallery();renderInspector();
+}
 function renderLayoutControls(){
  let box=$('mosaic-settings');if(!box){box=make('div',undefined,'mosaic-settings');box.id='mosaic-settings';$('gallery-tools').append(box);}box.replaceChildren();
  const rows=currentRows();selectedRow=Math.max(0,Math.min(selectedRow,rows.length-1));const choice={row:selectedRow},value={count:rows[selectedRow].count,height:Math.round(rows[selectedRow].height)};
@@ -136,6 +149,8 @@ function renderCategories(){
 function renderWorkControls(box,w){
  const section=make('section',undefined,'work-adjustments');section.append(make('h3','Макет'));
  const update=()=>{mark();queueGallery();};
+ const items=$('gallery-canvas')._mosaicItems||[],keys=[...new Set(items.map(p=>p.row))].sort((a,b)=>a-b),current=keys.indexOf(items.find(p=>p.id===w.id)?.row);
+ const rowLabel=make('label','Переместить в ряд'),rowSelect=make('select');for(let i=0;i<keys.length;i++){const option=make('option','Ряд '+(i+1));option.value=i;rowSelect.append(option);}rowSelect.value=current;rowSelect.disabled=$('preview-size').value!=='desktop';rowSelect.onchange=()=>{moveCardToRow(w.id,Number(rowSelect.value));renderInspector();};rowLabel.append(rowSelect);section.append(rowLabel);
  field(section,'Высота · ряды',w,'rowSpan',{options:[[1,'1 ряд'],[2,'2 ряда'],[3,'3 ряда']],change:()=>{enableRows();w.rowSpan=Number(w.rowSpan);update();}}).value=w.rowSpan||1;
  field(section,'Изображение внутри плитки',w,'mediaFit',{options:[['cover','Заполнить'],['contain','Показать целиком']],change:update});
  for(const [key,label,min,max,base] of [['mediaZoom','Масштаб изображения',100,250,100],['focalX','Кадрирование по горизонтали',0,100,50],['focalY','Кадрирование по вертикали',0,100,50]]){const l=make('label',label),input=make('input'),out=make('output',(w[key]??base)+'%');input.type='range';input.min=min;input.max=max;input.value=w[key]??base;input.onpointerdown=snapshot;input.onfocus=snapshot;input.oninput=()=>{w[key]=Number(input.value);out.textContent=input.value+'%';update();};l.append(input,out);section.append(l);}
