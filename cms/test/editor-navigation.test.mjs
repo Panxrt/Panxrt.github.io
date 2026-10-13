@@ -24,3 +24,14 @@ test('row movement refuses intersecting spans without mutating the document',()=
  const ctx={data,selectedRow:0,currentRows:()=>data.galleryLayout.rows,$:()=>({value:'desktop',_mosaicItems:[{id:'a',row:1},{id:'b',row:2}]}),snapshot:()=>assert.fail('invalid move must not snapshot'),message:m=>warning=m};
  vm.runInNewContext(source+';moveGalleryRow(1);',ctx);assert.equal(JSON.stringify(data),before);assert.ok(warning.includes('одного ряда'));
 });
+
+test('moving one card to a chosen row updates membership and counts without losing works',()=>{
+ const source=code.slice(code.indexOf('function moveCardToRow('),code.indexOf('function renderLayoutControls(){'));
+ for(const initial of [[['a','b'],['c','d']],[['a'],['c','d']]]){
+  const works=initial.flat().map(id=>({id})),rows=initial.map(ids=>({count:ids.length,height:300}));let snapshots=0;
+  const ctx={data:{works,galleryLayout:{rows}},selectedRow:0,selectedId:null,currentRows:()=>rows,$:()=>({value:'desktop',_mosaicItems:initial.flatMap((ids,i)=>ids.map(id=>({id,row:i+1})))}),snapshot:()=>snapshots++,mark(){},renderGallery(){},renderInspector(){},message:()=>assert.fail('valid move rejected')};
+  vm.runInNewContext(source+";moveCardToRow('a',1);",ctx);
+  assert.equal(ctx.data.works.map(w=>w.id).join(','),initial[0].length===2?'b,c,d,a':'c,d,a');
+  assert.equal(ctx.data.galleryLayout.rows.at(-1).count,3);assert.equal(ctx.data.galleryLayout.rows.length,initial[0].length===2?2:1);assert.equal(snapshots,1);assert.equal(ctx.selectedId,'a');
+ }
+});
