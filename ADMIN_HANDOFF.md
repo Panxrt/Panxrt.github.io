@@ -773,3 +773,9 @@ Next: refine transfers involving spanning cards, then connect media uploads to a
 
 ### Resume checkpoint — 2026-10-13 evening
 Render deployment of c81e751 completed successfully in 55.7s (observed in dashboard). Authenticated private editor opened and gallery inspector loaded. Added focused pointer-handler regression test: selection/tiny pointer movement creates no snapshot; active resize creates exactly one snapshot across multiple moves. Six navigation tests pass. Browser-based redo-after-selection scenario was not completed; the handler-level regression is verified. No private content was saved/published during this checkpoint. Current next priorities: row-span transfers and persistent media uploads. Production/main/DNS/media remain unchanged; analytics excluded.
+
+
+## Spanning-card transfers — 2026-10-13 evening
+Implemented validated individual transfers of two/three-row cards via the existing row selector. Removed blanket rejection whenever any span crosses the source/target. Rebuild row counts including active spans; dry-run the existing packRows before changing data. Accept only if all cards remain and selected card lands in target row. On insufficient capacity, leave document/history untouched and show a clear message. Whole-row transfers intersecting spans remain guarded.
+Verified 7 focused navigation tests, including real shared packer with 2-row and 3-row cards, exact target row, preserved span, complete membership and no overlaps. Code commits 94e13f0 and f46e171. No production/main/DNS/media changes.
+Media: inspected current runtime interface; Uploads remains an honest URL-only placeholder. No persistent upload adapter/Dropbox OAuth is configured. Do NOT save files on Render ephemeral disk or claim upload works. Next implement approved Dropbox adapter, then obtain narrow App-folder authorization during actual setup; do not request tokens in chat or connect paid storage. Statistics stay excluded.
