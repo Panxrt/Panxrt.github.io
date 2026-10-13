@@ -45,3 +45,17 @@ test('undo and redo restore exact case data without generating blocks or frames'
  assert.equal(ctx.data.revision,2);assert.equal(ctx.data.works[0].blocks,undefined);assert.equal(controls.undo.disabled,true);assert.equal(controls.redo.disabled,false);
  vm.runInNewContext('restoreHistory(redoStack,historyStack);',ctx);assert.equal(JSON.stringify(ctx.data),JSON.stringify(edited));
 });
+
+test('card pointer selection preserves redo and resize snapshots only after movement',()=>{
+ const source=code.slice(code.indexOf("area.addEventListener('pointerdown'"),code.indexOf('function endGesture('));
+ const callbacks={},card={id:'a',cardW:400,cardH:300,resizeMode:'free'};let snapshots=0,changes=0;
+ const grid={clientWidth:1200,querySelector:()=>null};
+ const ctx={area:{addEventListener:(event,fn)=>callbacks[event]=fn,setPointerCapture(){}},preview:false,gesture:null,data:{works:[card]},selectedId:null,
+  $:()=>grid,MosaicLayout:{apply:()=>1200},snapshot:()=>snapshots++,renderInspector(){},queueGallery(){},mark:()=>changes++,window:{scrollY:0},document:{body:{classList:{add(){}}}}};
+ vm.runInNewContext(source,ctx);
+ const handle={dataset:{kind:'card',resize:'e',id:'a'}},event=(x)=>({target:{closest:()=>handle},button:0,clientX:x,clientY:20,pointerId:1,preventDefault(){}});
+ callbacks.pointerdown(event(10));assert.equal(snapshots,0);assert.equal(ctx.selectedId,'a');
+ callbacks.pointermove(event(12));assert.equal(snapshots,0);assert.equal(changes,0);
+ callbacks.pointermove(event(30));callbacks.pointermove(event(40));
+ assert.equal(snapshots,1);assert.equal(card.cardW,430);assert.equal(changes,2);
+});
