@@ -35,3 +35,13 @@ test('moving one card to a chosen row updates membership and counts without losi
   assert.equal(ctx.data.galleryLayout.rows.at(-1).count,3);assert.equal(ctx.data.galleryLayout.rows.length,initial[0].length===2?2:1);assert.equal(snapshots,1);assert.equal(ctx.selectedId,'a');
  }
 });
+
+test('undo and redo restore exact case data without generating blocks or frames',()=>{
+ const source=code.slice(code.indexOf('function restoreHistory('),code.indexOf("$('undo').onclick="));
+ const original={revision:1,works:[{id:'a',src:'/a.png'}]},edited={revision:2,works:[{id:'a',blocks:[{id:'b',kind:'image',frame:{x:4,y:80,w:200,h:300}}]}]};
+ const controls={undo:{},redo:{}};
+ const ctx={data:structuredClone(edited),caseId:'a',blockId:'b',gesture:null,saving:false,selectedBlocks:new Set(['b']),historyStack:[JSON.stringify(original)],redoStack:[],work:()=>true,mark(){},render(){},$:id=>controls[id]};
+ vm.runInNewContext(source+';restoreHistory(historyStack,redoStack);',ctx);
+ assert.equal(ctx.data.revision,2);assert.equal(ctx.data.works[0].blocks,undefined);assert.equal(controls.undo.disabled,true);assert.equal(controls.redo.disabled,false);
+ vm.runInNewContext('restoreHistory(redoStack,historyStack);',ctx);assert.equal(JSON.stringify(ctx.data),JSON.stringify(edited));
+});
