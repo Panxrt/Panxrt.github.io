@@ -1,3 +1,12 @@
+## Gallery row membership — 2026-10-13 morning Europe/Belgrade
+- Browser confirmed previous editor deployment works: legacy Tinkoff case opens with status still "Приватный черновик открыт"; returning works. "Ряд ниже" moved entire first row after second; Undo restored every caption/order exactly. Discarded temporary UI changes with remote reload; no private save/publish in this QA.
+- Implemented per-card "Переместить в ряд" dropdown, using actual rendered membership. Transfers card to target row, updates both counts, removes empty source row settings, retains all works and row geometry. Desktop mode only; intersecting spans reject with clear feedback rather than damaging layout. Arbitrary multi-row-spanning transfers remain pending.
+- GitHub commits e8fb9db implementation, 312d1d6 tests. All 17 local tests pass. Local commits scoped to code/tests only.
+- Started isolated Render Free deploy of 312d1d6; browser QA of new dropdown and final deploy outcome pending below.
+- Existing unrelated modified PNGs (95a5d5ec-1c03-4969-9198-89954362a4b5.png and e16e9680-6c6b-4785-bcf6-fa6402f6e2c5.png) left untouched and uncommitted.
+- Production/public main/DNS/media untouched. No new service/charge/permission. Auth setup works; do not repeat audit.
+- Next remaining editor work: spanning-card row membership, free-case asynchronous native-size mutation on open, actual pointer resize/drag QA, uploads and statistics adapters.
+
 ## Editor continuation — 2026-10-12 evening
 - Implemented legacy case read-only opening: no automatic conversion or dirty state on open. Explicit "Редактировать блоки кейса" initializes legacy blocks; adding a block also initializes them. Existing block cases remain directly editable. No automatic free-frame repair during opening.
 - Added "Ряд выше" / "Ряд ниже": moves filled row's actual cards together with row count/height, supports undo snapshot. Desktop only to avoid conflating responsive rows with stored row settings. Rejects intersecting multi-row spans with an explanation; arbitrary spanning-row reorder remains pending.
