@@ -90,12 +90,48 @@ function prepareCase(){const w=work();if(!w)return;snapshot();if(!Array.isArray(
 function openCase(){const w=work();if(!w)return;caseId=w.id;blockId=null;selectedBlocks.clear();render();window.scrollTo({top:0,behavior:'smooth'});}
 
 async function restoreMediaRatio(w,control){if(!w.src)return;const src=w.src,owner=w.id;control.disabled=true;try{const node=document.createElement(w.mediaType==='video'?'video':'img');const size=await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Не удалось прочитать размеры файла.')),15000);const loaded=()=>{clearTimeout(timer);const width=node.videoWidth||node.naturalWidth,height=node.videoHeight||node.naturalHeight;if(width&&height)resolve({width,height});else reject(Error('У файла нет доступных размеров.'));};node.addEventListener(w.mediaType==='video'?'loadedmetadata':'load',loaded,{once:true});node.onerror=()=>{clearTimeout(timer);reject(Error('Не удалось открыть файл.'));};node.preload='metadata';node.src=src;});const current=data.works.find(x=>x.id===owner);if(!current||current.src!==src)return;snapshot();const factor=600/Math.max(size.width,size.height);current.cardW=Math.max(40,size.width*factor);current.cardH=Math.max(40,size.height*factor);current.mediaFit='contain';current.gridRows=0;mark();renderGallery();renderInspector();}catch(e){message(e.message,true);}finally{control.disabled=false;}}
-function renderInspector(){const box=$('inspector');box.replaceChildren();if(!data||!work()){box.append(make('p','Выберите карточку, чтобы редактировать работу.'));return;}const w=work(),b=selectedBlock(),title=make('div',undefined,'inspector-title');title.append(make('h2',caseId?(b?'Блок':'Проект'):'Работа'));box.append(title);if(caseId&&(!Array.isArray(w.blocks)||(w.caseLayout==='free'&&w.blocks.some(b=>!b.frame)))){box.append(button('Редактировать блоки кейса',prepareCase));return;}if(caseId){field(box,'Сборка кейса',w,'caseLayout',{options:[['free','Свободный холст'],['flow','Вертикальные блоки']],change:()=>{renderCase();if(w.caseLayout==='free'&&w.blocks.some(b=>!b.frame)){ensureFrames(w);renderCase();}renderInspector();}}).value=w.caseLayout||'flow';if(w.caseLayout==='free')renderAlign(box);if(caseSelection().length>1){return;}}
+function reorderCaseLayers(action){
+ const w=work();if(!w?.blocks||gesture||saving)return;
+ const chosen=new Set(caseSelection().map(b=>b.id));if(!chosen.size)return;
+ const before=w.blocks,next=[...before];
+ if(action==='front'||action==='back'){
+  const selected=next.filter(b=>chosen.has(b.id)),others=next.filter(b=>!chosen.has(b.id));
+  next.splice(0,next.length,...(action==='front'?[...others,...selected]:[...selected,...others]));
+ }else if(action==='forward'){
+  for(let i=next.length-2;i>=0;i--)if(chosen.has(next[i].id)&&!chosen.has(next[i+1].id))[next[i],next[i+1]]=[next[i+1],next[i]];
+ }else if(action==='backward'){
+  for(let i=1;i<next.length;i++)if(chosen.has(next[i].id)&&!chosen.has(next[i-1].id))[next[i],next[i-1]]=[next[i-1],next[i]];
+ }else return;
+ if(next.every((b,i)=>b===before[i]))return;
+ snapshot();w.blocks=next;mark();renderCase();renderInspector();
+}
+function renderCaseLayers(box){
+ const w=work();if(!Array.isArray(w?.blocks))return;
+ const panel=make('section',undefined,'case-layers'),free=w.caseLayout==='free';
+ panel.append(make('h3',free?'Слои':'Блоки кейса'));
+ const list=make('div',undefined,'case-layer-list');list.setAttribute('role','group');list.setAttribute('aria-label',free?'Слои: передние сверху':'Порядок блоков');
+ const items=free?[...w.blocks].reverse():w.blocks;
+ for(const b of items){
+  const kind=b.kind==='text'?'Текст':b.kind==='video'?'Видео':'Фото';
+  const text=String((lang==='ru'?b.textRu||b.text:b.text)||'').replace(/\s+/g,' ').trim();
+  const name=text?kind+' · '+text.slice(0,48):kind+' '+(w.blocks.indexOf(b)+1);
+  const item=button(name,e=>selectBlock(b.id,e.shiftKey),'case-layer');
+  item.title=name;item.dataset.layerId=b.id;item.setAttribute('aria-pressed',String(selectedBlocks.has(b.id)||b.id===blockId));
+  list.append(item);
+ }
+ panel.append(list);
+ const controls=make('div',undefined,'case-layer-actions'),hasSelection=caseSelection().length>0;
+ const actions=free?[['forward','На слой вперёд'],['backward','На слой назад'],['front','На передний план'],['back','На задний план']]:[['backward','Выше'],['forward','Ниже'],['back','В начало'],['front','В конец']];
+ for(const [action,label]of actions){const control=button(label,()=>reorderCaseLayers(action));control.disabled=!hasSelection;controls.append(control);}
+ panel.append(controls);box.append(panel);
+}
+
+function renderInspector(){const box=$('inspector');box.replaceChildren();if(!data||!work()){box.append(make('p','Выберите карточку, чтобы редактировать работу.'));return;}const w=work(),b=selectedBlock(),title=make('div',undefined,'inspector-title');title.append(make('h2',caseId?(b?'Блок':'Проект'):'Работа'));box.append(title);if(caseId&&(!Array.isArray(w.blocks)||(w.caseLayout==='free'&&w.blocks.some(b=>!b.frame)))){box.append(button('Редактировать блоки кейса',prepareCase));return;}if(caseId){field(box,'Сборка кейса',w,'caseLayout',{options:[['free','Свободный холст'],['flow','Вертикальные блоки']],change:()=>{renderCase();if(w.caseLayout==='free'&&w.blocks.some(b=>!b.frame)){ensureFrames(w);renderCase();}renderInspector();}}).value=w.caseLayout||'flow';renderCaseLayers(box);if(w.caseLayout==='free')renderAlign(box);if(caseSelection().length>1){return;}}
  if(caseId&&b){const rows=make('div',undefined,'button-row');rows.append(button('Дублировать',()=>{snapshot();const copy=structuredClone(b);copy.id=crypto.randomUUID();if(copy.frame){copy.frame.x=Math.min(1200-copy.frame.w,copy.frame.x+20);copy.frame.y+=20;}w.blocks.splice(w.blocks.indexOf(b)+1,0,copy);blockId=copy.id;selectedBlocks.clear();selectedBlocks.add(copy.id);mark();renderCase();renderInspector();}),button('Удалить',()=>{snapshot();w.blocks.splice(w.blocks.indexOf(b),1);blockId=null;selectedBlocks.clear();mark();renderCase();renderInspector();},'danger'));box.append(rows);const update=()=>{const node=$('case-canvas').querySelector('[data-block-id="'+b.id+'"]');if(node)CaseRenderer.layout(node,b);};
  const geometryRatio=b.frame?b.frame.w/b.frame.h:1,geometry=make('div',undefined,'field-pair');for(const [key,label,max]of [['x','X',1200-(b.frame?.w||0)],['y','Y',100000],['w','Ширина',1200-(b.frame?.x||0)],['h','Высота',20000]])field(geometry,label,b.frame||{x:0,y:0,w:1200,h:675},key,{kind:'number',min:key==='w'||key==='h'?20:0,max,change:()=>{if(b.kind!=='text'&&b.mediaMode!=='crop'){if(key==='h')b.frame.w=Math.max(20,Math.min(1200-b.frame.x,b.frame.h*geometryRatio));if(key==='w')b.frame.h=Math.max(20,Math.min(20000,b.frame.w/geometryRatio));}update();stageHeight();}});if(w.caseLayout==='free')box.append(geometry);else{field(box,'Ширина блока',b,'width',{options:[[4,'⅓'],[6,'½'],[8,'⅔'],[12,'Полная']],change:()=>{b.width=Number(b.width);update();}});field(box,'Расположение',b,'place',{options:[['auto','Авто'],['left','Слева'],['center','По центру'],['right','Справа']],change:update});}
  if(b.kind==='text'){field(box,'Шрифт',b,'font',{options:[['sans','Antique Olive / Arial'],['serif','Georgia · serif']],change:update});field(box,'Цвет',b,'color',{kind:'color',change:update});field(box,'Межстрочный интервал',b,'lineHeight',{kind:'number',min:.7,max:3,change:update});field(box,'Размер шрифта · px',b,'fontSize',{kind:'number',min:12,max:120,change:update});field(box,'Начертание',b,'weight',{options:[[400,'Regular'],[500,'Medium'],[600,'Semibold'],[700,'Bold'],[900,'Black']],change:()=>{b.weight=Number(b.weight);update();}});field(box,'Выравнивание текста',b,'align',{options:[['left','Слева'],['center','По центру'],['right','Справа']],change:update});const italic=button(b.italic?'Курсив: вкл.':'Курсив: выкл.',()=>{snapshot();b.italic=!b.italic;mark();update();renderInspector();});box.append(italic);}
  else{field(box,'Поворот · °',b,'rotation',{kind:'number',min:-180,max:180,change:update});field(box,'Формат медиа',b,'mediaMode',{options:[['native','Исходные пропорции'],['crop','Кадрировать вручную']],change:()=>{if(b.mediaMode==='native')CaseRenderer.nativeSize(b);update();stageHeight();renderInspector();}});if(b.mediaMode==='crop'){const cropSize=String(b.ratio||'1 / 1').split(/[/:]/).map(Number),crop={width:cropSize[0]>0?cropSize[0]:1,height:cropSize[1]>0?cropSize[1]:1};const cropFields=make('div',undefined,'field-pair');for(const [key,label]of [['width','Кадр: ширина'],['height','Кадр: высота']])field(cropFields,label,crop,key,{kind:'number',min:1,max:10000,change:()=>{b.ratio=crop.width+' / '+crop.height;if(b.frame)b.frame.h=Math.max(20,Math.min(20000,b.frame.w*crop.height/crop.width));update();stageHeight();}});box.append(cropFields);for(const [key,label] of [['focalX','Кадр · по горизонтали'],['focalY','Кадр · по вертикали']]){b[key]??=50;field(box,label,b,key,{kind:'number',min:0,max:100,change:update});}}box.append(button('Вернуть исходный формат',()=>{snapshot();b.mediaMode='native';b.fit='contain';b.ratio='auto';b.focalX=50;b.focalY=50;CaseRenderer.nativeSize(b);update();stageHeight();mark();renderInspector();}));field(box,'URL файла',b,'src',{change:renderCase});const id=b.id,ownerId=w.id;uploadField(box,()=>data.works.find(x=>x.id===ownerId)?.blocks?.find(x=>x.id===id));field(box,'Описание изображения',b,lang==='ru'?'textRu':'text',{kind:'textarea'});}
- const moves=make('div',undefined,'button-row');moves.append(button(w.caseLayout==='flow'?'Выше':'На задний план',()=>moveBlock(-1)),button(w.caseLayout==='flow'?'Ниже':'На передний план',()=>moveBlock(1)));box.append(moves);return;}
+ return;}
  if(caseId){return;}
  renderWorkControls(box,w);
  if(data.galleryLayout?.mode==='mosaic'&&!data.galleryLayout.rows){
