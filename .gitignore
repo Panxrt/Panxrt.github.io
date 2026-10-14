@@ -1,0 +1,4 @@
+# Local credentials: never commit, upload to Library, or include in support logs.
+.env
+.env.*
+*.pem
