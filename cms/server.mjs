@@ -1,4 +1,6 @@
 import http from 'node:http';
+import {Readable} from 'node:stream';
+import {DropboxMedia,CHUNK} from './media.mjs';
 import {readFile,stat} from 'node:fs/promises';
 import {createReadStream} from 'node:fs';
 import {resolve,extname,sep} from 'node:path';
@@ -8,7 +10,7 @@ import {GitStore,CmsError} from './store.mjs';
 export const root=resolve(fileURLToPath(new URL('..',import.meta.url)));
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp','.avif':'image/avif','.gif':'image/gif','.woff2':'font/woff2','.woff':'font/woff','.ttf':'font/ttf','.mp4':'video/mp4','.webm':'video/webm'};
 async function body(req){let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>4*1024*1024)throw new CmsError('Документ JSON превышает 4 МБ (это не лимит загрузки медиа)',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw new CmsError('Некорректный JSON');}}
-export function createHandler({config,auth=new GithubAuth(config),storeFactory=s=>new GitStore({repo:config.repo,token:s.token}),sourceRoot=root}){
+export function createHandler({config,auth=new GithubAuth(config),storeFactory=s=>new GitStore({repo:config.repo,token:s.token}),sourceRoot=root,media=new DropboxMedia(config.media)}){
  const json=(res,status,value)=>{res.writeHead(status,{'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify(value));};
  return async(req,res)=>{res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('X-Robots-Tag','noindex, nofollow');res.setHeader('X-Frame-Options','SAMEORIGIN');res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; media-src 'self' https: blob:; font-src 'self' https: data:; connect-src 'self' https://*.dropbox.com https://*.dropboxusercontent.com; frame-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'");
   try{
@@ -21,6 +23,21 @@ export function createHandler({config,auth=new GithubAuth(config),storeFactory=s
    if(!session){if(path.startsWith('/api/'))throw new CmsError('Войдите через GitHub',401);res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});return res.end('<!doctype html><meta charset="utf-8"><title>PANXRT CMS</title><h1>PANXRT · CMS test</h1><p>Закрытая тестовая админка. Публичный сайт не изменяется.</p><a href="/auth/login">Войти через GitHub</a>');}
    if(!['GET','HEAD'].includes(req.method))auth.protectWrite(req,session);
    if(path==='/api/logout'&&req.method==='POST'){res.setHeader('Set-Cookie',auth.logout(req));return json(res,200,{ok:true});}
+   if(path==='/api/media/status'&&req.method==='GET')return json(res,200,{configured:media.configured});
+   if(path==='/api/media/start'&&req.method==='POST')return json(res,200,await media.start(await body(req),session.login));
+   if(path==='/api/media/chunk'&&req.method==='PUT'){
+    media.open(req.headers['x-upload-ticket'],session.login);
+    let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>CHUNK)throw new CmsError('Часть файла слишком большая',413);chunks.push(chunk);}
+    return json(res,200,await media.append(req.headers['x-upload-ticket'],Number(req.headers['x-upload-offset']),Buffer.concat(chunks),session.login));
+   }
+   if(path==='/api/media/finish'&&req.method==='POST')return json(res,200,await media.finish((await body(req)).ticket,session.login));
+   if(path.startsWith('/api/media/file/')&&['GET','HEAD'].includes(req.method)){
+    const {response:r,type}=await media.download(path.slice('/api/media/file/'.length),req.headers.range);
+    const headers={'Content-Type':type,'Accept-Ranges':'bytes','Content-Security-Policy':"sandbox; default-src 'none'"};
+    for(const name of ['content-length','content-range'])if(r.headers.has(name))headers[name]=r.headers.get(name);
+    res.writeHead(r.status,headers);if(req.method==='HEAD'){await r.body?.cancel();return res.end();}
+    const stream=Readable.fromWeb(r.body);stream.on('error',()=>res.destroy());res.on('close',()=>stream.destroy());return stream.pipe(res);
+   }
    if(path.startsWith('/api/')||path==='/content.json'){
     const store=storeFactory(session);
     if(path==='/api/draft'&&req.method==='GET')return json(res,200,await store.read());
@@ -48,7 +65,7 @@ export function createHandler({config,auth=new GithubAuth(config),storeFactory=s
  };
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
- const config={origin:process.env.CMS_ORIGIN||'http://localhost:8787',repo:process.env.CMS_PRIVATE_REPO,clientId:process.env.GITHUB_CLIENT_ID,clientSecret:process.env.GITHUB_CLIENT_SECRET,ownerId:'156057823'};
+ const config={origin:process.env.CMS_ORIGIN||'http://localhost:8787',repo:process.env.CMS_PRIVATE_REPO,clientId:process.env.GITHUB_CLIENT_ID,clientSecret:process.env.GITHUB_CLIENT_SECRET,ownerId:'156057823',media:{clientId:process.env.DROPBOX_CLIENT_ID,clientSecret:process.env.DROPBOX_CLIENT_SECRET,refreshToken:process.env.DROPBOX_REFRESH_TOKEN,ticketSecret:process.env.CMS_UPLOAD_TICKET_SECRET}};
  const origin=new URL(config.origin);if(!['http:','https:'].includes(origin.protocol)||origin.pathname!=='/'||origin.username||origin.password||origin.search||origin.hash|| (origin.protocol==='http:'&&!['localhost','127.0.0.1'].includes(origin.hostname)))throw Error('CMS_ORIGIN: HTTPS или локальный localhost');
  const host=process.env.CMS_BIND_HOST||'127.0.0.1';
  if(!['127.0.0.1','0.0.0.0'].includes(host))throw Error('CMS_BIND_HOST: 127.0.0.1 или 0.0.0.0');
