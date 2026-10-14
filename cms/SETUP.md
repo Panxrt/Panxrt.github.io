@@ -96,3 +96,51 @@ GitHub App docs: https://docs.github.com/en/apps/creating-github-apps/authentica
 - DNS, production, media не изменять.
 
 На момент записи сервис не создан: браузер показывает вход Render. После входа продолжить настройку, затем реальные OAuth/save/preview/publish-test проверки.
+
+
+## Private Dropbox uploads (implemented 2026-10-14; connection pending)
+
+The test CMS now has a server-side Dropbox App-folder adapter and chunked upload panel.
+It is **disabled until all four environment variables are configured**:
+
+- `DROPBOX_CLIENT_ID` — Dropbox App key.
+- `DROPBOX_CLIENT_SECRET` — secret, server environment only.
+- `DROPBOX_REFRESH_TOKEN` — offline OAuth refresh token, server environment only.
+- `CMS_UPLOAD_TICKET_SECRET` — independently generated random secret of at least 32 characters. Keep stable across restarts so active upload tickets remain valid.
+
+Use a dedicated **Scoped access / App folder** Dropbox app. Required scopes:
+`files.content.write`, `files.content.read`, `files.metadata.read`. Do not grant Full Dropbox,
+sharing, deletion, contacts or team scopes. Request offline access through the authorization
+code flow. The owner must approve the new app access at connection time. Never send secrets
+in chat, put them in Git, a public URL or client code. OAuth provisioning/secure token placement
+is the next setup task, not completed by this code change.
+
+Upload UI reuses the existing file fields for brands, cards and case blocks. Files are sent in
+4 MiB chunks, with progress, pause, retry and cancellation. No 25 MiB cap or transcoding.
+Provider maximum is checked; actual account quota and hosting/network constraints still apply.
+Resuming is supported while the editor tab retains the File and ticket (including a CMS server
+restart). Closing/reloading the tab currently requires selecting and uploading the file again.
+Tickets expire after 48 hours. At most three UI jobs run concurrently. Completed notices hide
+automatically. Cancellation stops transfer; it does not delete a file that already committed.
+
+All uploads use unique root-level filenames within the app folder and never overwrite existing
+media. Files stay private: the saved `src` is `/api/media/file/<asset>`, served only after GitHub
+owner authentication. SVG responses are sandboxed; video Range requests are forwarded. Dropbox
+tokens never reach the browser. No public shared links are created; TEST previews remain private.
+**These private URLs are not suitable for GitHub Pages production**: any future production
+publisher must explicitly promote selected assets and rewrite URLs only after owner approval.
+Do not publish content containing private `/api/media/file/` paths to the public site.
+
+The adapter does not write to Render disk. API errors are sanitized. Writes use the existing
+session/Origin/CSRF guards. Encrypted upload tickets bind session ID, size, type and asset path to
+the owner and survive a server restart when the ticket secret is unchanged.
+
+Before enabling for daily use: connect the App-folder authorization, deploy this branch to the
+TEST service, upload one image and a video over 25 MiB, pause/resume, save/reload the draft,
+verify private preview/video seeking, and confirm that a signed-out browser cannot access files.
+Do not mark this live acceptance complete based on mocked API tests.
+
+API references used:
+- https://docs.dropboxapi.com/dropbox-api/api-reference/user-endpoints/files/upload-session-append-v-2
+- https://docs.dropboxapi.com/dropbox-api/api-reference/user-endpoints/files/upload-session-finish
+- https://docs.dropboxapi.com/dropbox-api/api-reference/user-endpoints/files/download
