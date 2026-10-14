@@ -17,10 +17,10 @@
   }
   while(job.offset<job.file.size){if(job.paused||job.cancelled)throw Error('Пауза');const end=Math.min(job.offset+job.chunk,job.file.size),result=await chunk(job,job.file.slice(job.offset,end));if(result.offset!==end)throw Error('Хранилище не подтвердило часть файла');job.offset=result.offset;job.progress.value=job.offset/job.file.size;}
   if(job.paused||job.cancelled)throw Error('Пауза');job.label.textContent='Сохранение файла…';const result=await post('/api/media/finish',{ticket:job.ticket});
-  if(job.cancelled)return;job.complete(result);job.finished=true;jobs.delete(job);job.progress.value=1;job.label.textContent='Загружено · сохраните изменения';job.pause.remove();job.cancel.textContent='Скрыть';setTimeout(()=>dismiss(job),4500);
+  if(job.cancelled)return;const applied=job.complete(result);job.finished=true;jobs.delete(job);job.progress.value=1;job.label.textContent=applied===false?'Файл не применён: карточка изменена':'Загружено · сохраните изменения';job.pause.remove();job.cancel.textContent='Скрыть';setTimeout(()=>dismiss(job),4500);
  }catch(e){if(!job.cancelled){job.paused=true;job.label.textContent=e.message;job.pause.textContent='Продолжить';job.progress.value=(job.offset||0)/job.file.size;}}finally{job.running=false;}}
- window.Uploads={get pending(){return jobs.size>0;},start(file,complete){if(!file.size){alert('Файл пуст.');return;}if(jobs.size>=3){alert('Сначала завершите или отмените одну из текущих загрузок.');return;}
+ window.Uploads={get pending(){return jobs.size>0;},start(file,complete){if(!file.size){alert('Файл пуст.');return false;}if(jobs.size>=3){alert('Сначала завершите или отмените одну из текущих загрузок.');return false;}
   const row=make('div'),name=make('span',file.name),progress=make('progress'),label=make('small'),pause=make('button','Пауза'),cancel=make('button','Отменить');row.className='upload-job';progress.max=1;progress.value=0;row.append(name,progress,label,pause,cancel);document.getElementById('upload-list').append(row);document.getElementById('uploads').hidden=false;
-  const job={file,complete,row,progress,label,pause,cancel,offset:0};jobs.add(job);pause.onclick=()=>{if(job.running){job.paused=true;job.xhr?.abort();pause.textContent='Продолжить';}else run(job);};cancel.onclick=()=>{job.cancelled=true;job.xhr?.abort();jobs.delete(job);dismiss(job);};run(job);
+  const job={file,complete,row,progress,label,pause,cancel,offset:0};jobs.add(job);pause.onclick=()=>{if(job.running){job.paused=true;job.xhr?.abort();pause.textContent='Продолжить';}else run(job);};cancel.onclick=()=>{job.cancelled=true;job.xhr?.abort();jobs.delete(job);dismiss(job);};run(job);return true;
  }};
 })();
