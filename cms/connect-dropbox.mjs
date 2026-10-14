@@ -17,7 +17,7 @@ export function createConnection({clientId,clientSecret,save,fetcher=fetch,now=D
   const r=await fetcher('https://api.dropboxapi.com/oauth2/token',{method:'POST',redirect:'error',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',client_id:clientId,client_secret:clientSecret,redirect_uri:CALLBACK,code:incoming.searchParams.get('code'),code_verifier:verifier}),signal:AbortSignal.timeout(20000)});
   if(!r.ok)throw Error('Dropbox не подтвердил вход. Запустите подключение заново.');
   const b=await r.json();if(!b.refresh_token)throw Error('Dropbox не выдал постоянный ключ доступа.');
-  const scopes=new Set(String(b.scope||'').split(' '));if(SCOPES.split(' ').some(s=>!scopes.has(s))||[...scopes].some(s=>s&&!SCOPES.split(' ').includes(s)))throw Error('Выданные разрешения отличаются от необходимых. Проверьте App-folder приложение.');
+  const scopes=new Set(String(b.scope||'').split(' '));if(SCOPES.split(' ').some(s=>!scopes.has(s))||[...scopes].some(s=>s&&s!=='account_info.read'&&!SCOPES.split(' ').includes(s)))throw Error('Выданные разрешения отличаются от необходимых. Проверьте App-folder приложение.');
   await save({DROPBOX_CLIENT_ID:clientId,DROPBOX_CLIENT_SECRET:clientSecret,DROPBOX_REFRESH_TOKEN:b.refresh_token,CMS_UPLOAD_TICKET_SECRET:random()});
  }
  return{url:url.href,callback};
