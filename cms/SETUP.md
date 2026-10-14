@@ -144,3 +144,32 @@ API references used:
 - https://docs.dropboxapi.com/dropbox-api/api-reference/user-endpoints/files/upload-session-append-v-2
 - https://docs.dropboxapi.com/dropbox-api/api-reference/user-endpoints/files/upload-session-finish
 - https://docs.dropboxapi.com/dropbox-api/api-reference/user-endpoints/files/download
+
+### One-time local connection helper (2026-10-14)
+
+If the remote browser cannot open Dropbox App Console, use the owner's own computer and
+browser. The helper is implemented; no real authorization has been performed yet.
+
+1. In Dropbox Developers → App Console create a dedicated Scoped access / **App folder** app,
+   e.g. `PANXRT CMS Media`. In Permissions enable only `files.content.write`,
+   `files.content.read`, `files.metadata.read`. App-folder selection cannot be verified by
+   the helper; confirm it in the console. Do not select Full Dropbox.
+2. In OAuth 2 Redirect URIs add exactly `http://localhost:8788/dropbox/callback`.
+3. On the owner computer, obtain this feature branch and Node 22+. In its root create
+   `.env.dropbox-app` containing `DROPBOX_CLIENT_ID="<App key>"` and
+   `DROPBOX_CLIENT_SECRET="<App secret>"`. Keep both local; do not paste into chat.
+4. Run `node --env-file=.env.dropbox-app cms/connect-dropbox.mjs`. Open the printed
+   authorization link in a browser **on the same computer**. Confirm the dedicated folder
+   and three scopes. The flow uses PKCE, random single-use state, a ten-minute expiry and
+   a loopback-only callback. No passwords are entered into this helper.
+5. Success creates `.env.dropbox-cms` (mode 0600 on POSIX; on Windows keep it in the private
+   user profile). Existing output is never overwritten. Transfer its four values to
+   Render → **panxrt-cms-test** → Environment. No secrets in Git, screenshots or chat.
+   The file is ignored by Git. Do not upload it to shared storage.
+6. Manually deploy this feature branch on the TEST service, then perform the live media
+   acceptance steps above. Do not point this configuration at production.
+
+The helper does not open ports publicly, create a Dropbox app, change Render settings, grant
+access without owner interaction, or persist tokens on the ephemeral CMS server. It does not
+print the authorization code, access token, refresh token or client secret. Console errors and
+callback pages are sanitized. Existing media and public links are unaffected.
