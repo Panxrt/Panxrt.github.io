@@ -806,3 +806,6 @@ Media: inspected current runtime interface; Uploads remains an honest URL-only p
 - Three focused connection tests passed (valid one-time exchange, tamper/expiry/denial/scopes rejection, private non-overwriting output). No real credentials generated or used; no live acceptance claimed.
 - Exact manual fallback in cms/SETUP.md. Next must complete real dedicated App-folder registration/owner grant and secret placement on TEST Render, then deploy and test real media. Current live test editor remains the row-transfer release. Avoid further long browser retries if tool remains unavailable.
 - All code in feature/admin-cms-20261010. Public main/production/DNS/media unchanged; stats excluded.
+
+### Owner Dropbox setup checkpoint — 2026-10-14 09:41 CEST
+User screenshots verify App Folder app named PANXRT CMS Media, development access Only you; required media scopes checked, default account_info.read grey checked. User reports Submit and redirect http://localhost:8788/dropbox/callback added. No real token exchange yet. Adjusted helper to tolerate only this default read scope in addition to required media scopes; broader scopes still rejected, requested scopes unchanged. Four focused helper tests pass. Next guide owner through local Node 22+ helper (check node --version first), then safe Render env placement and TEST deployment. Never request secrets in chat.
